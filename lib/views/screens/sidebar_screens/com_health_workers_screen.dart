@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jambomama_nigeria_admin_portal/views/screens/widget/chw_info_widget.dart';
 
 class CWHScreen extends StatelessWidget {
   static const String routeName = '\CWHScreen';
@@ -39,14 +40,19 @@ class CWHScreen extends StatelessWidget {
                 )),
           ),
           Row(children: [
-            _rowHeader('Image', 1),
-            _rowHeader('Name', 3),
-            _rowHeader('Village', 2),
-            _rowHeader('Town', 2),
+            _rowHeader('Pics', 1),
+            _rowHeader('Name', 2),
+            _rowHeader('Country', 2),
             _rowHeader('State', 2),
-            _rowHeader('Action', 1),
-            _rowHeader('View More', 1),
-          ])
+            _rowHeader('Village', 2),
+            _rowHeader('Reg Number', 2),
+            _rowHeader('Role', 2),
+            _rowHeader('Hospital', 2),
+            _rowHeader('Phone', 2),
+            _rowHeader('Approve', 2),
+            _rowHeader('More', 1),
+          ]),
+          ChwDataWidget()
         ],
       ),
     );
