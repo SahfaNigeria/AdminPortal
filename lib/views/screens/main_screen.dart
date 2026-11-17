@@ -2,13 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_admin_scaffold/admin_scaffold.dart';
 import 'package:jambomama_nigeria_admin_portal/views/screens/sidebar_screens/approval_screen.dart';
-import 'package:jambomama_nigeria_admin_portal/views/screens/sidebar_screens/com_health_workers_screen.dart';
+import 'package:jambomama_nigeria_admin_portal/views/screens/sidebar_screens/feedback.dart';
 import 'package:jambomama_nigeria_admin_portal/views/screens/sidebar_screens/dashboard_screen.dart';
 import 'package:jambomama_nigeria_admin_portal/views/screens/sidebar_screens/hospital_screen.dart';
 import 'package:jambomama_nigeria_admin_portal/views/screens/sidebar_screens/medical_practitioner_screen.dart';
 import 'package:jambomama_nigeria_admin_portal/views/screens/sidebar_screens/mothers_screen.dart';
 import 'package:jambomama_nigeria_admin_portal/views/screens/sidebar_screens/transport_screen.dart';
 import 'package:jambomama_nigeria_admin_portal/views/screens/sidebar_screens/upload_screen.dart';
+import 'package:jambomama_nigeria_admin_portal/views/screens/sidebar_screens/edit_contents.dart';
+// Add this import at the top
+import 'package:jambomama_nigeria_admin_portal/views/screens/sidebar_screens/facility_verification_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -42,9 +45,9 @@ class _MainScreenState extends State<MainScreen> {
           _selectedItem = MedicalScreen();
         });
 
-      case CWHScreen.routeName:
+      case FeedbackScreen.routeName:
         setState(() {
-          _selectedItem = CWHScreen();
+          _selectedItem = FeedbackScreen();
         });
         break;
 
@@ -60,6 +63,16 @@ class _MainScreenState extends State<MainScreen> {
       case HospitalScreen.routeName:
         setState(() {
           _selectedItem = HospitalScreen();
+        });
+        break;
+      case EditScreen.routeName:
+        setState(() {
+          _selectedItem = EditScreen();
+        });
+        break;
+      case FacilityVerificationScreen.routeName:
+        setState(() {
+          _selectedItem = FacilityVerificationScreen();
         });
         break;
     }
@@ -93,8 +106,8 @@ class _MainScreenState extends State<MainScreen> {
             icon: CupertinoIcons.heart,
           ),
           AdminMenuItem(
-            title: 'CHW',
-            route: CWHScreen.routeName,
+            title: 'Feedback',
+            route: FeedbackScreen.routeName,
             icon: Icons.dashboard,
           ),
           AdminMenuItem(
@@ -116,6 +129,16 @@ class _MainScreenState extends State<MainScreen> {
             title: 'Transportation',
             route: TransportScreen.routeName,
             icon: Icons.dashboard,
+          ),
+          AdminMenuItem(
+            title: 'Edit Contents',
+            route: EditScreen.routeName,
+            icon: Icons.dashboard,
+          ),
+          AdminMenuItem(
+            title: 'Verify Facilities',
+            route: FacilityVerificationScreen.routeName,
+            icon: Icons.verified_user,
           ),
         ],
         selectedRoute: '',

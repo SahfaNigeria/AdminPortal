@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jambomama_nigeria_admin_portal/views/screens/widget/mothers_info_widget.dart';
 
 class MotherScreen extends StatelessWidget {
   static const String routeName = '\MotherScreen';
@@ -48,7 +49,8 @@ class MotherScreen extends StatelessWidget {
             _rowHeader('Country', 2),
             _rowHeader('Action', 1),
             _rowHeader('Show More', 1),
-          ])
+          ]),
+          MothersDataWidget()
         ],
       ),
     );
