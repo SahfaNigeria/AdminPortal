@@ -1,10 +1,10 @@
 import 'dart:io';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:jambomama_nigeria_admin_portal/views/screens/main_screen.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:jambomama_nigeria_admin_portal/core/routes/route_helper.dart';
+import 'package:jambomama_nigeria_admin_portal/shared/constants/app_constants.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,16 +27,17 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme:
-            ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 167, 8, 8)),
-        useMaterial3: true,
-      ),
-      home: const MainScreen(),
-      builder: EasyLoading.init(),
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    return MaterialApp.router(
+      title: AppConstants.appName,
+      themeAnimationCurve: Curves.linear,
+      routerConfig: RouteHelpers.goRouter,
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        useMaterial3: false,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        textTheme: GoogleFonts.poppinsTextTheme(textTheme),
+      ),
     );
   }
 }
