@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 import 'package:get_secure_storage/get_secure_storage.dart';
-import 'package:jambomama_nigeria_admin_portal/modules/authentication/login/controller/login_controller.dart';
+import 'package:jambomama_nigeria_admin_portal/modules/authentication/registration/registration_logic.dart';
+
+import '../../modules/authentication/login/login_logic.dart';
 
 Future<void> init() async {
   /// loading the getx dependencies
@@ -11,5 +13,6 @@ Future<void> init() async {
   /// api client
 
   /// controllers
-  Get.lazyPut(() => LoginController(), fenix: true);
+  Get.lazyPut(() => LoginLogic(), fenix: true);
+  Get.lazyPut(() => RegistrationLogic(), fenix: true);
 }

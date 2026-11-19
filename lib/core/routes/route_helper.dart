@@ -1,7 +1,8 @@
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_transitions/go_transitions.dart';
-import 'package:jambomama_nigeria_admin_portal/modules/authentication/login/view/login_screen.dart';
+import 'package:jambomama_nigeria_admin_portal/modules/authentication/login/login_view.dart';
+import 'package:jambomama_nigeria_admin_portal/modules/authentication/registration/registration_view.dart';
 
 class RouteHelpers {
   static const String adminLogin = "adminLogin";
@@ -15,7 +16,21 @@ class RouteHelpers {
       GoRoute(
         name: adminLogin,
         path: "/admin/login",
-        builder: (context, state) => LoginScreen(),
+        builder: (context, state) => LoginPage(),
+        pageBuilder: GoTransitions.openUpwards.call,
+        // routes: [
+        //   GoRoute(
+        //     name: signUpEmail,
+        //     path: "email",
+        //     builder: (context, state) => SignUpEmail(),
+        //     pageBuilder: GoTransitions.fade,
+        //   ),
+        // ],
+      ),
+      GoRoute(
+        name: adminRegistration,
+        path: "/admin/registration",
+        builder: (context, state) => RegistrationPage(),
         pageBuilder: GoTransitions.openUpwards.call,
         // routes: [
         //   GoRoute(
