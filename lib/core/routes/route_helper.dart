@@ -1,12 +1,16 @@
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_transitions/go_transitions.dart';
+import 'package:jambomama_nigeria_admin_portal/core/component/admin/admin_shell.dart';
 import 'package:jambomama_nigeria_admin_portal/modules/authentication/login/login_view.dart';
 import 'package:jambomama_nigeria_admin_portal/modules/authentication/registration/registration_view.dart';
+
+import '../../modules/analytics/admin_analytics_page.dart';
 
 class RouteHelpers {
   static const String adminLogin = "adminLogin";
   static const String adminRegistration = "adminRegistration";
+  static const String adminAnalytics = "adminAnalytics";
 
   static final GoRouter goRouter = GoRouter(
     navigatorKey: Get.key,
@@ -60,57 +64,57 @@ class RouteHelpers {
       //   redirect: (context, state) => '/404',
       // ),
 
-      // StatefulShellRoute.indexedStack(
-      //   branches: [
-      //     // StatefulShellBranch(
-      //     //   routes: [
-      //     //     GoRoute(
-      //     //       path: '/merchant-home-page',
-      //     //       name: merchantHomePage,
-      //     //       builder: (context, state) {
-      //     //         return ();
-      //     //       },
-      //     //     ),
-      //     //   ],
-      //     // ),
-      //     StatefulShellBranch(
-      //       routes: [
-      //         GoRoute(
-      //           path: '/merchant/analytics',
-      //           name: merchantAnalyticsPage,
-      //           builder: (context, state) {
-      //             return MerchantAnalyticsPage();
-      //           },
-      //         ),
-      //       ],
-      //     ),
-      //     StatefulShellBranch(
-      //       routes: [
-      //         GoRoute(
-      //           path: '/merchant/tags',
-      //           name: tagsPage,
-      //           builder: (context, state) {
-      //             return MerchantTagsPage();
-      //           },
-      //         ),
-      //       ],
-      //     ),
-      //     StatefulShellBranch(
-      //       routes: [
-      //         GoRoute(
-      //           path: '/merchant/campaign',
-      //           name: merchantCampaignPage,
-      //           builder: (context, state) {
-      //             return MerchantCampaignsPage();
-      //           },
-      //         ),
-      //       ],
-      //     ),
-      //   ],
-      //   builder: (context, state, navigationShell) {
-      //     return MerchantHomePage(shell: navigationShell);
-      //   },
-      // ),
+      StatefulShellRoute.indexedStack(
+        branches: [
+          // StatefulShellBranch(
+          //   routes: [
+          //     GoRoute(
+          //       path: '/merchant-home-page',
+          //       name: merchantHomePage,
+          //       builder: (context, state) {
+          //         return ();
+          //       },
+          //     ),
+          //   ],
+          // ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/admin/analytics',
+                name: adminAnalytics,
+                builder: (context, state) {
+                  return AdminAnalyticsPage();
+                },
+              ),
+            ],
+          ),
+          // StatefulShellBranch(
+          //   routes: [
+          //     GoRoute(
+          //       path: '/merchant/tags',
+          //       name: tagsPage,
+          //       builder: (context, state) {
+          //         return MerchantTagsPage();
+          //       },
+          //     ),
+          //   ],
+          // ),
+          // StatefulShellBranch(
+          //   routes: [
+          //     GoRoute(
+          //       path: '/merchant/campaign',
+          //       name: merchantCampaignPage,
+          //       builder: (context, state) {
+          //         return MerchantCampaignsPage();
+          //       },
+          //     ),
+          //   ],
+          // ),
+        ],
+        builder: (context, state, navigationShell) {
+          return AdminShell(shell: navigationShell);
+        },
+      ),
       // GoRoute(
       //   name: verification,
       //   path: "/verification",

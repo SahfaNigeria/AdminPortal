@@ -74,12 +74,13 @@ class LoginPage extends GetView<LoginLogic> {
                     fieldTitle: "Password",
                     validator: (p0) => ValidationUtil.validatePassword(p0!),
                     controller: controller.passwordController,
-                    obscureText: controller.isPasswordVisible.value,
+                    obscureText:
+                    !controller.isPasswordVisible.value,
                     suffix: IconButton(
                       onPressed: () {
                         controller.isPasswordVisible.value =
                         !controller.isPasswordVisible.value;
-                      }, icon: FaIcon(controller.isPasswordVisible.value
+                      }, icon: FaIcon(!controller.isPasswordVisible.value
                         ? FontAwesomeIcons.eyeSlash
                         : FontAwesomeIcons.eye, size: 20,),),
                   );
@@ -105,9 +106,13 @@ class LoginPage extends GetView<LoginLogic> {
 
                 SizedBox(height: 20,),
 
-                CustomAppButton(
-                  title: "Login",
-                )
+                Obx(() {
+                  return CustomAppButton(
+                    title: "Login",
+                    onTap: () => context.goNamed(RouteHelpers.adminAnalytics),
+                    isDisabled: !controller.isLoginComplete.value,
+                  );
+                })
               ],
             ),
 

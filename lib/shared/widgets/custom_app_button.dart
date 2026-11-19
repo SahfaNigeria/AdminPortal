@@ -44,7 +44,7 @@ class CustomAppButton extends StatelessWidget {
                   child: AppText(
                     maxLines: 1,
                     text: title ?? "LOGIN",
-                    color: textColor ?? AppColors.textPrimary,
+                    color: textColor ?? AppColors.surface,
                     size: 16,
                     fontWeight: FontWeight.w700,
                   ),

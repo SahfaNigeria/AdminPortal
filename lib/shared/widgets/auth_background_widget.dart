@@ -58,6 +58,7 @@ class AuthBackgroundWidget extends StatelessWidget {
               children: [
                 const CircleAvatar(
                   radius: 50,
+                  backgroundColor: AppColors.primary,
                   backgroundImage: AssetImage('assets/images/logo.png'),
                 ),
                 const SizedBox(height: 24),

@@ -24,7 +24,9 @@ class RegistrationPage extends GetView<RegistrationLogic> {
         child: Column(
           children: [
             SizedBox(
-              height: MediaQuery.sizeOf(context).height/8.5,
+              height: MediaQuery
+                  .sizeOf(context)
+                  .height / 8.5,
             ),
             if (context.canPop()) Column(
               children: [
@@ -87,14 +89,14 @@ class RegistrationPage extends GetView<RegistrationLogic> {
                     fieldTitle: "Password",
                     validator: (p0) => ValidationUtil.validatePassword(p0!),
                     controller: controller.passwordController,
-                    obscureText: controller.isPasswordVisible.value,
+                    obscureText: !controller.isPasswordVisible.value,
                     suffix: IconButton(
                       onPressed: () {
                         controller.isPasswordVisible.value =
-                            !controller.isPasswordVisible.value;
+                        !controller.isPasswordVisible.value;
                       },
                       icon: FaIcon(
-                        controller.isPasswordVisible.value
+                        !controller.isPasswordVisible.value
                             ? FontAwesomeIcons.eyeSlash
                             : FontAwesomeIcons.eye,
                         size: 20,
@@ -125,9 +127,12 @@ class RegistrationPage extends GetView<RegistrationLogic> {
 
                 const SizedBox(height: 20),
 
-                const CustomAppButton(
-                  title: "Register",
-                )
+                Obx(() {
+                  return CustomAppButton(
+                    title: "Register",
+                    isDisabled: !controller.isRegistrationComplete.value,
+                  );
+                })
               ],
             ),
             const SizedBox(height: 24),

@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:jambomama_nigeria_admin_portal/core/helpers/dependencies.dart'
     as dep;
 import 'package:material_ui/material_ui.dart';
+import 'package:flutter_web_plugins/flutter_web_plugins.dart' as wp;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jambomama_nigeria_admin_portal/core/routes/route_helper.dart';
 import 'package:jambomama_nigeria_admin_portal/shared/constants/app_constants.dart';
@@ -12,6 +13,7 @@ import 'core/theme/colors.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+   wp.setUrlStrategy(wp.PathUrlStrategy());
   await dep.init();
   await Firebase.initializeApp(
       options: kIsWeb || Platform.isAndroid
