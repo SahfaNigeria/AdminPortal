@@ -8,10 +8,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:jambomama_nigeria_admin_portal/core/routes/route_helper.dart';
 import 'package:jambomama_nigeria_admin_portal/shared/constants/app_constants.dart';
 
+import 'core/theme/colors.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dep.init();
-
   await Firebase.initializeApp(
       options: kIsWeb || Platform.isAndroid
           ? FirebaseOptions(
@@ -38,6 +39,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: false,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: AppColors.primary,
+          primary: AppColors.primary,
+          secondary: AppColors.primary,
+          surface: AppColors.surface,
+        ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
         textTheme: GoogleFonts.poppinsTextTheme(textTheme),
       ),

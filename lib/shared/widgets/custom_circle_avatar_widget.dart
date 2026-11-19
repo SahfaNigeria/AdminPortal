@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:jambomama_nigeria_admin_portal/core/theme/colors.dart';
 
 class CustomCircleAvatarWidget extends StatelessWidget {

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:jambomama_nigeria_admin_portal/core/theme/colors.dart';
 import 'package:jambomama_nigeria_admin_portal/shared/widgets/app_text.dart';
@@ -52,7 +52,7 @@ class AuthTextField extends StatelessWidget {
           height: 5,
         ),
         AppTextField(
-          fillColor: fillColor ?? AppColors.textPrimary,
+          fillColor: fillColor ?? AppColors.surface,
           validator: validator,
           readOnly: readOnly,
           prefix: prefix,

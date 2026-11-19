@@ -47,7 +47,7 @@ class AppTextField extends StatelessWidget {
       onTap: onTap,
       enabled: enabled,
       obscureText: obscureText,
-      obscuringCharacter: "·",
+      obscuringCharacter: "●",
       readOnly: readOnly,
       validator: validator,
       controller: controller,
@@ -57,7 +57,7 @@ class AppTextField extends StatelessWidget {
         contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
         filled: true,
         prefix: prefix,
-        suffix: suffix,
+        suffixIcon: suffix,
         fillColor: fillColor ?? AppColors.surface,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),

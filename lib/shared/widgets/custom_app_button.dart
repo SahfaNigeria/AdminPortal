@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:jambomama_nigeria_admin_portal/core/theme/colors.dart';
 import 'package:jambomama_nigeria_admin_portal/shared/widgets/app_text.dart';
 import 'package:jambomama_nigeria_admin_portal/shared/widgets/custom_circular_progress_indicator.dart';
@@ -64,13 +64,13 @@ class CustomAppButton extends StatelessWidget {
                         child: isLoading
                             ? CustomCircularProgressIndicator(
                                 height: 20,
-                                color: progressColor ?? AppColors.textPrimary,
+                                color: progressColor ?? AppColors.surface,
                                 width: 20,
                               )
                             : AppText(
                                 maxLines: 1,
                                 text: title ?? "LOGIN",
-                                color: textColor ?? AppColors.textPrimary,
+                                color: textColor ?? AppColors.surface,
                                 size: 16,
                                 fontWeight: FontWeight.w700,
                               ),
