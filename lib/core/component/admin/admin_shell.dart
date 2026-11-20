@@ -10,7 +10,7 @@ class AdminShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomBreakPoint(
+    return  CustomBreakPoint(
       mobile: AdminShellMobile(
         shell: shell,
       ),
