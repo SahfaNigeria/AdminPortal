@@ -7,17 +7,43 @@ import '../../core/theme/colors.dart';
 import 'app_text.dart';
 import 'custom_list_tile.dart';
 
-class DesktopDraweWidget extends StatelessWidget {
+class DesktopDraweWidget extends StatefulWidget {
   const DesktopDraweWidget({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    String? currentRoute;
+  State<DesktopDraweWidget> createState() => _DesktopDraweWidgetState();
+}
+
+class _DesktopDraweWidgetState extends State<DesktopDraweWidget> {
+  String? currentRoute;
+
+
+  void _initCurrentRoute(){
     try {
       currentRoute = GoRouter.of(context).state.name;
     } catch (_) {
       currentRoute = null;
     }
+  }
+
+  void _updateCurrentRoute({VoidCallback? callback}){
+    Scaffold.of(context).closeDrawer();
+    callback?.call();
+    setState(() {
+      currentRoute = GoRouter.of(context).state.name;
+    });
+  }
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _initCurrentRoute();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
@@ -41,15 +67,34 @@ class DesktopDraweWidget extends StatelessWidget {
             iconData: FontAwesomeIcons.chartPie,
             enabled: currentRoute == RouteHelpers.adminAnalytics,
             onTap: () {
-              context.goNamed(RouteHelpers.adminAnalytics);
+              _updateCurrentRoute(
+                callback: () {
+                  context.goNamed(RouteHelpers.adminAnalytics);
+                },
+              );
             },
           ),
           const SizedBox(height: 6),
           CustomListTileWidget(
             iconSize: 15,
             textSize: 14,
-            text: "Campaigns",
-            iconData: FontAwesomeIcons.bullhorn,
+            text: "Users",
+            iconData: FontAwesomeIcons.users,
+            enabled: currentRoute == RouteHelpers.adminUsers,
+            onTap: () {
+              _updateCurrentRoute(
+                callback: () {
+                  context.goNamed(RouteHelpers.adminUsers);
+                },
+              );
+            },
+          ),
+          const SizedBox(height: 6),
+          CustomListTileWidget(
+            iconSize: 15,
+            textSize: 14,
+            text: "Hospital",
+            iconData: FontAwesomeIcons.hospital,
             enabled: false,
             onTap: () {},
           ),
@@ -57,8 +102,8 @@ class DesktopDraweWidget extends StatelessWidget {
           CustomListTileWidget(
             iconSize: 15,
             textSize: 14,
-            text: "Tags",
-            iconData: FontAwesomeIcons.tags,
+            text: "Approval",
+            iconData: FontAwesomeIcons.clipboardCheck,
             enabled: false,
             onTap: () {},
           ),
@@ -66,8 +111,8 @@ class DesktopDraweWidget extends StatelessWidget {
           CustomListTileWidget(
             iconSize: 15,
             textSize: 14,
-            text: "Settings",
-            iconData: FontAwesomeIcons.gear,
+            text: "Content",
+            iconData: FontAwesomeIcons.pen,
             enabled: false,
             onTap: () {},
           ),

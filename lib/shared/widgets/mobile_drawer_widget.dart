@@ -9,29 +9,56 @@ import 'custom_circle_avatar_widget.dart';
 import 'custom_list_tile.dart';
 import 'logo_widget.dart';
 
-class AppDrawer extends StatelessWidget {
+class AppDrawer extends StatefulWidget {
   const AppDrawer({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    String? currentRoute;
+  State<AppDrawer> createState() => _AppDrawerState();
+}
+
+class _AppDrawerState extends State<AppDrawer> {
+  String? currentRoute;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _initCurrentRoute();
+    super.initState();
+  }
+
+  void _initCurrentRoute(){
     try {
       currentRoute = GoRouter.of(context).state.name;
     } catch (_) {
       currentRoute = null;
     }
+  }
+
+  void _updateCurrentRoute({VoidCallback? callback}){
+    Scaffold.of(context).closeDrawer();
+    callback?.call();
+
+    setState(() {
+      currentRoute = GoRouter.of(context).state.name;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
 
     return Drawer(
+
       backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(24),
-          bottomRight: Radius.circular(24),
-        ),
-      ),
+      // shape: const RoundedRectangleBorder(
+      //   borderRadius: BorderRadius.only(
+      //     topRight: Radius.circular(24),
+      //     bottomRight: Radius.circular(24),
+      //   ),
+      // ),
       child: SafeArea(
         child: Column(
           children: [
+            // Header Section: Brand Logo & Title
             Container(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
               decoration: BoxDecoration(
@@ -148,22 +175,40 @@ class AppDrawer extends StatelessWidget {
                 child: Column(
                   children: [
                     CustomListTileWidget(
-                      iconSize: 16,
-                      textSize: 15,
+                      iconSize: 14,
+                      textSize: 12,
                       text: "Analytics",
                       iconData: FontAwesomeIcons.chartPie,
                       enabled: currentRoute == RouteHelpers.adminAnalytics,
                       onTap: () {
-                        Navigator.of(context).pop();
-                        context.goNamed(RouteHelpers.adminAnalytics);
+                        _updateCurrentRoute(
+                          callback: () {
+                            context.goNamed(RouteHelpers.adminAnalytics);
+                          },
+                        );
                       },
                     ),
                     const SizedBox(height: 6),
                     CustomListTileWidget(
-                      iconSize: 16,
-                      textSize: 15,
-                      text: "Campaigns",
-                      iconData: FontAwesomeIcons.bullhorn,
+                      iconSize: 14,
+                      textSize: 12,
+                      text: "Users",
+                      iconData: FontAwesomeIcons.users,
+                      enabled: currentRoute == RouteHelpers.adminUsers,
+                      onTap: () {
+                        _updateCurrentRoute(
+                          callback: () {
+                            context.goNamed(RouteHelpers.adminUsers);
+                          },
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 6),
+                    CustomListTileWidget(
+                      iconSize: 14,
+                      textSize: 12,
+                      text: "Hospital",
+                      iconData: FontAwesomeIcons.hospital,
                       enabled: false,
                       onTap: () {
                         Navigator.of(context).pop();
@@ -171,21 +216,10 @@ class AppDrawer extends StatelessWidget {
                     ),
                     const SizedBox(height: 6),
                     CustomListTileWidget(
-                      iconSize: 16,
-                      textSize: 15,
-                      text: "Tags",
-                      iconData: FontAwesomeIcons.tags,
-                      enabled: false,
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    const SizedBox(height: 6),
-                    CustomListTileWidget(
-                      iconSize: 16,
-                      textSize: 15,
-                      text: "Settings",
-                      iconData: FontAwesomeIcons.gear,
+                      iconSize: 14,
+                      textSize: 12,
+                      text: "Approval",
+                      iconData: FontAwesomeIcons.clipboardCheck,
                       enabled: false,
                       onTap: () {
                         Navigator.of(context).pop();
