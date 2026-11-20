@@ -7,17 +7,36 @@ import '../../core/theme/colors.dart';
 import 'app_text.dart';
 import 'custom_list_tile.dart';
 
-class DesktopDraweWidget extends StatelessWidget {
+class DesktopDraweWidget extends StatefulWidget {
   const DesktopDraweWidget({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    String? currentRoute;
+  State<DesktopDraweWidget> createState() => _DesktopDraweWidgetState();
+}
+
+class _DesktopDraweWidgetState extends State<DesktopDraweWidget> {
+  String? currentRoute;
+
+
+  void _initCurrentRoute(){
     try {
       currentRoute = GoRouter.of(context).state.name;
     } catch (_) {
       currentRoute = null;
     }
+  }
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _initCurrentRoute();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
