@@ -17,6 +17,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.3.3"
+  animated_segmented_tab_control:
+    dependency: "direct main"
+    description:
+      name: animated_segmented_tab_control
+      sha256: c372ace65acbed0a6e71335ed9722ecda7cd8de8386dd5b6dc777dc86d22d038
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   animated_text_kit:
     dependency: "direct main"
     description:

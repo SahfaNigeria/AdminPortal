@@ -26,6 +26,14 @@ class _DesktopDraweWidgetState extends State<DesktopDraweWidget> {
     }
   }
 
+  void _updateCurrentRoute({VoidCallback? callback}){
+    Scaffold.of(context).closeDrawer();
+    callback?.call();
+    setState(() {
+      currentRoute = GoRouter.of(context).state.name;
+    });
+  }
+
 
   @override
   void initState() {
@@ -36,7 +44,6 @@ class _DesktopDraweWidgetState extends State<DesktopDraweWidget> {
 
   @override
   Widget build(BuildContext context) {
-
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
@@ -60,7 +67,11 @@ class _DesktopDraweWidgetState extends State<DesktopDraweWidget> {
             iconData: FontAwesomeIcons.chartPie,
             enabled: currentRoute == RouteHelpers.adminAnalytics,
             onTap: () {
-              context.goNamed(RouteHelpers.adminAnalytics);
+              _updateCurrentRoute(
+                callback: () {
+                  context.goNamed(RouteHelpers.adminAnalytics);
+                },
+              );
             },
           ),
           const SizedBox(height: 6),
@@ -69,8 +80,14 @@ class _DesktopDraweWidgetState extends State<DesktopDraweWidget> {
             textSize: 14,
             text: "Users",
             iconData: FontAwesomeIcons.users,
-            enabled: false,
-            onTap: () {},
+            enabled: currentRoute == RouteHelpers.adminUsers,
+            onTap: () {
+              _updateCurrentRoute(
+                callback: () {
+                  context.goNamed(RouteHelpers.adminUsers);
+                },
+              );
+            },
           ),
           const SizedBox(height: 6),
           CustomListTileWidget(

@@ -9,19 +9,45 @@ import 'custom_circle_avatar_widget.dart';
 import 'custom_list_tile.dart';
 import 'logo_widget.dart';
 
-class AppDrawer extends StatelessWidget {
+class AppDrawer extends StatefulWidget {
   const AppDrawer({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    String? currentRoute;
+  State<AppDrawer> createState() => _AppDrawerState();
+}
+
+class _AppDrawerState extends State<AppDrawer> {
+  String? currentRoute;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _initCurrentRoute();
+    super.initState();
+  }
+
+  void _initCurrentRoute(){
     try {
       currentRoute = GoRouter.of(context).state.name;
     } catch (_) {
       currentRoute = null;
     }
+  }
+
+  void _updateCurrentRoute({VoidCallback? callback}){
+    Scaffold.of(context).closeDrawer();
+    callback?.call();
+
+    setState(() {
+      currentRoute = GoRouter.of(context).state.name;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
 
     return Drawer(
+
       backgroundColor: Colors.white,
       // shape: const RoundedRectangleBorder(
       //   borderRadius: BorderRadius.only(
@@ -155,8 +181,11 @@ class AppDrawer extends StatelessWidget {
                       iconData: FontAwesomeIcons.chartPie,
                       enabled: currentRoute == RouteHelpers.adminAnalytics,
                       onTap: () {
-                        Navigator.of(context).pop();
-                        context.goNamed(RouteHelpers.adminAnalytics);
+                        _updateCurrentRoute(
+                          callback: () {
+                            context.goNamed(RouteHelpers.adminAnalytics);
+                          },
+                        );
                       },
                     ),
                     const SizedBox(height: 6),
@@ -165,9 +194,13 @@ class AppDrawer extends StatelessWidget {
                       textSize: 12,
                       text: "Users",
                       iconData: FontAwesomeIcons.users,
-                      enabled: false,
+                      enabled: currentRoute == RouteHelpers.adminUsers,
                       onTap: () {
-                        Navigator.of(context).pop();
+                        _updateCurrentRoute(
+                          callback: () {
+                            context.goNamed(RouteHelpers.adminUsers);
+                          },
+                        );
                       },
                     ),
                     const SizedBox(height: 6),
