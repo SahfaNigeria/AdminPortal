@@ -1,220 +1,188 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
+<head>
+  <base href="$FLUTTER_BASE_HREF" />
 
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
+  <meta charset="UTF-8" />
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
+  <meta name="description" content="SafeMama Nigeria Admin Dashboard" />
+  <meta name="theme-color" content="#BA2F30" />
 
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta
+          name="apple-mobile-web-app-title"
+          content="SafeMama Nigeria Admin"
+  />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
 
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
-    <base href="$FLUTTER_BASE_HREF" />
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.ico" />
 
-    <meta charset="UTF-8" />
-    <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
-    <meta name="description" content="SafeMama Nigeria Admin Dashboard" />
-    <meta name="theme-color" content="#BA2F30" />
+  <title>SafeMama Nigeria Admin</title>
+  <link rel="manifest" href="manifest.json" />
 
-    <!-- iOS meta tags & icons -->
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <meta
-      name="apple-mobile-web-app-title"
-      content="SafeMama Nigeria Admin"
-    />
-    <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <style>
+    body {
+      background-color: #FCFEFF;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="favicon.ico" />
+    #splash-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #FCFEFF;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 999999;
+      transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+    }
 
-    <title>SafeMama Nigeria Admin</title>
-    <link rel="manifest" href="manifest.json" />
+    #splash-screen.fade-out {
+      opacity: 0;
+      visibility: hidden;
+    }
 
-    <style>
-      body {
-        background-color: #FCFEFF;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
+    .splash-avatar-wrapper {
+      position: relative;
+      width: 190px;
+      height: 190px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .splash-spinner {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 5px solid rgba(186, 47, 48, 0.12);
+      border-top: 5px solid #BA2F30;
+      border-right: 5px solid #BA2F30;
+      animation: spin 1.1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+      box-sizing: border-box;
+    }
+
+    .splash-logo-circle {
+      width: 145px;
+      height: 145px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      box-shadow: 0 12px 35px rgba(186, 47, 48, 0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      z-index: 2;
+      animation: pulse 2s ease-in-out infinite alternate;
+    }
+
+    .splash-logo-circle img {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+    }
+
+    .splash-title {
+      margin-top: 32px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: #BA2F30;
+      letter-spacing: 0.5px;
+      text-align: center;
+    }
+
+    .splash-subtitle {
+      margin-top: 8px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      color: #848484;
+      letter-spacing: 0.2px;
+      text-align: center;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
       }
-
-      /* Splash Screen Container */
-      #splash-screen {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background-color: #FCFEFF;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        z-index: 999999;
-        transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+      100% {
+        transform: rotate(360deg);
       }
+    }
 
-      #splash-screen.fade-out {
-        opacity: 0;
-        visibility: hidden;
+    @keyframes pulse {
+      0% {
+        transform: scale(0.96);
       }
-
-      /* Circular Loader Wrapper */
-      .splash-avatar-wrapper {
-        position: relative;
-        width: 190px;
-        height: 190px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+      100% {
+        transform: scale(1.04);
       }
+    }
+  </style>
 
-      /* Animated Spinner Ring around the Logo */
-      .splash-spinner {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        border: 5px solid rgba(186, 47, 48, 0.12);
-        border-top: 5px solid #BA2F30;
-        border-right: 5px solid #BA2F30;
-        animation: spin 1.1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
-        box-sizing: border-box;
-      }
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase_storage.js"></script>
 
-      /* Inner Circular Container holding Logo */
-      .splash-logo-circle {
-        width: 145px;
-        height: 145px;
-        border-radius: 50%;
-        background: #FFFFFF;
-        box-shadow: 0 12px 35px rgba(186, 47, 48, 0.18);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        z-index: 2;
-        animation: pulse 2s ease-in-out infinite alternate;
-      }
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 
-      .splash-logo-circle img {
-        width: 100px;
-        height: 100px;
-        object-fit: contain;
-      }
+    const firebaseConfig = {
+      apiKey: "AIzaSyCuDuhEt1hGwmKF6z8f4To8Xi4mC9guTqE",
+      authDomain: "jambo-mama-nigeria.firebaseapp.com",
+      projectId: "jambo-mama-nigeria",
+      storageBucket: "jambo-mama-nigeria.appspot.com",
+      messagingSenderId: "501778526252",
+      appId: "1:501778526252:web:26735b3c7b9f244c4ea189",
+    };
 
-      /* App Title & Subtitle below loader */
-      .splash-title {
-        margin-top: 32px;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        font-size: 24px;
-        font-weight: 700;
-        color: #BA2F30;
-        letter-spacing: 0.5px;
-        text-align: center;
-      }
+    initializeApp(firebaseConfig);
+  </script>
+</head>
 
-      .splash-subtitle {
-        margin-top: 8px;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        font-size: 15px;
-        font-weight: 500;
-        color: #848484;
-        letter-spacing: 0.2px;
-        text-align: center;
-      }
-
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-
-      @keyframes pulse {
-        0% {
-          transform: scale(0.96);
-        }
-        100% {
-          transform: scale(1.04);
-        }
-      }
-    </style>
-
-    <script>
-      // The value below is injected by flutter build, do not touch.
-      const serviceWorkerVersion = null;
-    </script>
-    <!-- This script adds the flutter initialization JS code -->
-    <script src="flutter.js" defer></script>
-  </head>
-  <body>
-    <!-- Custom Web Splash Screen -->
-    <div id="splash-screen">
-      <div class="splash-avatar-wrapper">
-        <div class="splash-spinner"></div>
-        <div class="splash-logo-circle">
-          <img src="icons/icon-192.png" alt="SafeMama Logo" />
-        </div>
-      </div>
-      <div class="splash-title">SafeMama Nigeria</div>
-      <div class="splash-subtitle">Admin Dashboard</div>
+<body>
+<!-- Custom Web Splash Screen -->
+<div id="splash-screen">
+  <div class="splash-avatar-wrapper">
+    <div class="splash-spinner"></div>
+    <div class="splash-logo-circle">
+      <img src="icons/icon-192.png" alt="SafeMama Logo" />
     </div>
+  </div>
 
-    <script>
-      window.addEventListener("load", function (ev) {
-        // Download main.dart.js
-        _flutter.loader.loadEntrypoint({
-          serviceWorker: {
-            serviceWorkerVersion: serviceWorkerVersion,
-          },
-          onEntrypointLoaded: function (engineInitializer) {
-            engineInitializer.initializeEngine().then(function (appRunner) {
-              return appRunner.runApp();
-            }).then(function () {
-              const splash = document.getElementById("splash-screen");
-              if (splash) {
-                splash.classList.add("fade-out");
-                setTimeout(function () {
-                  splash.remove();
-                }, 500);
-              }
-            });
-          },
-        });
-      });
-    </script>
+  <div class="splash-title">SafeMama Nigeria</div>
+  <div class="splash-subtitle">Admin Dashboard</div>
+</div>
 
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase_storage.js"></script>
+<!-- Modern Flutter Bootstrap -->
+<script>
+  {{flutter_bootstrap_js}}
+</script>
 
-    <script type="module">
-      // Import the functions you need from the SDKs you need
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-      // TODO: Add SDKs for Firebase products that you want to use
-      // https://firebase.google.com/docs/web/setup#available-libraries
+<script>
+  window.addEventListener("flutter-first-frame", function () {
+    const splash = document.getElementById("splash-screen");
 
-      // Your web app's Firebase configuration
-      const firebaseConfig = {
-        apiKey: "AIzaSyCuDuhEt1hGwmKF6z8f4To8Xi4mC9guTqE",
-        authDomain: "jambo-mama-nigeria.firebaseapp.com",
-        projectId: "jambo-mama-nigeria",
-        storageBucket: "jambo-mama-nigeria.appspot.com",
-        messagingSenderId: "501778526252",
-        appId: "1:501778526252:web:26735b3c7b9f244c4ea189",
-      };
+    if (splash) {
+      splash.classList.add("fade-out");
 
-      // Initialize Firebase
-      const app = initializeApp(firebaseConfig);
-    </script>
-  </body>
+      setTimeout(function () {
+        splash.remove();
+      }, 500);
+    }
+  });
+</script>
+</body>
 </html>
