@@ -38,7 +38,7 @@ class CustomAppButton extends StatelessWidget {
               color: color ?? AppColors.primary.withOpacity(0.7),
               borderRadius: borderRadius ?? BorderRadius.circular(10),
             ),
-            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 13),
             child: child ??
                 Center(
                   child: AppText(
@@ -58,7 +58,7 @@ class CustomAppButton extends StatelessWidget {
                     color: color ?? AppColors.primary,
                     borderRadius: borderRadius ?? BorderRadius.circular(10),
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 13),
                   child: child ??
                       Center(
                         child: isLoading

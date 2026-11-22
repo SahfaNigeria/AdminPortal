@@ -5,6 +5,7 @@ import 'package:jambomama_nigeria_admin_portal/core/theme/colors.dart';
 
 class AppTextField extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
+  final String? hintText;
   final Color? fillColor;
   final Widget? prefix;
   final Widget? suffix;
@@ -36,7 +37,7 @@ class AppTextField extends StatelessWidget {
     this.readOnly = false,
     this.prefix,
     this.obscureText = false,
-    this.suffix,
+    this.suffix, this.hintText,
   }) : super(key: key);
 
   @override
@@ -47,6 +48,7 @@ class AppTextField extends StatelessWidget {
       onTap: onTap,
       enabled: enabled,
       obscureText: obscureText,
+
       obscuringCharacter: "●",
       readOnly: readOnly,
       validator: validator,
@@ -56,8 +58,15 @@ class AppTextField extends StatelessWidget {
       decoration: InputDecoration(
         contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
         filled: true,
-        prefix: prefix,
+        prefixIcon: prefix,
         suffixIcon: suffix,
+        hintText: hintText,
+        hintStyle: GoogleFonts.getFont(
+          fontFamily!,
+          fontSize:  14,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textPrimary,
+        ),
         fillColor: fillColor ?? AppColors.surface,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -79,7 +88,7 @@ class AppTextField extends StatelessWidget {
       ),
       style: GoogleFonts.getFont(
         fontFamily!,
-        fontSize: obscureText ? 16 : 14,
+        fontSize: obscureText ? 14.5 : 14,
         fontWeight: FontWeight.w600,
         color: AppColors.textPrimary,
       ),

@@ -93,19 +93,31 @@ class _DesktopDraweWidgetState extends State<DesktopDraweWidget> {
           CustomListTileWidget(
             iconSize: 15,
             textSize: 14,
-            text: "Hospital",
+            text: "Hospitals",
             iconData: FontAwesomeIcons.hospital,
-            enabled: false,
-            onTap: () {},
+            enabled: currentRoute == RouteHelpers.adminHospitals,
+            onTap: () {
+              _updateCurrentRoute(
+                callback: () {
+                  context.goNamed(RouteHelpers.adminHospitals);
+                },
+              );
+            },
           ),
           const SizedBox(height: 6),
           CustomListTileWidget(
             iconSize: 15,
             textSize: 14,
-            text: "Approval",
-            iconData: FontAwesomeIcons.clipboardCheck,
-            enabled: false,
-            onTap: () {},
+            text: "Emergencies",
+            iconData: FontAwesomeIcons.triangleExclamation,
+            enabled: currentRoute == RouteHelpers.adminEmergencies,
+            onTap: () {
+              _updateCurrentRoute(
+                callback: () {
+                  context.goNamed(RouteHelpers.adminEmergencies);
+                },
+              );
+            },
           ),
           const SizedBox(height: 6),
           CustomListTileWidget(

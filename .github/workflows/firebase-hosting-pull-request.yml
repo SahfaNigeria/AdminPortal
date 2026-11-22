@@ -19,7 +19,7 @@ jobs:
           channel: stable
           cache: false
 
-      - run: flutter build web
+      - run: flutter build web --release --web-content-hash
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:

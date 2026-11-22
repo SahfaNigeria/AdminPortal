@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 
+import '../../../../shared/widgets/custom_search_text_field.dart';
 import '../../../../shared/widgets/users_expandable_widget.dart';
 
 class MothersTab extends StatelessWidget {
@@ -96,31 +97,38 @@ class MothersTab extends StatelessWidget {
       },
     ];
 
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: mothersList.length,
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      itemBuilder: (context, index) {
-        final mother = mothersList[index];
-        final bool hasActions = mother["hasApprovalActions"] as bool;
+    return Column(
+      children: [
+        CustomSearchTextField(
+          fieldTitle: "Mothers",
+        ),
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: mothersList.length,
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          itemBuilder: (context, index) {
+            final mother = mothersList[index];
+            final bool hasActions = mother["hasApprovalActions"] as bool;
 
-        return UsersExpandableWidget(
-          userName: mother["userName"],
-          userId: mother["userId"],
-          userRole: "Mother",
-          status: "Active",
-          email: mother["email"],
-          phoneNumber: mother["phoneNumber"],
-          registrationDate: mother["registrationDate"],
-          location: mother["location"],
-          imageUrl: mother["imageUrl"],
-          additionalDetails: Map<String, String>.from(mother["additionalDetails"]),
-isApproved: true,
+            return UsersExpandableWidget(
+              userName: mother["userName"],
+              userId: mother["userId"],
+              userRole: "Mother",
+              status: "Active",
+              email: mother["email"],
+              phoneNumber: mother["phoneNumber"],
+              registrationDate: mother["registrationDate"],
+              location: mother["location"],
+              imageUrl: mother["imageUrl"],
+              additionalDetails: Map<String, String>.from(mother["additionalDetails"]),
+              isApproved: true,
 
 
-        );
-      },
+            );
+          },
+        ),
+      ],
     );
   }
 }

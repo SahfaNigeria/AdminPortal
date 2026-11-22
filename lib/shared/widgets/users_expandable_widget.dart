@@ -19,6 +19,8 @@ class UsersExpandableWidget extends StatelessWidget {
   /// User's avatar image URL.
   final String? imageUrl;
 
+  final Widget? leading;
+
   /// Radius of the circle avatar.
   final double avatarRadius;
 
@@ -106,7 +108,7 @@ class UsersExpandableWidget extends StatelessWidget {
     this.initiallyExpanded = false,
     this.onExpansionChanged,
     this.backgroundColor,
-    this.margin,
+    this.margin, this.leading,
   }) : super(key: key);
 
   bool get _hasActions =>
@@ -320,7 +322,7 @@ class UsersExpandableWidget extends StatelessWidget {
       margin: margin ?? const EdgeInsets.symmetric(vertical: 6),
       showDivider: true,
 
-      leading: CustomCircleAvatarWidget(
+      leading: leading??CustomCircleAvatarWidget(
         imageUrl: imageUrl,
         radius: avatarRadius,
       ),

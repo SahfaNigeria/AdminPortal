@@ -209,20 +209,28 @@ class _AppDrawerState extends State<AppDrawer> {
                       textSize: 12,
                       text: "Hospital",
                       iconData: FontAwesomeIcons.hospital,
-                      enabled: false,
+                      enabled: currentRoute == RouteHelpers.adminHospitals,
                       onTap: () {
-                        Navigator.of(context).pop();
+                        _updateCurrentRoute(
+                          callback: () {
+                            context.goNamed(RouteHelpers.adminHospitals);
+                          },
+                        );
                       },
                     ),
                     const SizedBox(height: 6),
                     CustomListTileWidget(
                       iconSize: 14,
                       textSize: 12,
-                      text: "Approval",
-                      iconData: FontAwesomeIcons.clipboardCheck,
-                      enabled: false,
+                      text: "Emergencies",
+                      iconData: FontAwesomeIcons.triangleExclamation,
+                      enabled: currentRoute == RouteHelpers.adminEmergencies,
                       onTap: () {
-                        Navigator.of(context).pop();
+                        _updateCurrentRoute(
+                          callback: () {
+                            context.goNamed(RouteHelpers.adminEmergencies);
+                          },
+                        );
                       },
                     ),
                   ],

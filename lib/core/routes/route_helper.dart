@@ -4,8 +4,10 @@ import 'package:go_transitions/go_transitions.dart';
 import 'package:jambomama_nigeria_admin_portal/core/component/admin/admin_shell.dart';
 import 'package:jambomama_nigeria_admin_portal/modules/authentication/login/login_view.dart';
 import 'package:jambomama_nigeria_admin_portal/modules/authentication/registration/registration_view.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../modules/analytics/admin_analytics_page.dart';
+import '../../modules/emergency/emergency_assesment_page.dart';
 import '../../modules/hospitals/hospitals_page.dart';
 import '../../modules/users/users_page.dart';
 
@@ -14,6 +16,7 @@ class RouteHelpers {
   static const String adminRegistration = "adminRegistration";
   static const String adminAnalytics = "adminAnalytics";
   static const String adminUsers = "adminUsers";
+  static const String adminEmergencies = "adminEmergencies";
   static const String adminHospitals = "adminHospitals";
 
   static final GoRouter goRouter = GoRouter(
@@ -101,6 +104,16 @@ class RouteHelpers {
                 },
               ),
             ],
+          ),StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/admin/emergencies',
+                name: adminEmergencies,
+                builder: (context, state) {
+                  return EmergencyAssessmentPage();
+                },
+              ),
+            ],
           ), StatefulShellBranch(
             routes: [
               GoRoute(
@@ -136,7 +149,7 @@ class RouteHelpers {
           // ),
         ],
         builder: (context, state, navigationShell) {
-          return AdminShell(shell: navigationShell);
+          return AdminShell(shell: SelectionArea(child: navigationShell));
         },
       ),
       // GoRoute(
