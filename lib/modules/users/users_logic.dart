@@ -7,7 +7,7 @@ class UsersLogic extends GetxController with GetSingleTickerProviderStateMixin {
 
   @override
   void onInit() {
-    super.onInit();
+
     tabController = TabController(
       length: 3,
       vsync: this,
@@ -18,6 +18,7 @@ class UsersLogic extends GetxController with GetSingleTickerProviderStateMixin {
         log("Tab index changed to: ${tabController.index}");
       }
     });
+    super.onInit();
   }
 
   @override

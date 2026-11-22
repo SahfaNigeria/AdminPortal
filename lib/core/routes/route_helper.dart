@@ -6,6 +6,7 @@ import 'package:jambomama_nigeria_admin_portal/modules/authentication/login/logi
 import 'package:jambomama_nigeria_admin_portal/modules/authentication/registration/registration_view.dart';
 
 import '../../modules/analytics/admin_analytics_page.dart';
+import '../../modules/hospitals/hospitals_page.dart';
 import '../../modules/users/users_page.dart';
 
 class RouteHelpers {
@@ -13,6 +14,7 @@ class RouteHelpers {
   static const String adminRegistration = "adminRegistration";
   static const String adminAnalytics = "adminAnalytics";
   static const String adminUsers = "adminUsers";
+  static const String adminHospitals = "adminHospitals";
 
   static final GoRouter goRouter = GoRouter(
     navigatorKey: Get.key,
@@ -96,6 +98,16 @@ class RouteHelpers {
                 name: adminUsers,
                 builder: (context, state) {
                   return UsersPage();
+                },
+              ),
+            ],
+          ), StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/admin/hospitals',
+                name: adminHospitals,
+                builder: (context, state) {
+                  return HospitalsPage();
                 },
               ),
             ],

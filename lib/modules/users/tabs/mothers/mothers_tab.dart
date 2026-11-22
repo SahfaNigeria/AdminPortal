@@ -7,7 +7,6 @@ class MothersTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Sample data list of mothers for demonstration
     final List<Map<String, dynamic>> mothersList = [
       {
         "userName": "Amina Bello",
@@ -109,34 +108,17 @@ class MothersTab extends StatelessWidget {
         return UsersExpandableWidget(
           userName: mother["userName"],
           userId: mother["userId"],
-          userRole: mother["userRole"],
-          status: mother["status"],
+          userRole: "Mother",
+          status: "Active",
           email: mother["email"],
           phoneNumber: mother["phoneNumber"],
           registrationDate: mother["registrationDate"],
           location: mother["location"],
           imageUrl: mother["imageUrl"],
           additionalDetails: Map<String, String>.from(mother["additionalDetails"]),
-          onApprove: hasActions
-              ? () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text("Approved registration for ${mother['userName']}"),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
-                }
-              : null,
-          onDisapprove: hasActions
-              ? () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text("Disapproved registration for ${mother['userName']}"),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                }
-              : null,
+isApproved: true,
+
+
         );
       },
     );

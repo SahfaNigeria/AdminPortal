@@ -1,6 +1,7 @@
 import 'package:animated_segmented_tab_control/animated_segmented_tab_control.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:jambomama_nigeria_admin_portal/modules/users/tabs/health_professional/health_professional_tab.dart';
 import 'package:jambomama_nigeria_admin_portal/modules/users/tabs/mothers/mothers_tab.dart';
 import 'package:jambomama_nigeria_admin_portal/modules/users/users_logic.dart';
 import 'package:material_ui/material_ui.dart';
@@ -44,9 +45,7 @@ class UsersPage extends GetView<UsersLogic> {
                 ],
                 tabChildren: [
                   MothersTab(),
-                  Container(
-                    color: Colors.green,
-                  ),
+                  HealthProfessionalTab(),
                   Container(
                     color: Colors.blue,
                   )

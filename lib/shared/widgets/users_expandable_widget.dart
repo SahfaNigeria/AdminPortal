@@ -6,20 +6,20 @@ import 'custom_app_button.dart';
 import 'custom_circle_avatar_widget.dart';
 import 'custom_expandable_widget.dart';
 
-/// A modern, reusable expandable tile widget specifically designed for displaying
-/// user information across different user roles (e.g. Mothers, Health Professionals, Admin).
+/// A reusable expandable tile widget for displaying user information.
 ///
 /// Features:
-/// - Leading user avatar (`imageUrl`) with customizable radius.
-/// - Header showing user's full name, ID, role/category badge, and status indicator.
-/// - Expanded details sheet showing key info (Email, Phone, Role, Date Joined, Location, etc.).
-/// - Support for optional `additionalDetails` key-value pairs for role-specific information.
-/// - Flexible action bar with optional Approve & Disapprove buttons or custom actions.
+/// - User avatar.
+/// - User name, ID and role.
+/// - Optional status badge.
+/// - Expandable user details.
+/// - Optional additional details.
+/// - Single Approve/Disapprove button controlled by [isApproved].
 class UsersExpandableWidget extends StatelessWidget {
   /// User's avatar image URL.
   final String? imageUrl;
 
-  /// Radius of the circle avatar. Default is `24.0`.
+  /// Radius of the circle avatar.
   final double avatarRadius;
 
   /// Full name of the user.
@@ -28,7 +28,7 @@ class UsersExpandableWidget extends StatelessWidget {
   /// Unique user identifier.
   final String userId;
 
-  /// User role/category (e.g., "Mother", "Health Professional", "Admin").
+  /// User role/category.
   final String? userRole;
 
   /// User email address.
@@ -43,43 +43,35 @@ class UsersExpandableWidget extends StatelessWidget {
   /// User address or location.
   final String? location;
 
-  /// User status (e.g., "Pending", "Approved", "Disapproved", "Active", "Inactive").
+  /// User status.
   final String? status;
 
   /// Custom color for the status badge.
   final Color? statusColor;
 
-  /// Map of additional key-value details to display in the grid (e.g. `{"Hospital": "St. Mary", "License": "HP-994"}`).
+  /// Map of additional key-value details.
   final Map<String, String>? additionalDetails;
 
-  /// Custom widget content to render inside the expanded view.
+  /// Custom widget content inside the expanded view.
   final Widget? customExpandedContent;
 
-  /// Callback when the Approve button is tapped.
-  final VoidCallback? onApprove;
+  /// Whether the user has been approved.
+  final bool isApproved;
 
-  /// Callback when the Disapprove button is tapped.
-  final VoidCallback? onDisapprove;
+  /// Loading state for the approval action.
+  final bool isLoading;
 
-  /// Text label for the Approve button. Default is `"Approve"`.
-  final String approveButtonText;
+  /// Callback when approval status changes.
+  /// Returns true when approving and false when disapproving.
+  final ValueChanged<bool>? onApprovalChanged;
 
-  /// Text label for the Disapprove button. Default is `"Disapprove"`.
-  final String disapproveButtonText;
-
-  /// Loading state for the Approve button.
-  final bool isApproving;
-
-  /// Loading state for the Disapprove button.
-  final bool isDisapproving;
-
-  /// Custom action widgets to display in the action bar.
+  /// Custom action widgets.
   final List<Widget>? customActions;
 
-  /// Whether to display the action buttons section. If `null`, action buttons are automatically shown if [onApprove], [onDisapprove], or [customActions] are provided.
+  /// Whether to display the action buttons section.
   final bool? showActionButtons;
 
-  /// Initial expansion state. Default is `false`.
+  /// Initial expansion state.
   final bool initiallyExpanded;
 
   /// Callback when expansion state changes.
@@ -88,7 +80,7 @@ class UsersExpandableWidget extends StatelessWidget {
   /// Background color for the expandable card.
   final Color? backgroundColor;
 
-  /// Container margin. Default is `EdgeInsets.symmetric(vertical: 6)`.
+  /// Container margin.
   final EdgeInsetsGeometry? margin;
 
   const UsersExpandableWidget({
@@ -106,12 +98,9 @@ class UsersExpandableWidget extends StatelessWidget {
     this.statusColor,
     this.additionalDetails,
     this.customExpandedContent,
-    this.onApprove,
-    this.onDisapprove,
-    this.approveButtonText = "Approve",
-    this.disapproveButtonText = "Disapprove",
-    this.isApproving = false,
-    this.isDisapproving = false,
+    required this.isApproved,
+    this.isLoading = false,
+    this.onApprovalChanged,
     this.customActions,
     this.showActionButtons,
     this.initiallyExpanded = false,
@@ -121,32 +110,42 @@ class UsersExpandableWidget extends StatelessWidget {
   }) : super(key: key);
 
   bool get _hasActions =>
-      showActionButtons ?? (onApprove != null || onDisapprove != null || (customActions != null && customActions!.isNotEmpty));
+      showActionButtons ??
+          (onApprovalChanged != null ||
+              (customActions != null && customActions!.isNotEmpty));
 
   Color _getStatusColor(String statusText) {
     switch (statusText.trim().toLowerCase()) {
       case 'approved':
       case 'active':
       case 'verified':
-        return const Color(0xFF2E7D32); // Green
+        return const Color(0xFF2E7D32);
+
       case 'pending':
       case 'in review':
       case 'awaiting':
-        return const Color(0xFFED6C02); // Orange / Amber
+        return const Color(0xFFED6C02);
+
       case 'disapproved':
       case 'rejected':
       case 'inactive':
       case 'blocked':
-        return const Color(0xFFD32F2F); // Red
+        return const Color(0xFFD32F2F);
+
       default:
         return AppColors.textSecondary;
     }
   }
 
   Widget _buildStatusChip(String statusText) {
-    final Color effectiveColor = statusColor ?? _getStatusColor(statusText);
+    final Color effectiveColor =
+        statusColor ?? _getStatusColor(statusText);
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 10,
+        vertical: 4,
+      ),
       decoration: BoxDecoration(
         color: effectiveColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
@@ -170,7 +169,10 @@ class UsersExpandableWidget extends StatelessWidget {
     required String value,
   }) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 10,
+      ),
       decoration: BoxDecoration(
         color: AppColors.background,
         borderRadius: BorderRadius.circular(10),
@@ -224,58 +226,87 @@ class UsersExpandableWidget extends StatelessWidget {
     final List<Widget> tiles = [];
 
     if (email != null && email!.isNotEmpty) {
-      tiles.add(_buildDetailTile(
-        icon: Icons.email_outlined,
-        label: "Email Address",
-        value: email!,
-      ));
+      tiles.add(
+        _buildDetailTile(
+          icon: Icons.email_outlined,
+          label: "Email Address",
+          value: email!,
+        ),
+      );
     }
 
     if (phoneNumber != null && phoneNumber!.isNotEmpty) {
-      tiles.add(_buildDetailTile(
-        icon: Icons.phone_outlined,
-        label: "Phone Number",
-        value: phoneNumber!,
-      ));
+      tiles.add(
+        _buildDetailTile(
+          icon: Icons.phone_outlined,
+          label: "Phone Number",
+          value: phoneNumber!,
+        ),
+      );
     }
 
     if (userRole != null && userRole!.isNotEmpty) {
-      tiles.add(_buildDetailTile(
-        icon: Icons.badge_outlined,
-        label: "User Role",
-        value: userRole!,
-      ));
+      tiles.add(
+        _buildDetailTile(
+          icon: Icons.badge_outlined,
+          label: "User Role",
+          value: userRole!,
+        ),
+      );
     }
 
-    if (registrationDate != null && registrationDate!.isNotEmpty) {
-      tiles.add(_buildDetailTile(
-        icon: Icons.calendar_today_outlined,
-        label: "Registered On",
-        value: registrationDate!,
-      ));
+    if (registrationDate != null &&
+        registrationDate!.isNotEmpty) {
+      tiles.add(
+        _buildDetailTile(
+          icon: Icons.calendar_today_outlined,
+          label: "Registered On",
+          value: registrationDate!,
+        ),
+      );
     }
 
     if (location != null && location!.isNotEmpty) {
-      tiles.add(_buildDetailTile(
-        icon: Icons.location_on_outlined,
-        label: "Location / Address",
-        value: location!,
-      ));
+      tiles.add(
+        _buildDetailTile(
+          icon: Icons.location_on_outlined,
+          label: "Location / Address",
+          value: location!,
+        ),
+      );
     }
 
     if (additionalDetails != null) {
       additionalDetails!.forEach((key, val) {
         if (val.isNotEmpty) {
-          tiles.add(_buildDetailTile(
-            icon: Icons.info_outline_rounded,
-            label: key,
-            value: val,
-          ));
+          tiles.add(
+            _buildDetailTile(
+              icon: Icons.info_outline_rounded,
+              label: key,
+              value: val,
+            ),
+          );
         }
       });
     }
 
     return tiles;
+  }
+
+  Widget _buildApprovalButton() {
+    return CustomAppButton(
+      onTap: () {
+        onApprovalChanged?.call(!isApproved);
+      },
+      title: isApproved ? "Disapprove" : "Approve",
+      color: isApproved
+          ? const Color(0xFFFDE8E8)
+          : const Color(0xFF2E7D32),
+      textColor: isApproved
+          ? const Color(0xFFD32F2F)
+          : Colors.white,
+      isLoading: isLoading,
+    );
   }
 
   @override
@@ -288,10 +319,12 @@ class UsersExpandableWidget extends StatelessWidget {
       backgroundColor: backgroundColor,
       margin: margin ?? const EdgeInsets.symmetric(vertical: 6),
       showDivider: true,
+
       leading: CustomCircleAvatarWidget(
         imageUrl: imageUrl,
         radius: avatarRadius,
       ),
+
       titleWidget: Row(
         children: [
           Expanded(
@@ -302,12 +335,14 @@ class UsersExpandableWidget extends StatelessWidget {
               color: AppColors.textPrimary,
             ),
           ),
+
           if (status != null && status!.isNotEmpty) ...[
             const SizedBox(width: 8),
             _buildStatusChip(status!),
           ],
         ],
       ),
+
       subtitleWidget: Row(
         children: [
           AppText(
@@ -316,14 +351,19 @@ class UsersExpandableWidget extends StatelessWidget {
             fontWeight: FontWeight.w500,
             color: AppColors.textSecondary,
           ),
+
           if (userRole != null && userRole!.isNotEmpty) ...[
             AppText(
               text: " • ",
               size: 12,
               color: AppColors.textSecondary,
             ),
+
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 6,
+                vertical: 2,
+              ),
               decoration: BoxDecoration(
                 color: AppColors.primary.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(4),
@@ -338,17 +378,23 @@ class UsersExpandableWidget extends StatelessWidget {
           ],
         ],
       ),
+
       expandedChild: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (customExpandedContent != null) ...[
             customExpandedContent!,
-            if (detailTiles.isNotEmpty) const SizedBox(height: 12),
+
+            if (detailTiles.isNotEmpty)
+              const SizedBox(height: 12),
           ],
+
           if (detailTiles.isNotEmpty)
             LayoutBuilder(
               builder: (context, constraints) {
-                final bool isDesktop = constraints.maxWidth > 550;
+                final bool isDesktop =
+                    constraints.maxWidth > 550;
+
                 if (isDesktop) {
                   return Wrap(
                     spacing: 12,
@@ -356,10 +402,11 @@ class UsersExpandableWidget extends StatelessWidget {
                     children: detailTiles
                         .map(
                           (tile) => SizedBox(
-                            width: (constraints.maxWidth - 12) / 2,
-                            child: tile,
-                          ),
-                        )
+                        width:
+                        (constraints.maxWidth - 12) / 2,
+                        child: tile,
+                      ),
+                    )
                         .toList(),
                   );
                 } else {
@@ -367,51 +414,32 @@ class UsersExpandableWidget extends StatelessWidget {
                     children: detailTiles
                         .map(
                           (tile) => Padding(
-                            padding: const EdgeInsets.only(bottom: 10),
-                            child: tile,
-                          ),
-                        )
+                        padding: const EdgeInsets.only(
+                          bottom: 10,
+                        ),
+                        child: tile,
+                      ),
+                    )
                         .toList(),
                   );
                 }
               },
             ),
+
           if (_hasActions) ...[
             const SizedBox(height: 14),
             const Divider(height: 1, thickness: 1),
             const SizedBox(height: 14),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                if (customActions != null && customActions!.isNotEmpty)
-                  ...customActions!
-                else ...[
-                  if (onDisapprove != null) ...[
-                    Expanded(
-                      child: CustomAppButton(
-                        onTap: onDisapprove,
-                        title: disapproveButtonText,
-                        color: const Color(0xFFFDE8E8),
-                        textColor: const Color(0xFFD32F2F),
-                        isLoading: isDisapproving,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                  ],
-                  if (onApprove != null) ...[
-                    Expanded(
-                      child: CustomAppButton(
-                        onTap: onApprove,
-                        title: approveButtonText,
-                        color: const Color(0xFF2E7D32),
-                        textColor: Colors.white,
-                        isLoading: isApproving,
-                      ),
-                    ),
-                  ],
-                ],
-              ],
-            ),
+
+            if (customActions != null &&
+                customActions!.isNotEmpty)
+              Wrap(
+                spacing: 12,
+                runSpacing: 8,
+                children: customActions!,
+              )
+            else
+              _buildApprovalButton(),
           ],
         ],
       ),

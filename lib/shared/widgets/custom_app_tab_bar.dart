@@ -124,7 +124,7 @@ class CustomAppTabBar extends StatelessWidget {
           ],
         );
 
-    return Column(
+    return  Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -141,14 +141,19 @@ class CustomAppTabBar extends StatelessWidget {
           indicatorDecoration: defaultIndicatorDecoration,
           tabs: tabs,
         ),
-        SizedBox(
-          height: spacingBelow ?? 20.0,
-        ),
-        CustomIndexedStack(
-          index: controller?.index,
-          children: tabChildren,
+
+        SizedBox(height: spacingBelow ?? 20.0),
+
+        AnimatedBuilder(
+          animation: controller!,
+          builder: (context, child) {
+            return CustomIndexedStack(
+              index: controller!.index,
+              children: tabChildren,
+            );
+          },
         ),
       ],
-    );
+    );;
   }
 }
