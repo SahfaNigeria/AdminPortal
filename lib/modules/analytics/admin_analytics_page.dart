@@ -77,11 +77,11 @@ class AdminAnalyticsPage extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           const CustomPieChartWidget(
-            maleCount: 1250,
-
-            femaleCount: 1580,
-            title: "Gender Distribution",
-            subtitle: "Percentage of men and women on the platform",
+            mothersCount: 2450,
+            healthcareCount: 380,
+            adminCount: 380,
+            title: "User Role Distribution",
+            subtitle: "Percentage of mothers, healthcare professionals, and admins on the platform",
           ),
           const SizedBox(height: 30),
         ],

@@ -6,13 +6,31 @@ import '../../core/theme/colors.dart';
 import 'app_text.dart';
 import 'dashboard_container_widget.dart';
 
+class PieChartSectionData {
+  final String label;
+  final double value;
+  final Color color;
+  final IconData icon;
+
+  const PieChartSectionData({
+    required this.label,
+    required this.value,
+    required this.color,
+    required this.icon,
+  });
+}
+
 class CustomPieChartWidget extends StatefulWidget {
-  final double maleCount;
-  final double femaleCount;
-  final String maleLabel;
-  final String femaleLabel;
-  final Color? maleColor;
-  final Color? femaleColor;
+  final List<PieChartSectionData>? sections;
+  final double mothersCount;
+  final double healthcareCount;
+  final double adminCount;
+  final String mothersLabel;
+  final String healthcareLabel;
+  final String adminLabel;
+  final Color? mothersColor;
+  final Color? healthcareColor;
+  final Color? adminColor;
   final String title;
   final String? subtitle;
   final bool showLegend;
@@ -23,14 +41,18 @@ class CustomPieChartWidget extends StatefulWidget {
 
   const CustomPieChartWidget({
     Key? key,
-    this.maleCount = 60,
-    this.femaleCount = 40,
-    this.maleLabel = "Men",
-    this.femaleLabel = "Women",
-    this.maleColor,
-    this.femaleColor,
-    this.title = "Gender Distribution",
-    this.subtitle = "Percentage of platform users by gender",
+    this.sections,
+    this.mothersCount = 2450,
+    this.healthcareCount = 380,
+    this.adminCount = 380,
+    this.mothersLabel = "Mothers",
+    this.healthcareLabel = "Healthcare",
+    this.adminLabel = "Admin",
+    this.mothersColor,
+    this.healthcareColor,
+    this.adminColor,
+    this.title = "User Distribution",
+    this.subtitle = "Percentage of mothers, healthcare professionals, and admins",
     this.showLegend = true,
     this.showPercentages = true,
     this.height = 220,
@@ -45,17 +67,36 @@ class CustomPieChartWidget extends StatefulWidget {
 class _CustomPieChartWidgetState extends State<CustomPieChartWidget> {
   int? selectedIndex;
 
+  List<PieChartSectionData> get effectiveSections {
+    if (widget.sections != null && widget.sections!.isNotEmpty) {
+      return widget.sections!;
+    }
+    return [
+      PieChartSectionData(
+        label: widget.mothersLabel,
+        value: widget.mothersCount,
+        color: widget.mothersColor ?? const Color(0xFFEC4899),
+        icon: FontAwesomeIcons.personBreastfeeding,
+      ),
+      PieChartSectionData(
+        label: widget.healthcareLabel,
+        value: widget.healthcareCount,
+        color: widget.healthcareColor ?? const Color(0xFF0EA5E9),
+        icon: FontAwesomeIcons.userNurse,
+      ),
+      PieChartSectionData(
+        label: widget.adminLabel,
+        value: widget.adminCount,
+        color: widget.adminColor ?? const Color(0xFF10B981),
+        icon: FontAwesomeIcons.userGroup,
+      ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
-    final double total = widget.maleCount + widget.femaleCount;
-    final double malePercentage =
-        total > 0 ? (widget.maleCount / total) * 100 : 0;
-    final double femalePercentage =
-        total > 0 ? (widget.femaleCount / total) * 100 : 0;
-
-    final Color effectiveMaleColor =
-        widget.maleColor ?? const Color(0xFF0EA5E9);
-    final Color effectiveFemaleColor = widget.femaleColor ?? AppColors.primary;
+    final sections = effectiveSections;
+    final double total = sections.fold(0.0, (sum, item) => sum + item.value);
 
     return DashboardContainerWidget(
       padding: const EdgeInsets.all(24),
@@ -65,7 +106,6 @@ class _CustomPieChartWidgetState extends State<CustomPieChartWidget> {
         children: [
           // Header Row
           SectionTitleWidget(
-
             title: widget.title,
             subtitle: widget.subtitle,
             icon: FontAwesomeIcons.chartPie,
@@ -103,14 +143,27 @@ class _CustomPieChartWidgetState extends State<CustomPieChartWidget> {
                           angle = angle + math.pi / 2;
                           if (angle < 0) angle += 2 * math.pi;
 
-                          final double maleAngle =
-                              total > 0 ? (widget.maleCount / total) * 2 * math.pi : math.pi;
+                          double accumulatedAngle = 0.0;
+                          int? tappedIndex;
+
+                          for (int i = 0; i < sections.length; i++) {
+                            final double sectionAngle = total > 0
+                                ? (sections[i].value / total) * 2 * math.pi
+                                : 0;
+                            if (angle >= accumulatedAngle &&
+                                angle <= accumulatedAngle + sectionAngle) {
+                              tappedIndex = i;
+                              break;
+                            }
+                            accumulatedAngle += sectionAngle;
+                          }
 
                           setState(() {
-                            if (angle <= maleAngle) {
-                              selectedIndex = (selectedIndex == 0) ? null : 0;
+                            if (tappedIndex != null) {
+                              selectedIndex =
+                                  (selectedIndex == tappedIndex) ? null : tappedIndex;
                             } else {
-                              selectedIndex = (selectedIndex == 1) ? null : 1;
+                              selectedIndex = null;
                             }
                             if (widget.onSectionSelected != null) {
                               widget.onSectionSelected!(selectedIndex);
@@ -131,10 +184,7 @@ class _CustomPieChartWidgetState extends State<CustomPieChartWidget> {
                           CustomPaint(
                             size: Size(constraints.maxWidth, constraints.maxHeight),
                             painter: _PieChartPainter(
-                              maleCount: widget.maleCount,
-                              femaleCount: widget.femaleCount,
-                              maleColor: effectiveMaleColor,
-                              femaleColor: effectiveFemaleColor,
+                              sections: sections,
                               strokeWidth: widget.strokeWidth,
                               progress: animValue,
                               selectedIndex: selectedIndex,
@@ -145,25 +195,22 @@ class _CustomPieChartWidgetState extends State<CustomPieChartWidget> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               AppText(
-                                text: selectedIndex == 0
-                                    ? "${malePercentage.toStringAsFixed(1)}%"
-                                    : selectedIndex == 1
-                                        ? "${femalePercentage.toStringAsFixed(1)}%"
-                                        : "${total.toInt()}",
+                                text: selectedIndex != null &&
+                                        selectedIndex! < sections.length
+                                    ? "${(total > 0 ? (sections[selectedIndex!].value / total) * 100 : 0).toStringAsFixed(1)}%"
+                                    : "${total.toInt()}",
                                 size: 22,
                                 fontWeight: FontWeight.bold,
-                                color: selectedIndex == 0
-                                    ? effectiveMaleColor
-                                    : selectedIndex == 1
-                                        ? effectiveFemaleColor
-                                        : AppColors.textPrimary,
+                                color: selectedIndex != null &&
+                                        selectedIndex! < sections.length
+                                    ? sections[selectedIndex!].color
+                                    : AppColors.textPrimary,
                               ),
                               AppText(
-                                text: selectedIndex == 0
-                                    ? widget.maleLabel
-                                    : selectedIndex == 1
-                                        ? widget.femaleLabel
-                                        : "Total Users",
+                                text: selectedIndex != null &&
+                                        selectedIndex! < sections.length
+                                    ? sections[selectedIndex!].label
+                                    : "Total Users",
                                 size: 11,
                                 fontWeight: FontWeight.w500,
                                 color: AppColors.textSecondary,
@@ -183,49 +230,40 @@ class _CustomPieChartWidgetState extends State<CustomPieChartWidget> {
             const SizedBox(height: 24),
             // Legend Cards
             Row(
-              children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selectedIndex = (selectedIndex == 0) ? null : 0;
-                        if (widget.onSectionSelected != null) {
-                          widget.onSectionSelected!(selectedIndex);
-                        }
-                      });
-                    },
-                    child: _buildLegendTile(
-                      label: widget.maleLabel,
-                      count: widget.maleCount.toInt(),
-                      percentage: malePercentage,
-                      color: effectiveMaleColor,
-                      icon: Icons.male_rounded,
-                      isSelected: selectedIndex == 0,
+              children: sections.asMap().entries.map((entry) {
+                final index = entry.key;
+                final item = entry.value;
+                final percentage =
+                    total > 0 ? (item.value / total) * 100 : 0.0;
+                final isSelected = selectedIndex == index;
+
+                return Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      right: index < sections.length - 1 ? 12.0 : 0.0,
+                    ),
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selectedIndex =
+                              (selectedIndex == index) ? null : index;
+                          if (widget.onSectionSelected != null) {
+                            widget.onSectionSelected!(selectedIndex);
+                          }
+                        });
+                      },
+                      child: _buildLegendTile(
+                        label: item.label,
+                        count: item.value.toInt(),
+                        percentage: percentage,
+                        color: item.color,
+                        icon: item.icon,
+                        isSelected: isSelected,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selectedIndex = (selectedIndex == 1) ? null : 1;
-                        if (widget.onSectionSelected != null) {
-                          widget.onSectionSelected!(selectedIndex);
-                        }
-                      });
-                    },
-                    child: _buildLegendTile(
-                      label: widget.femaleLabel,
-                      count: widget.femaleCount.toInt(),
-                      percentage: femalePercentage,
-                      color: effectiveFemaleColor,
-                      icon: Icons.female_rounded,
-                      isSelected: selectedIndex == 1,
-                    ),
-                  ),
-                ),
-              ],
+                );
+              }).toList(),
             ),
           ],
         ],
@@ -243,7 +281,7 @@ class _CustomPieChartWidgetState extends State<CustomPieChartWidget> {
   }) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       decoration: BoxDecoration(
         color: color.withValues(alpha: isSelected ? 0.14 : 0.05),
         borderRadius: BorderRadius.circular(14),
@@ -260,32 +298,37 @@ class _CustomPieChartWidgetState extends State<CustomPieChartWidget> {
               color: color.withValues(alpha: 0.15),
               shape: BoxShape.circle,
             ),
-            child: Icon(
+            child: FaIcon(
               icon,
-              size: 18,
+              size: 16,
               color: color,
             ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 8),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 AppText(
                   text: label,
                   size: 13,
                   fontWeight: FontWeight.w600,
                   color: AppColors.textPrimary,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 2),
                 AppText(
                   text: "$count users",
                   size: 11,
                   color: AppColors.textSecondary,
+                  maxLines: 1,
                 ),
               ],
             ),
           ),
+          const SizedBox(width: 6),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
@@ -306,19 +349,13 @@ class _CustomPieChartWidgetState extends State<CustomPieChartWidget> {
 }
 
 class _PieChartPainter extends CustomPainter {
-  final double maleCount;
-  final double femaleCount;
-  final Color maleColor;
-  final Color femaleColor;
+  final List<PieChartSectionData> sections;
   final double strokeWidth;
   final double progress;
   final int? selectedIndex;
 
   _PieChartPainter({
-    required this.maleCount,
-    required this.femaleCount,
-    required this.maleColor,
-    required this.femaleColor,
+    required this.sections,
     required this.strokeWidth,
     required this.progress,
     required this.selectedIndex,
@@ -326,62 +363,50 @@ class _PieChartPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final double total = maleCount + femaleCount;
+    final double total = sections.fold(0.0, (sum, item) => sum + item.value);
     if (total <= 0) return;
 
     final Offset center = Offset(size.width / 2, size.height / 2);
     final double chartSize = math.min(size.width, size.height);
-    final double radius = (chartSize - strokeWidth - 16) / 2;
+    final double baseRadius = (chartSize - strokeWidth - 16) / 2;
 
-    const double startAngle = -math.pi / 2; // top center
+    const double startAngleOffset = -math.pi / 2; // top center
     final double totalSweep = 2 * math.pi * progress;
-
-    final double maleRatio = maleCount / total;
-    final double femaleRatio = femaleCount / total;
 
     // Gap between slices (in radians)
     const double gap = 0.04;
 
-    // Male Arc
-    final double maleSweep = math.max(0, (totalSweep * maleRatio) - gap);
-    final double maleStroke = selectedIndex == 0 ? strokeWidth + 6 : strokeWidth;
-    final Paint malePaint = Paint()
-      ..color = maleColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = maleStroke
-      ..strokeCap = StrokeCap.round;
+    double currentAngle = startAngleOffset;
 
-    final Rect maleRect = Rect.fromCircle(
-      center: center,
-      radius: selectedIndex == 0 ? radius + 3 : radius,
-    );
+    for (int i = 0; i < sections.length; i++) {
+      final item = sections[i];
+      final double ratio = item.value / total;
+      final double sweep = math.max(0, (totalSweep * ratio) - gap);
 
-    canvas.drawArc(maleRect, startAngle + (gap / 2), maleSweep, false, malePaint);
+      final bool isSelected = selectedIndex == i;
+      final double currentStroke = isSelected ? strokeWidth + 6 : strokeWidth;
+      final double radius = isSelected ? baseRadius + 3 : baseRadius;
 
-    // Female Arc
-    final double femaleStartAngle = startAngle + (totalSweep * maleRatio) + (gap / 2);
-    final double femaleSweep = math.max(0, (totalSweep * femaleRatio) - gap);
-    final double femaleStroke = selectedIndex == 1 ? strokeWidth + 6 : strokeWidth;
-    final Paint femalePaint = Paint()
-      ..color = femaleColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = femaleStroke
-      ..strokeCap = StrokeCap.round;
+      final Paint paint = Paint()
+        ..color = item.color
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = currentStroke
+        ..strokeCap = StrokeCap.round;
 
-    final Rect femaleRect = Rect.fromCircle(
-      center: center,
-      radius: selectedIndex == 1 ? radius + 3 : radius,
-    );
+      final Rect rect = Rect.fromCircle(
+        center: center,
+        radius: radius,
+      );
 
-    canvas.drawArc(femaleRect, femaleStartAngle, femaleSweep, false, femalePaint);
+      canvas.drawArc(rect, currentAngle + (gap / 2), sweep, false, paint);
+
+      currentAngle += totalSweep * ratio;
+    }
   }
 
   @override
   bool shouldRepaint(covariant _PieChartPainter oldDelegate) {
-    return oldDelegate.maleCount != maleCount ||
-        oldDelegate.femaleCount != femaleCount ||
-        oldDelegate.maleColor != maleColor ||
-        oldDelegate.femaleColor != femaleColor ||
+    return oldDelegate.sections != sections ||
         oldDelegate.strokeWidth != strokeWidth ||
         oldDelegate.progress != progress ||
         oldDelegate.selectedIndex != selectedIndex;
