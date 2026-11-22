@@ -14,6 +14,9 @@ class DashboardContainerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: padding??EdgeInsets.all(20),
+      margin: EdgeInsetsGeometry.symmetric(
+        horizontal: 16
+      ),
       child: child,
       decoration: decoration??BoxDecoration(
         color: color??Colors.white,

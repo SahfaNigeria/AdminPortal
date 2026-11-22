@@ -10,7 +10,7 @@ class PieChartSectionData {
   final String label;
   final double value;
   final Color color;
-  final IconData icon;
+  final FaIconData icon;
 
   const PieChartSectionData({
     required this.label,
@@ -276,7 +276,7 @@ class _CustomPieChartWidgetState extends State<CustomPieChartWidget> {
     required int count,
     required double percentage,
     required Color color,
-    required IconData icon,
+    required FaIconData icon,
     required bool isSelected,
   }) {
     return AnimatedContainer(
@@ -316,7 +316,7 @@ class _CustomPieChartWidgetState extends State<CustomPieChartWidget> {
                   fontWeight: FontWeight.w600,
                   color: AppColors.textPrimary,
                   maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                  textOverflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 2),
                 AppText(

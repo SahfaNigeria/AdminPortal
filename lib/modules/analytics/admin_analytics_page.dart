@@ -13,79 +13,76 @@ class AdminAnalyticsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 30),
-          DashboardContainerWidget(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              children: [
-                const SectionTitleWidget(
-                  title: "Analytics Overview",
-                  subtitle: "Overview of platform statistics",
-                  icon: FontAwesomeIcons.chartPie,
-                ),
-                ResponsiveArrangementWidget(
-                  spacing: 16,
-                  children: const [
-                    StatisticsCardWidget(
-                      title: "Total Mothers",
-                      value: 2450,
-                      subtitle: "Registered mothers",
-                      icon: FontAwesomeIcons.personBreastfeeding,
-                      accentColor: Color(0xFFEC4899),
-                      trendPercentage: "+14%",
-                    ),
-                    StatisticsCardWidget(
-                      title: "Total Professionals",
-                      value: 380,
-                      subtitle: "Health Professionals",
-                      icon: FontAwesomeIcons.userNurse,
-                      accentColor: Color(0xFF0EA5E9),
-                      trendPercentage: "+8%",
-                    ),
-                    StatisticsCardWidget(
-                      title: "Total Administrators",
-                      value: 380,
-                      subtitle: "Administrators",
-                      icon: FontAwesomeIcons.userGroup,
-                      accentColor: Color(0xFF10B981),
-                      trendPercentage: "+8%",
-                    ),
-                    StatisticsCardWidget(
-                      title: "Pending Approvals",
-                      value: 18,
-                      subtitle: "Awaiting review",
-                      icon: FontAwesomeIcons.clipboardCheck,
-                      accentColor: AppColors.primary,
-                      trendPercentage: "-2%",
-                      isTrendPositive: false,
-                    ),
-                  ],
-                )
-              ],
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 30),
+        DashboardContainerWidget(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            children: [
+              const SectionTitleWidget(
+                title: "Analytics Overview",
+                subtitle: "Overview of platform statistics",
+                icon: FontAwesomeIcons.chartPie,
+              ),
+              ResponsiveArrangementWidget(
+                spacing: 16,
+                children: const [
+                  StatisticsCardWidget(
+                    title: "Total Mothers",
+                    value: 2450,
+                    subtitle: "Registered mothers",
+                    icon: FontAwesomeIcons.personBreastfeeding,
+                    accentColor: Color(0xFFEC4899),
+                    trendPercentage: "+14%",
+                  ),
+                  StatisticsCardWidget(
+                    title: "Total Professionals",
+                    value: 380,
+                    subtitle: "Health Professionals",
+                    icon: FontAwesomeIcons.userNurse,
+                    accentColor: Color(0xFF0EA5E9),
+                    trendPercentage: "+8%",
+                  ),
+                  StatisticsCardWidget(
+                    title: "Total Administrators",
+                    value: 380,
+                    subtitle: "Administrators",
+                    icon: FontAwesomeIcons.userGroup,
+                    accentColor: Color(0xFF10B981),
+                    trendPercentage: "+8%",
+                  ),
+                  StatisticsCardWidget(
+                    title: "Pending Approvals",
+                    value: 18,
+                    subtitle: "Awaiting review",
+                    icon: FontAwesomeIcons.clipboardCheck,
+                    accentColor: AppColors.primary,
+                    trendPercentage: "-2%",
+                    isTrendPositive: false,
+                  ),
+                ],
+              )
+            ],
           ),
-          const SizedBox(height: 24),
-          const NewUsersChart(
-            title: "User Reach & Growth",
+        ),
+        const SizedBox(height: 24),
+        const NewUsersChart(
+          title: "User Reach & Growth",
 
-            subtitle: "Monthly & yearly tracking of new users reached",
-          ),
-          const SizedBox(height: 24),
-          const CustomPieChartWidget(
-            mothersCount: 2450,
-            healthcareCount: 380,
-            adminCount: 380,
-            title: "User Role Distribution",
-            subtitle: "Percentage of mothers, healthcare professionals, and admins on the platform",
-          ),
-          const SizedBox(height: 30),
-        ],
-      ),
+          subtitle: "Monthly & yearly tracking of new users reached",
+        ),
+        const SizedBox(height: 24),
+        const CustomPieChartWidget(
+          mothersCount: 2450,
+          healthcareCount: 380,
+          adminCount: 380,
+          title: "User Role Distribution",
+          subtitle: "Percentage of mothers, healthcare professionals, and admins on the platform",
+        ),
+        const SizedBox(height: 30),
+      ],
     );
   }
 }
