@@ -8,122 +8,161 @@ class HealthProfessionalTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> mothersList = [
+    final List<Map<String, dynamic>> healthProfessionalsList = [
       {
-        "userName": "Amina Bello",
-        "userId": "MTH-00124",
-        "userRole": "Health Professional",
-        "status": "Active",
-        "email": "amina.bello@gmail.com",
-        "phoneNumber": "+234 803 123 4567",
-        "registrationDate": "15 Feb 2024",
-        "location": "Lagos, Nigeria",
-        "imageUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=300&auto=format&fit=crop",
-        "additionalDetails": {
-          "Expected Due Date": "15 Dec 2024",
-          "Trimester": "2nd Trimester",
-          "Assigned Facility": "Lagos Island Maternity Hospital",
-          "Healthcare Provider": "Dr. Sarah Jenkins",
-        },
-        "hasApprovalActions": false,
+        "fullName": "Abiodun",
+        "midWifeId": "1YTZlLfobJdXJwHTVtb2AcDb64t1",
+        "email": "gbengaemma22@gmail.com",
+        "phoneNumber": "913 818 6491",
+        "position": "Doctor ",
+        "healthFacility": "nursing",
+        "professional": "professional",
+        "qualificationNumber": "75785858584884",
+        "villageTown": "stone village",
+        "cityValue": "Amassoma",
+        "stateValue": "Bayelsa State",
+        "countryValue": "🇳🇬 Nigeria",
+        "midWifeImage": "https://firebasestorage.googleapis.com/v0/b/jambo-mama-nigeria.appspot.com/o/StoreMidWifeImages%2F1YTZlLfobJdXJwHTVtb2AcDb64t1?alt=media&token=c489913f-45e5-4873-a0c4-5e28437f5935",
+        "approved": true,
+        "createdAt": "July 9, 2025 at 1:14:19 PM UTC+1",
       },
       {
-        "userName": "Chioma Okeke",
-        "userId": "MTH-00125",
-        "userRole": "Health Professional",
-        "status": "Pending",
-        "email": "chioma.okeke@yahoo.com",
-        "phoneNumber": "+234 802 987 6543",
-        "registrationDate": "20 Feb 2024",
-        "location": "Enugu, Nigeria",
-        "imageUrl": "https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=300&auto=format&fit=crop",
-        "additionalDetails": {
-          "Expected Due Date": "08 Jan 2025",
-          "Trimester": "1st Trimester",
-          "Assigned Facility": "Enugu State University Teaching Hospital",
-        },
-        "hasApprovalActions": true,
+        "fullName": "Dr. Sarah Jenkins",
+        "midWifeId": "HW-00234",
+        "email": "sarah.jenkins@health.gov.ng",
+        "phoneNumber": "+234 803 999 8877",
+        "position": "Senior Obstetrician",
+        "healthFacility": "Lagos Island Maternity Hospital",
+        "professional": "Doctor",
+        "qualificationNumber": "MD-882341-NG",
+        "villageTown": "Ikoyi",
+        "cityValue": "Lagos",
+        "stateValue": "Lagos State",
+        "countryValue": "🇳🇬 Nigeria",
+        "midWifeImage": "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=300&auto=format&fit=crop",
+        "approved": true,
+        "createdAt": "July 9, 2025 at 1:14:19 PM UTC+1",
       },
       {
-        "userName": "Fatima Abubakar",
-        "userId": "MTH-00126",
-        "userRole": "Health Professional",
-        "status": "Active",
-        "email": "fatima.abubakar@gmail.com",
-        "phoneNumber": "+234 805 456 7890",
-        "registrationDate": "10 Jan 2024",
-        "location": "Kano, Nigeria",
-        "imageUrl": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=300&auto=format&fit=crop",
-        "additionalDetails": {
-          "Expected Due Date": "02 Oct 2024",
-          "Trimester": "3rd Trimester",
-          "Assigned Facility": "Aminu Kano Teaching Hospital",
-          "Healthcare Provider": "Dr. Ibrahim Musa",
-        },
-        "hasApprovalActions": false,
+        "fullName": "Nurse Miriam Musa",
+        "midWifeId": "HW-00235",
+        "email": "miriam.musa@yahoo.com",
+        "phoneNumber": "+234 806 111 4455",
+        "position": "Midwife",
+        "healthFacility": "Aminu Kano Teaching Hospital",
+        "professional": "Nurse Midwife",
+        "qualificationNumber": "NM-554210-NG",
+        "villageTown": "Sabon Gari",
+        "cityValue": "Kano",
+        "stateValue": "Kano State",
+        "countryValue": "🇳🇬 Nigeria",
+        "midWifeImage": "https://images.unsplash.com/photo-1594824813566-88855ce78907?q=80&w=300&auto=format&fit=crop",
+        "approved": false,
+        "createdAt": "July 9, 2025 at 1:14:19 PM UTC+1",
       },
       {
-        "userName": "Grace Danjuma",
-        "userId": "MTH-00127",
-        "userRole": "Health Professional",
-        "status": "Pending",
-        "email": "grace.danjuma@gmail.com",
-        "phoneNumber": "+234 810 555 4433",
-        "registrationDate": "22 Feb 2024",
-        "location": "Abuja, Nigeria",
-        "imageUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=300&auto=format&fit=crop",
-        "additionalDetails": {
-          "Expected Due Date": "18 Nov 2024",
-          "Trimester": "2nd Trimester",
-          "Assigned Facility": "National Hospital Abuja",
-        },
-        "hasApprovalActions": true,
+        "fullName": "Dr. Emmanuel Okafor",
+        "midWifeId": "HW-00236",
+        "email": "e.okafor@esut.edu.ng",
+        "phoneNumber": "+234 812 333 9900",
+        "position": "Gynecologist",
+        "healthFacility": "Enugu State University Teaching Hospital",
+        "professional": "Doctor",
+        "qualificationNumber": "MD-443912-NG",
+        "villageTown": "Independence Layout",
+        "cityValue": "Enugu",
+        "stateValue": "Enugu State",
+        "countryValue": "🇳🇬 Nigeria",
+        "midWifeImage": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=300&auto=format&fit=crop",
+        "approved": true,
+        "createdAt": "July 9, 2025 at 1:14:19 PM UTC+1",
       },
       {
-        "userName": "Blessing Eze",
-        "userId": "MTH-00128",
-        "userRole": "Health Professional",
-        "status": "Disapproved",
-        "email": "blessing.eze@outlook.com",
-        "phoneNumber": "+234 809 111 2233",
-        "registrationDate": "01 Feb 2024",
-        "location": "Port Harcourt, Nigeria",
-        "imageUrl": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=300&auto=format&fit=crop",
-        "additionalDetails": {
-          "Reason": "Incomplete verification documents",
-          "Assigned Facility": "Port Harcourt Medical Centre",
-        },
-        "hasApprovalActions": false,
+        "fullName": "Fatima Usman",
+        "midWifeId": "HW-00237",
+        "email": "fatima.usman@nationalhospital.org",
+        "phoneNumber": "+234 809 777 3322",
+        "position": "Community Health Officer",
+        "healthFacility": "National Hospital Abuja",
+        "professional": "CHO",
+        "qualificationNumber": "CHO-998124-NG",
+        "villageTown": "Lugbe",
+        "cityValue": "Abuja",
+        "stateValue": "Federal Capital Territory",
+        "countryValue": "🇳🇬 Nigeria",
+        "midWifeImage": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=300&auto=format&fit=crop",
+        "approved": false,
+        "createdAt": "July 9, 2025 at 1:14:19 PM UTC+1",
       },
     ];
 
     return Column(
       children: [
-
         CustomSearchTextField(
           fieldTitle: "Health Professionals",
         ),
         ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: mothersList.length,
+          itemCount: healthProfessionalsList.length,
           padding: const EdgeInsets.symmetric(vertical: 8),
           itemBuilder: (context, index) {
-            final mother = mothersList[index];
-            final bool hasActions = mother["hasApprovalActions"] as bool;
+            final pro = healthProfessionalsList[index];
+            final bool isApproved = (pro["approved"] as bool?) ?? false;
+
+            final String villageTown = pro["villageTown"] ?? "";
+            final String cityValue = pro["cityValue"] ?? "";
+            final String stateValue = pro["stateValue"] ?? "";
+            final String countryValue = pro["countryValue"] ?? "";
+
+            final List<String> locationParts = [
+              if (villageTown.isNotEmpty) villageTown,
+              if (cityValue.isNotEmpty) cityValue,
+              if (stateValue.isNotEmpty) stateValue,
+              if (countryValue.isNotEmpty) countryValue,
+            ];
+
+            final Map<String, String> additionalDetails = {};
+            if ((pro["position"] ?? "").toString().trim().isNotEmpty) {
+              additionalDetails["Position"] = (pro["position"] as String).trim();
+            }
+            if ((pro["healthFacility"] ?? "").toString().trim().isNotEmpty) {
+              additionalDetails["Health Facility"] = (pro["healthFacility"] as String).trim();
+            }
+            if ((pro["professional"] ?? "").toString().trim().isNotEmpty) {
+              additionalDetails["Professional Type"] = (pro["professional"] as String).trim();
+            }
+            if ((pro["qualificationNumber"] ?? "").toString().trim().isNotEmpty) {
+              additionalDetails["Qualification Number"] = (pro["qualificationNumber"] as String).trim();
+            }
+            if (villageTown.isNotEmpty) {
+              additionalDetails["Village / Town"] = villageTown;
+            }
+            if (cityValue.isNotEmpty) {
+              additionalDetails["City"] = cityValue;
+            }
+            if (stateValue.isNotEmpty) {
+              additionalDetails["State"] = stateValue;
+            }
+            if (countryValue.isNotEmpty) {
+              additionalDetails["Country"] = countryValue;
+            }
+            if ((pro["createdAt"] ?? "").toString().isNotEmpty) {
+              additionalDetails["Created At"] = pro["createdAt"].toString();
+            }
 
             return UsersExpandableWidget(
-              userName: mother["userName"],
-              userId: mother["userId"],
+              userName: pro["fullName"] ?? pro["userName"] ?? "",
+              userId: pro["midWifeId"] ?? pro["userId"] ?? "",
               userRole: "Health Professional",
-              status: mother["status"],
-              email: mother["email"],
-              phoneNumber: mother["phoneNumber"],
-              registrationDate: mother["registrationDate"],
-              location: mother["location"],
-              imageUrl: mother["imageUrl"],
-              additionalDetails: Map<String, String>.from(mother["additionalDetails"]),
-        isApproved: false,
+              status: isApproved ? "Approved" : "Pending",
+              email: pro["email"],
+              phoneNumber: pro["phoneNumber"],
+              registrationDate: pro["createdAt"]?.toString(),
+              location: locationParts.isNotEmpty ? locationParts.join(", ") : null,
+              imageUrl: pro["midWifeImage"] ?? pro["imageUrl"],
+              additionalDetails: additionalDetails,
+              isApproved: isApproved,
               onApprovalChanged: (value) {
 
               },
