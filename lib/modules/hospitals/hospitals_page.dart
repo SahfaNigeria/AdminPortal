@@ -103,7 +103,7 @@ class HospitalsPage extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      const Flexible(child: CustomSearchTextField()),
+                      Flexible(child: CustomSearchTextField()),
                       const SizedBox(
                         width: 20,
                       ),

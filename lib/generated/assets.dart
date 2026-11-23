@@ -13,6 +13,11 @@ class $AssetsImagesGen {
 
   final AssetGenImage customizedBg =
       const AssetGenImage('assets/images/customized-bg.jpg');
+  final AssetGenImage default_ =
+      const AssetGenImage('assets/images/default.jpg');
+  final AssetGenImage headscarf =
+      const AssetGenImage('assets/images/headscarf.jpg');
+  final AssetGenImage hijab = const AssetGenImage('assets/images/hijab.jpg');
   final AssetGenImage logo = const AssetGenImage('assets/images/logo.png');
   final AssetGenImage logoJamboMama =
       const AssetGenImage('assets/images/logo-jambo mama.png');

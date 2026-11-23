@@ -20,7 +20,7 @@ class AppTextField extends StatelessWidget {
   final bool readOnly;
 
   final String? initialValue;
-
+  final void Function(String value)? onChanged;
   final String? fontFamily;
   const AppTextField({
     Key? key,
@@ -37,7 +37,7 @@ class AppTextField extends StatelessWidget {
     this.readOnly = false,
     this.prefix,
     this.obscureText = false,
-    this.suffix, this.hintText,
+    this.suffix, this.hintText, this.onChanged,
   }) : super(key: key);
 
   @override
@@ -52,6 +52,7 @@ class AppTextField extends StatelessWidget {
       obscuringCharacter: "●",
       readOnly: readOnly,
       validator: validator,
+      onChanged: onChanged,
       controller: controller,
       initialValue: initialValue,
       inputFormatters: inputFormatters,

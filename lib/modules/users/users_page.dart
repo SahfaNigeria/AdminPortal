@@ -23,36 +23,38 @@ class UsersPage extends GetView<UsersLogic> {
             SizedBox(
               height: 24,
             ),
-            DashBoardSectionWidget(
-              title: "Users Overview",
-              subtitle: "Overview of users on the platform",
-              icon: FontAwesomeIcons.users,
+            Obx(() {
+              return DashBoardSectionWidget(
+                title: "Users Overview",
+                subtitle: "Overview of users on the platform",
+                icon: FontAwesomeIcons.users,
 
-              child: CustomAppTabBar(
-                tabs: [
-                  SegmentTab(
-                    label: 'Mothers',
-                    selectedTextColor: AppColors.surface,
-                  ),
-                  SegmentTab(
-                    label: 'Health Professionals',
-                    selectedTextColor: AppColors.surface,
-                  ),
-                  SegmentTab(
-                    label: 'Admin',
-                    selectedTextColor: AppColors.surface,
-                  ),
-                ],
-                tabChildren: [
-                  MothersTab(),
-                  HealthProfessionalTab(),
-                  Container(
-                    color: Colors.blue,
-                  )
-                ],
-                controller: controller.tabController,
-              ),
-            )
+                child: CustomAppTabBar(
+                  tabs: [
+                    SegmentTab(
+                      label: 'Mothers (${controller.mothersController.filteredMothers.length==0?controller.mothersController.mothers.length: controller.mothersController.filteredMothers.length})',
+                      selectedTextColor: AppColors.surface,
+                    ),
+                    SegmentTab(
+                      label: 'Health Professionals',
+                      selectedTextColor: AppColors.surface,
+                    ),
+                    SegmentTab(
+                      label: 'Admin',
+                      selectedTextColor: AppColors.surface,
+                    ),
+                  ],
+                  tabChildren: [
+                    MothersTab(),
+                    HealthProfessionalTab(),
+                    Container(
+                      color: Colors.blue,
+                    )
+                  ],
+                  controller: controller.tabController,
+                ),
+              );
+            })
           ],
         );
       },

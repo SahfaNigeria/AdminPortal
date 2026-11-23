@@ -9,13 +9,19 @@ class CustomCircleAvatarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final bool isNetworkImage =
+        imageUrl != null &&
+            (imageUrl!.startsWith('http://') ||
+                imageUrl!.startsWith('https://'));
     return CircleAvatar(
       backgroundColor: AppColors.primary,
       radius: radius ?? 30,
-      backgroundImage: NetworkImage(
-        imageUrl ??
-            "https://images.unsplash.com/photo-1582137808224-de22c65933c0?q=80&w=388&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      ),
+      backgroundImage: imageUrl == null
+          ? null
+          : isNetworkImage
+          ? NetworkImage(imageUrl!)
+          : AssetImage(imageUrl!) as ImageProvider,
     );
   }
 }
