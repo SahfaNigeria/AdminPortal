@@ -1,8 +1,10 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:jambomama_nigeria_admin_portal/shared/widgets/custom_app_button.dart';
 import 'package:jambomama_nigeria_admin_portal/shared/widgets/custom_search_text_field.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../core/routes/route_helper.dart';
 import '../../core/theme/colors.dart';
 import '../../shared/widgets/custom_responsive_builder.dart';
 import '../../shared/widgets/dash_board_section_widget.dart';
@@ -105,8 +107,9 @@ class HospitalsPage extends StatelessWidget {
                       const SizedBox(
                         width: 20,
                       ),
-                      const Flexible(
+                       Flexible(
                         child: CustomAppButton(
+                          onTap: ()=> context.goNamed(RouteHelpers.adminAddHospitals),
                           title: "Add Hospital",
                         ),
                       )

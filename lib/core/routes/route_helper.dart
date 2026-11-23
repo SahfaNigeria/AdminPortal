@@ -8,6 +8,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../modules/analytics/admin_analytics_page.dart';
 import '../../modules/emergency/emergency_assesment_page.dart';
+import '../../modules/hospitals/add/admin_add_hospital_page.dart';
 import '../../modules/hospitals/hospitals_page.dart';
 import '../../modules/users/users_page.dart';
 
@@ -18,6 +19,7 @@ class RouteHelpers {
   static const String adminUsers = "adminUsers";
   static const String adminEmergencies = "adminEmergencies";
   static const String adminHospitals = "adminHospitals";
+  static const String adminAddHospitals = "adminAddHospitals";
 
   static final GoRouter goRouter = GoRouter(
     navigatorKey: Get.key,
@@ -42,6 +44,20 @@ class RouteHelpers {
         name: adminRegistration,
         path: "/admin/registration",
         builder: (context, state) => RegistrationPage(),
+        pageBuilder: GoTransitions.openUpwards.call,
+        // routes: [
+        //   GoRoute(
+        //     name: signUpEmail,
+        //     path: "email",
+        //     builder: (context, state) => SignUpEmail(),
+        //     pageBuilder: GoTransitions.fade,
+        //   ),
+        // ],
+      ),
+      GoRoute(
+        name: adminAddHospitals,
+        path: "/admin/add-hospital",
+        builder: (context, state) => AdminAddHospitalPage(),
         pageBuilder: GoTransitions.openUpwards.call,
         // routes: [
         //   GoRoute(
