@@ -21,7 +21,7 @@ class HealthProfessionalTab extends GetView<HealthProfessionalController> {
               controller.searchHealthProfessionals(value);
             },
           ),
-          ListView.builder(
+          Obx(() => ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: controller.filteredHealthProfessionals.length == 0 ? controller.healthProfessionals.length : controller.filteredHealthProfessionals.length ,
@@ -95,6 +95,7 @@ class HealthProfessionalTab extends GetView<HealthProfessionalController> {
                 userRole: "Health Professional",
                 status: isApproved ? "Approved" : "Pending",
                 email: pro.email,
+                isLoading: controller.isUpdateLoading.value,
                 phoneNumber: pro.phoneNumber,
                 IdName: "Qualification Number:",
                 registrationDate: pro.createdAt?.toString(),
@@ -105,11 +106,11 @@ class HealthProfessionalTab extends GetView<HealthProfessionalController> {
                 additionalDetails: additionalDetails,
                 isApproved: isApproved,
                 onApprovalChanged: (value) {
-
+                  controller.updateApproval(value, pro.midWifeId);
                 },
               );
             },
-          ),
+          ),),
         ],
       );
     });
