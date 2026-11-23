@@ -36,7 +36,7 @@ class UsersPage extends GetView<UsersLogic> {
                       selectedTextColor: AppColors.surface,
                     ),
                     SegmentTab(
-                      label: 'Health Professionals',
+                      label: 'Health Professionals(${controller.healthProfessionalController.filteredHealthProfessionals.length==0?controller.healthProfessionalController.healthProfessionals.length: controller.healthProfessionalController.filteredHealthProfessionals.length})',
                       selectedTextColor: AppColors.surface,
                     ),
                     SegmentTab(
