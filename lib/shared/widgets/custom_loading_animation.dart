@@ -40,8 +40,8 @@ class CustomLoadingAnimation extends StatefulWidget {
   const CustomLoadingAnimation({
     Key? key,
     this.progress,
-    this.size = 190.0,
-    this.logoSize = 100.0,
+    this.size = 130.0,
+    this.logoSize = 60.0,
     this.color,
     this.trackColor,
     this.title,
