@@ -19,6 +19,8 @@ class UsersExpandableWidget extends StatelessWidget {
   /// User's avatar image URL.
   final String? imageUrl;
 
+  final String? IdName;
+
   final Widget? leading;
 
   /// Radius of the circle avatar.
@@ -108,7 +110,7 @@ class UsersExpandableWidget extends StatelessWidget {
     this.initiallyExpanded = false,
     this.onExpansionChanged,
     this.backgroundColor,
-    this.margin, this.leading,
+    this.margin, this.leading, this.IdName = "ID:",
   }) : super(key: key);
 
   bool get _hasActions =>
@@ -347,11 +349,13 @@ class UsersExpandableWidget extends StatelessWidget {
 
       subtitleWidget: Row(
         children: [
-          AppText(
-            text: "ID: $userId",
-            size: 12,
-            fontWeight: FontWeight.w500,
-            color: AppColors.textSecondary,
+          Flexible(
+            child: AppText(
+              text: "${IdName} $userId",
+              size: 12,
+              fontWeight: FontWeight.w500,
+              color: AppColors.textSecondary,
+            ),
           ),
 
           if (userRole != null && userRole!.isNotEmpty) ...[

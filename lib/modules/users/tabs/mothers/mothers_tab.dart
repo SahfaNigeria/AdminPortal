@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../../../shared/widgets/custom_loading_animation.dart';
 import '../../../../shared/widgets/custom_search_text_field.dart';
 import '../../../../shared/widgets/users_expandable_widget.dart';
 import 'mothers_controller.dart';
@@ -11,7 +12,7 @@ class MothersTab extends GetView<MothersController> {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<MothersController>(builder: (_) {
-      return Column(
+      return controller.isLoading.value? CustomLoadingAnimation():Column(
         children: [
           CustomSearchTextField(
             fieldTitle: "Mothers",
