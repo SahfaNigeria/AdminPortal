@@ -95,6 +95,7 @@ class HealthProfessionalTab extends GetView<HealthProfessionalController> {
                 userRole: "Health Professional",
                 status: isApproved ? "Approved" : "Pending",
                 email: pro.email,
+                isLoading: controller.isUpdateLoading.value,
                 phoneNumber: pro.phoneNumber,
                 IdName: "Qualification Number:",
                 registrationDate: pro.createdAt?.toString(),
@@ -105,7 +106,7 @@ class HealthProfessionalTab extends GetView<HealthProfessionalController> {
                 additionalDetails: additionalDetails,
                 isApproved: isApproved,
                 onApprovalChanged: (value) {
-
+                    controller.updateApproval(value, pro.midWifeId);
                 },
               );
             },
