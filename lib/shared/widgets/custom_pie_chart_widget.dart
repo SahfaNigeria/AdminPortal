@@ -1,7 +1,9 @@
 import 'dart:math' as math;
+
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jambomama_nigeria_admin_portal/shared/widgets/section_title_widget.dart';
 import 'package:material_ui/material_ui.dart';
+
 import '../../core/theme/colors.dart';
 import 'app_text.dart';
 import 'dashboard_container_widget.dart';
@@ -22,37 +24,51 @@ class PieChartSectionData {
 
 class CustomPieChartWidget extends StatefulWidget {
   final List<PieChartSectionData>? sections;
+
   final double mothersCount;
   final double healthcareCount;
   final double adminCount;
+  final double hospitalsCount;
+
   final String mothersLabel;
   final String healthcareLabel;
   final String adminLabel;
+  final String hospitalsLabel;
+
   final Color? mothersColor;
   final Color? healthcareColor;
   final Color? adminColor;
+  final Color? hospitalsColor;
+
   final String title;
   final String? subtitle;
+
   final bool showLegend;
   final bool showPercentages;
+
   final double height;
   final double strokeWidth;
+
   final ValueChanged<int?>? onSectionSelected;
 
   const CustomPieChartWidget({
     Key? key,
     this.sections,
-    this.mothersCount = 2450,
-    this.healthcareCount = 380,
-    this.adminCount = 380,
+    this.mothersCount = 0,
+    this.healthcareCount = 0,
+    this.adminCount = 0,
+    this.hospitalsCount = 0,
     this.mothersLabel = "Mothers",
     this.healthcareLabel = "Healthcare",
-    this.adminLabel = "Admin",
+    this.adminLabel = "Admins",
+    this.hospitalsLabel = "Hospitals",
     this.mothersColor,
     this.healthcareColor,
     this.adminColor,
+    this.hospitalsColor,
     this.title = "User Distribution",
-    this.subtitle = "Percentage of mothers, healthcare professionals, and admins",
+    this.subtitle =
+        "Distribution of mothers, healthcare professionals, admins and hospitals",
     this.showLegend = true,
     this.showPercentages = true,
     this.height = 220,
@@ -71,6 +87,7 @@ class _CustomPieChartWidgetState extends State<CustomPieChartWidget> {
     if (widget.sections != null && widget.sections!.isNotEmpty) {
       return widget.sections!;
     }
+
     return [
       PieChartSectionData(
         label: widget.mothersLabel,
@@ -90,13 +107,23 @@ class _CustomPieChartWidgetState extends State<CustomPieChartWidget> {
         color: widget.adminColor ?? const Color(0xFF10B981),
         icon: FontAwesomeIcons.userGroup,
       ),
+      PieChartSectionData(
+        label: widget.hospitalsLabel,
+        value: widget.hospitalsCount,
+        color: widget.hospitalsColor ?? const Color(0xFFF59E0B),
+        icon: FontAwesomeIcons.hospital,
+      ),
     ];
   }
 
   @override
   Widget build(BuildContext context) {
     final sections = effectiveSections;
-    final double total = sections.fold(0.0, (sum, item) => sum + item.value);
+
+    final double total = sections.fold(
+      0.0,
+      (sum, item) => sum + item.value,
+    );
 
     return DashboardContainerWidget(
       padding: const EdgeInsets.all(24),
@@ -104,77 +131,90 @@ class _CustomPieChartWidgetState extends State<CustomPieChartWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Header Row
           SectionTitleWidget(
             title: widget.title,
             subtitle: widget.subtitle,
             icon: FontAwesomeIcons.chartPie,
           ),
-
-          // Pie / Donut Chart Container
           SizedBox(
             height: widget.height,
             child: TweenAnimationBuilder<double>(
-              tween: Tween<double>(begin: 0.0, end: 1.0),
+              tween: Tween<double>(
+                begin: 0.0,
+                end: 1.0,
+              ),
               duration: const Duration(milliseconds: 1000),
               curve: Curves.easeOutCubic,
               builder: (context, animValue, child) {
                 return LayoutBuilder(
                   builder: (context, constraints) {
                     final double size = math.min(
-                        constraints.maxWidth, constraints.maxHeight);
+                      constraints.maxWidth,
+                      constraints.maxHeight,
+                    );
+
                     final Offset center = Offset(
-                        constraints.maxWidth / 2, constraints.maxHeight / 2);
+                      constraints.maxWidth / 2,
+                      constraints.maxHeight / 2,
+                    );
 
                     return GestureDetector(
                       onTapDown: (details) {
                         final Offset localPos = details.localPosition;
+
                         final double dx = localPos.dx - center.dx;
                         final double dy = localPos.dy - center.dy;
+
                         final double distance = math.sqrt(dx * dx + dy * dy);
+
                         final double outerRadius = size / 2;
+
                         final double innerRadius =
                             outerRadius - widget.strokeWidth - 10;
 
                         if (distance >= innerRadius &&
                             distance <= outerRadius + 10) {
                           double angle = math.atan2(dy, dx);
-                          // Normalize angle to [0, 2*pi) starting from top (-pi/2)
-                          angle = angle + math.pi / 2;
-                          if (angle < 0) angle += 2 * math.pi;
+
+                          angle += math.pi / 2;
+
+                          if (angle < 0) {
+                            angle += 2 * math.pi;
+                          }
 
                           double accumulatedAngle = 0.0;
+
                           int? tappedIndex;
 
                           for (int i = 0; i < sections.length; i++) {
                             final double sectionAngle = total > 0
                                 ? (sections[i].value / total) * 2 * math.pi
                                 : 0;
+
                             if (angle >= accumulatedAngle &&
                                 angle <= accumulatedAngle + sectionAngle) {
                               tappedIndex = i;
                               break;
                             }
+
                             accumulatedAngle += sectionAngle;
                           }
 
                           setState(() {
                             if (tappedIndex != null) {
-                              selectedIndex =
-                                  (selectedIndex == tappedIndex) ? null : tappedIndex;
+                              selectedIndex = selectedIndex == tappedIndex
+                                  ? null
+                                  : tappedIndex;
                             } else {
                               selectedIndex = null;
                             }
-                            if (widget.onSectionSelected != null) {
-                              widget.onSectionSelected!(selectedIndex);
-                            }
+
+                            widget.onSectionSelected?.call(selectedIndex);
                           });
                         } else {
                           setState(() {
                             selectedIndex = null;
-                            if (widget.onSectionSelected != null) {
-                              widget.onSectionSelected!(null);
-                            }
+                            widget.onSectionSelected?.call(null);
                           });
                         }
                       },
@@ -182,7 +222,10 @@ class _CustomPieChartWidgetState extends State<CustomPieChartWidget> {
                         alignment: Alignment.center,
                         children: [
                           CustomPaint(
-                            size: Size(constraints.maxWidth, constraints.maxHeight),
+                            size: Size(
+                              constraints.maxWidth,
+                              constraints.maxHeight,
+                            ),
                             painter: _PieChartPainter(
                               sections: sections,
                               strokeWidth: widget.strokeWidth,
@@ -190,7 +233,8 @@ class _CustomPieChartWidgetState extends State<CustomPieChartWidget> {
                               selectedIndex: selectedIndex,
                             ),
                           ),
-                          // Donut Center Text Display
+
+// Donut Center Text
                           Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -210,7 +254,7 @@ class _CustomPieChartWidgetState extends State<CustomPieChartWidget> {
                                 text: selectedIndex != null &&
                                         selectedIndex! < sections.length
                                     ? sections[selectedIndex!].label
-                                    : "Total Users",
+                                    : "Total",
                                 size: 11,
                                 fontWeight: FontWeight.w500,
                                 color: AppColors.textSecondary,
@@ -225,45 +269,52 @@ class _CustomPieChartWidgetState extends State<CustomPieChartWidget> {
               },
             ),
           ),
-
           if (widget.showLegend) ...[
             const SizedBox(height: 24),
-            // Legend Cards
-            Row(
-              children: sections.asMap().entries.map((entry) {
-                final index = entry.key;
-                final item = entry.value;
-                final percentage =
-                    total > 0 ? (item.value / total) * 100 : 0.0;
-                final isSelected = selectedIndex == index;
 
-                return Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      right: index < sections.length - 1 ? 12.0 : 0.0,
-                    ),
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedIndex =
-                              (selectedIndex == index) ? null : index;
-                          if (widget.onSectionSelected != null) {
-                            widget.onSectionSelected!(selectedIndex);
-                          }
-                        });
-                      },
-                      child: _buildLegendTile(
-                        label: item.label,
-                        count: item.value.toInt(),
-                        percentage: percentage,
-                        color: item.color,
-                        icon: item.icon,
-                        isSelected: isSelected,
+// Responsive Legend
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final double itemWidth = constraints.maxWidth >= 600
+                    ? (constraints.maxWidth - 12) / 2
+                    : constraints.maxWidth;
+
+                return Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: sections.asMap().entries.map((entry) {
+                    final int index = entry.key;
+                    final item = entry.value;
+
+                    final double percentage =
+                        total > 0 ? (item.value / total) * 100 : 0.0;
+
+                    final bool isSelected = selectedIndex == index;
+
+                    return SizedBox(
+                      width: itemWidth,
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedIndex =
+                                selectedIndex == index ? null : index;
+
+                            widget.onSectionSelected?.call(selectedIndex);
+                          });
+                        },
+                        child: _buildLegendTile(
+                          label: item.label,
+                          count: item.value.toInt(),
+                          percentage: percentage,
+                          color: item.color,
+                          icon: item.icon,
+                          isSelected: isSelected,
+                        ),
                       ),
-                    ),
-                  ),
+                    );
+                  }).toList(),
                 );
-              }).toList(),
+              },
             ),
           ],
         ],
@@ -281,12 +332,19 @@ class _CustomPieChartWidgetState extends State<CustomPieChartWidget> {
   }) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 12,
+      ),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: isSelected ? 0.14 : 0.05),
+        color: color.withValues(
+          alpha: isSelected ? 0.14 : 0.05,
+        ),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: color.withValues(alpha: isSelected ? 0.6 : 0.2),
+          color: color.withValues(
+            alpha: isSelected ? 0.6 : 0.2,
+          ),
           width: isSelected ? 1.5 : 1,
         ),
       ),
@@ -320,7 +378,7 @@ class _CustomPieChartWidgetState extends State<CustomPieChartWidget> {
                 ),
                 const SizedBox(height: 2),
                 AppText(
-                  text: "$count users",
+                  text: "$count total",
                   size: 11,
                   color: AppColors.textSecondary,
                   maxLines: 1,
@@ -329,19 +387,23 @@ class _CustomPieChartWidgetState extends State<CustomPieChartWidget> {
             ),
           ),
           const SizedBox(width: 6),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(8),
+          if (widget.showPercentages)
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 4,
+              ),
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: AppText(
+                text: "${percentage.toStringAsFixed(1)}%",
+                size: 11,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
             ),
-            child: AppText(
-              text: "${percentage.toStringAsFixed(1)}%",
-              size: 11,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
         ],
       ),
     );
@@ -363,28 +425,50 @@ class _PieChartPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final double total = sections.fold(0.0, (sum, item) => sum + item.value);
+    final double total = sections.fold(
+      0.0,
+      (sum, item) => sum + item.value,
+    );
+
     if (total <= 0) return;
 
-    final Offset center = Offset(size.width / 2, size.height / 2);
-    final double chartSize = math.min(size.width, size.height);
+    final Offset center = Offset(
+      size.width / 2,
+      size.height / 2,
+    );
+
+    final double chartSize = math.min(
+      size.width,
+      size.height,
+    );
+
     final double baseRadius = (chartSize - strokeWidth - 16) / 2;
 
-    const double startAngleOffset = -math.pi / 2; // top center
+    const double startAngleOffset = -math.pi / 2;
+
     final double totalSweep = 2 * math.pi * progress;
 
-    // Gap between slices (in radians)
     const double gap = 0.04;
 
     double currentAngle = startAngleOffset;
 
     for (int i = 0; i < sections.length; i++) {
       final item = sections[i];
+
+// Ignore zero or negative values.
+      if (item.value <= 0) continue;
+
       final double ratio = item.value / total;
-      final double sweep = math.max(0, (totalSweep * ratio) - gap);
+
+      final double sweep = math.max(
+        0,
+        (totalSweep * ratio) - gap,
+      );
 
       final bool isSelected = selectedIndex == i;
+
       final double currentStroke = isSelected ? strokeWidth + 6 : strokeWidth;
+
       final double radius = isSelected ? baseRadius + 3 : baseRadius;
 
       final Paint paint = Paint()
@@ -398,7 +482,13 @@ class _PieChartPainter extends CustomPainter {
         radius: radius,
       );
 
-      canvas.drawArc(rect, currentAngle + (gap / 2), sweep, false, paint);
+      canvas.drawArc(
+        rect,
+        currentAngle + (gap / 2),
+        sweep,
+        false,
+        paint,
+      );
 
       currentAngle += totalSweep * ratio;
     }

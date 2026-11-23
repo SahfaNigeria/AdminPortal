@@ -1,4 +1,6 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:jambomama_nigeria_admin_portal/modules/analytics/admin_analytics_controller.dart';
 import 'package:material_ui/material_ui.dart';
 import '../../core/theme/colors.dart';
 import '../../shared/widgets/custom_pie_chart_widget.dart';
@@ -8,7 +10,7 @@ import '../../shared/widgets/responsive_arrangement_widget.dart';
 import '../../shared/widgets/section_title_widget.dart';
 import '../../shared/widgets/statistics_card_widget.dart';
 
-class AdminAnalyticsPage extends StatelessWidget {
+class AdminAnalyticsPage extends GetView<AdminAnalyticsController> {
   const AdminAnalyticsPage({Key? key}) : super(key: key);
 
   @override
@@ -17,70 +19,91 @@ class AdminAnalyticsPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 30),
-        DashboardContainerWidget(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            children: [
-              const SectionTitleWidget(
-                title: "Analytics Overview",
-                subtitle: "Overview of platform statistics",
-                icon: FontAwesomeIcons.chartPie,
-              ),
-              ResponsiveArrangementWidget(
-                spacing: 16,
-                children: const [
-                  StatisticsCardWidget(
-                    title: "Total Mothers",
-                    value: 2450,
-                    subtitle: "Registered mothers",
-                    icon: FontAwesomeIcons.personBreastfeeding,
-                    accentColor: Color(0xFFEC4899),
-                    trendPercentage: "+14%",
-                  ),
-                  StatisticsCardWidget(
-                    title: "Total Professionals",
-                    value: 380,
-                    subtitle: "Health Professionals",
-                    icon: FontAwesomeIcons.userNurse,
-                    accentColor: Color(0xFF0EA5E9),
-                    trendPercentage: "+8%",
-                  ),
-                  StatisticsCardWidget(
-                    title: "Total Administrators",
-                    value: 380,
-                    subtitle: "Administrators",
-                    icon: FontAwesomeIcons.userGroup,
-                    accentColor: Color(0xFF10B981),
-                    trendPercentage: "+8%",
-                  ),
-                  StatisticsCardWidget(
-                    title: "Pending Approvals",
-                    value: 18,
-                    subtitle: "Awaiting review",
-                    icon: FontAwesomeIcons.clipboardCheck,
-                    accentColor: AppColors.primary,
-                    trendPercentage: "-2%",
-                    isTrendPositive: false,
-                  ),
-                ],
-              )
-            ],
-          ),
-        ),
-        const SizedBox(height: 24),
-        const NewUsersChart(
-          title: "User Reach & Growth",
+        Obx(() {
+          return DashboardContainerWidget(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              children: [
+                const SectionTitleWidget(
+                  title: "Analytics Overview",
+                  subtitle: "Overview of platform statistics",
+                  icon: FontAwesomeIcons.chartPie,
+                ),
+                ResponsiveArrangementWidget(
+                  spacing: 16,
+                  children: [
+                    StatisticsCardWidget(
+                      title: "Total Mothers",
+                      subtitle: "Registered mothers",
+                      icon: FontAwesomeIcons.personBreastfeeding,
+                      accentColor: Color(0xFFEC4899),
 
-          subtitle: "Monthly & yearly tracking of new users reached",
-        ),
+                      value: controller.mothers.length,
+                      trendPercentage: "N/A",
+                      isTrendPositive: true,
+                    ),
+                    StatisticsCardWidget(
+                      title: "Total Professionals",
+
+                      subtitle: "Health Professionals",
+                      icon: FontAwesomeIcons.userNurse,
+                      accentColor: Color(0xFF0EA5E9),
+
+                      value: controller.healthProfessionals.length,
+                      trendPercentage: controller.healthProfessionalsTrend,
+                      isTrendPositive: controller.currentHealthProfessionals >=
+                          controller.previousHealthProfessionals,
+                    ),
+                    StatisticsCardWidget(
+                      title: "Total Administrators",
+                      subtitle: "Administrators",
+                      icon: FontAwesomeIcons.userGroup,
+                      accentColor: Color(0xFF10B981),
+
+                      value: controller.admins.length,
+                      trendPercentage: controller.adminsTrend,
+                      isTrendPositive: controller.currentAdmins >=
+                          controller.previousAdmins,
+                    ),
+                    StatisticsCardWidget(
+                      title: "Total Hospitals",
+
+                      subtitle: "Hospitals",
+                      icon: FontAwesomeIcons.hospitalUser,
+                      accentColor: AppColors.primary,
+                      value: controller.hospitals.length,
+                      trendPercentage: controller.hospitalsTrend,
+                      isTrendPositive: controller.currentHospitals >=
+                          controller.previousHealthProfessionals,
+                    ),
+                  ],
+                )
+              ],
+            ),
+          );
+        }),
         const SizedBox(height: 24),
-        const CustomPieChartWidget(
-          mothersCount: 2450,
-          healthcareCount: 380,
-          adminCount: 380,
-          title: "User Role Distribution",
-          subtitle: "Percentage of mothers, healthcare professionals, and admins on the platform",
-        ),
+        Obx(() {
+          return NewUsersChart(
+            title: "User Reach & Growth",
+            monthlyData: controller.monthlyChartData,
+
+            yearlyData: controller.yearlyChartData,
+
+            subtitle: "Monthly & yearly tracking of new users reached",
+          );
+        }),
+        const SizedBox(height: 24),
+        Obx(() {
+          return CustomPieChartWidget(
+            mothersCount: controller.mothers.length.toDouble(),
+            healthcareCount: controller.healthProfessionals.length.toDouble(),
+            adminCount: controller.admins.length.toDouble(),
+            hospitalsCount: controller.hospitals.length.toDouble(),
+            title: "User Role Distribution",
+            subtitle: "Percentage of mothers, healthcare professionals, and admins on the platform",
+          );
+        }),
         const SizedBox(height: 30),
       ],
     );

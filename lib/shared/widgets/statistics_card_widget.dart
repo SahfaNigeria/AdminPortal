@@ -158,6 +158,8 @@ class StatisticsCardWidget extends StatelessWidget {
             // Title
             AppText(
               text: title,
+
+              maxLines: 1,
               size: 14,
               fontWeight: FontWeight.w500,
               color: AppColors.textSecondary,
@@ -167,6 +169,7 @@ class StatisticsCardWidget extends StatelessWidget {
               const SizedBox(height: 8),
               AppText(
                 text: subtitle!,
+                maxLines: 1,
                 size: 11,
                 fontWeight: FontWeight.w400,
                 color: AppColors.textSecondary.withValues(alpha: 0.8),

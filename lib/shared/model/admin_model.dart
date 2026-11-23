@@ -160,7 +160,9 @@ class AdminModel {
     };
   }
 
-  factory AdminModel.fromMap(Map<String, dynamic> map) {
+  factory AdminModel.fromMap(Map<String, dynamic> map, {
+    String? id,
+  }) {
     return AdminModel(
       id: map['id'] ?? '',
       username: map['username'] ?? '',
