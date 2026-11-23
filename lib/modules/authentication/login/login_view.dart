@@ -109,7 +109,8 @@ class LoginPage extends GetView<LoginLogic> {
                 Obx(() {
                   return CustomAppButton(
                     title: "Login",
-                    onTap: () => context.goNamed(RouteHelpers.adminAnalytics),
+                    onTap: () => controller.adminLogin(context),
+                    isLoading: controller.isSubmitting.value,
                     isDisabled: !controller.isLoginComplete.value,
                   );
                 })

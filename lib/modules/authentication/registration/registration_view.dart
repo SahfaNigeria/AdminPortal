@@ -130,6 +130,8 @@ class RegistrationPage extends GetView<RegistrationLogic> {
                 Obx(() {
                   return CustomAppButton(
                     title: "Register",
+                    isLoading: controller.isSubmitting.value,
+                    onTap: () => controller.adminRegister(context),
                     isDisabled: !controller.isRegistrationComplete.value,
                   );
                 })

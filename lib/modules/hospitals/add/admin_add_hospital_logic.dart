@@ -5,6 +5,8 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../../core/firebase/firebase_reference.dart';
 import '../../../core/routes/route_helper.dart';
+import '../../../shared/utils/firebase_error.dart';
+import '../../../shared/utils/toast.dart';
 
 class AdminAddHospitalLogic extends GetxController {
   final formKey = GlobalKey<FormState>();
@@ -112,37 +114,20 @@ class AdminAddHospitalLogic extends GetxController {
       await FirebaseReference.firestore.collection('hospitals').add(hospitalData);
 
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              children: const [
-                Icon(Icons.check_circle_outline, color: Colors.white),
-                SizedBox(width: 10),
-                Text("Hospital successfully added!"),
-              ],
-            ),
-            backgroundColor: const Color(0xFF2E7D32),
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
+        AppToast.success(
+          "Hospital successfully registered!",
+          title: "Hospital Added",
+          context: context,
         );
         context.goNamed(RouteHelpers.adminHospitals);
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Hospital saved locally: ${nameController.text}"),
-            backgroundColor: const Color(0xFF2E7D32),
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
+        FirebaseError.handle(
+          e,
+          title: "Failed to Add Hospital",
+          context: context,
         );
-        context.goNamed(RouteHelpers.adminHospitals);
       }
     } finally {
       isSubmitting = false;

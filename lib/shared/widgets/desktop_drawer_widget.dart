@@ -1,5 +1,6 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jambomama_nigeria_admin_portal/shared/utils/app_helpers.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../core/routes/route_helper.dart';
@@ -139,6 +140,7 @@ class _DesktopDraweWidgetState extends State<DesktopDraweWidget> {
             activeColor: AppColors.primary,
             inactiveColor: AppColors.primary,
             onTap: () {
+              AppHelpers.clearStorage();
               context.goNamed(RouteHelpers.adminLogin);
             },
           ),

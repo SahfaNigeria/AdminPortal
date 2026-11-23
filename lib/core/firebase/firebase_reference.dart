@@ -8,6 +8,8 @@ class FirebaseReference {
 
   static final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+  static final CollectionReference<Map<String, dynamic>> admins = firestore.collection('admins');
+
 
 
 }

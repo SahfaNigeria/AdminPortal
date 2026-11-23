@@ -1,9 +1,13 @@
+
+import 'dart:developer';
+
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_transitions/go_transitions.dart';
 import 'package:jambomama_nigeria_admin_portal/core/component/admin/admin_shell.dart';
 import 'package:jambomama_nigeria_admin_portal/modules/authentication/login/login_view.dart';
 import 'package:jambomama_nigeria_admin_portal/modules/authentication/registration/registration_view.dart';
+import 'package:jambomama_nigeria_admin_portal/shared/utils/app_helpers.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../modules/analytics/admin_analytics_page.dart';
@@ -182,28 +186,28 @@ class RouteHelpers {
       // ),
     ],
 
-    // redirect: (context, state) {
-    //   final loggedIn = BasicComponents.isLoggedIn;
-    //   final location = state.matchedLocation;
+    redirect: (context, state) async {
+      final loggedIn =  await AppHelpers.isLoggedIn;
+      final location = state.matchedLocation;
 
-    //   final publicRoutes = [
-    //     '/merchant/login',
-    //     '/user/activate-nfc',
-    //     '/landing/activate-nfc',
-    //     '/scan-required',
-    //   ];
+      const publicRoutes = [
+        '/admin/login',
+        '/admin/registration',
+      ];
 
-    //   final isPublic = publicRoutes.any((route) => location.startsWith(route));
+      const dashboardRoute = '/admin/analytics';
 
-    //   if (!loggedIn && !isPublic) {
-    //     return '/merchant/login';
-    //   }
+      final isPublicRoute = publicRoutes.contains(location);
 
-    //   if (loggedIn && location == '/merchant/login') {
-    //     return '/merchant/analytics';
-    //   }
+      if (!loggedIn && !isPublicRoute) {
+        return '/admin/login';
+      }
 
-    //   return null;
-    // },
+      if (loggedIn && isPublicRoute) {
+        return dashboardRoute;
+      }
+
+      return null;
+    },
   );
 }

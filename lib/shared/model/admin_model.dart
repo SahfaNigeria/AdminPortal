@@ -99,7 +99,7 @@ class AdminModel {
     this.displayPhoto,
     this.accountType = AccountType.admin,
     this.accessibleTabs = const [],
-    this.approvedBySuperAdminId,
+    this.approvedBySuperAdminId = "",
     this.isApproved = false,
     this.createdAt,
     this.updatedAt,
@@ -172,7 +172,7 @@ class AdminModel {
               .whereType<AdminTab>()
               .toList() ??
           [],
-      approvedBySuperAdminId: map['approvedBySuperAdminId'],
+      approvedBySuperAdminId: map['approvedBySuperAdminId']??"",
       isApproved: map['isApproved'] ?? false,
       createdAt: map['createdAt'] != null
           ? DateTime.tryParse(map['createdAt'].toString())
