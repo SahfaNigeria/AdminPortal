@@ -5,66 +5,75 @@ import 'package:jambomama_nigeria_admin_portal/shared/utils/firebase_error.dart'
 import 'package:material_ui/material_ui.dart';
 
 class HealthProfessionalController extends GetxController {
-  final healthProfessionals = <HealthProfessionalsModel>[].obs;
+  final filteredHealthProfessionals = <HealthProfessionalsModel>[].obs;
+  final isSearchActive = false.obs;
+  final isSearchLoading = false.obs;
 
   late TextEditingController searchController;
-  final isLoading = false.obs;
-  final isUpdateLoading = false.obs;
+  final updatingProfessionalIds = <String>{}.obs;
 
   @override
   void onInit() {
-    fetchHealthProfessional();
     searchController = TextEditingController();
     super.onInit();
   }
 
   @override
-  void dispose() {
-    // TODO: implement dispose
+  void onClose() {
     searchController.dispose();
-    super.dispose();
+    super.onClose();
   }
 
-  final filteredHealthProfessionals = <HealthProfessionalsModel>[].obs;
+  Future<void> searchHealthProfessionals([String? query]) async {
+    final searchQuery = (query ?? searchController.text).trim().toLowerCase();
+    if (searchQuery.isEmpty) {
+      filteredHealthProfessionals.clear();
+      isSearchActive.value = false;
+      return;
+    }
 
-  void searchHealthProfessionals(String query) {
-    final searchQuery = query.trim().toLowerCase();
+    try {
+      isSearchLoading.value = true;
+      final data = await FirebaseReference.healthProfessionals.get();
+      final results = data.docs
+          .map(HealthProfessionalsModel.fromFirestore)
+          .where((professional) =>
+              professional.fullName.toLowerCase().contains(searchQuery) ||
+              professional.qualificationNumber
+                  .toLowerCase()
+                  .contains(searchQuery))
+          .toList();
 
-    filteredHealthProfessionals.value = healthProfessionals.where((mother) {
-      final username = mother.fullName.toLowerCase();
-      final userId = mother.qualificationNumber.toLowerCase();
-
-      return username.contains(searchQuery) || userId.contains(searchQuery);
-    }).toList();
-
-    update();
+      filteredHealthProfessionals.assignAll(results);
+      isSearchActive.value = true;
+    } catch (error) {
+      FirebaseError.handle(error);
+    } finally {
+      isSearchLoading.value = false;
+    }
   }
 
   Future<bool> updateApproval(bool approve, String midwifeId) async {
     try {
-      isUpdateLoading.value = true;
+      updatingProfessionalIds.add(midwifeId);
       await FirebaseReference.healthProfessionals.doc(midwifeId).update({
         'approved': approve,
       });
+
+      final index = filteredHealthProfessionals.indexWhere(
+        (professional) => professional.midWifeId == midwifeId,
+      );
+      if (index != -1) {
+        filteredHealthProfessionals[index] =
+            filteredHealthProfessionals[index].copyWith(approved: approve);
+      }
+
       return true;
     } catch (e) {
       FirebaseError.handle(e);
       return false;
     } finally {
-      isUpdateLoading.value = false;
-    }
-  }
-
-  void fetchHealthProfessional() async {
-    try {
-      isLoading.value = true;
-      final data = await FirebaseReference.healthProfessionals.get();
-      final healthProfF = data.docs
-          .map((doc) => HealthProfessionalsModel.fromFirestore(doc))
-          .toList();
-      healthProfessionals.value = healthProfF;
-    } finally {
-      isLoading.value = false;
+      updatingProfessionalIds.remove(midwifeId);
     }
   }
 }

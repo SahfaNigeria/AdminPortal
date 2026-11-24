@@ -1,11 +1,10 @@
-
-import 'dart:developer';
-
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_transitions/go_transitions.dart';
 import 'package:jambomama_nigeria_admin_portal/core/component/admin/admin_shell.dart';
+import 'package:jambomama_nigeria_admin_portal/core/helpers/admin_access_controller.dart';
 import 'package:jambomama_nigeria_admin_portal/modules/authentication/login/login_view.dart';
+import 'package:jambomama_nigeria_admin_portal/modules/authentication/pending_approval_page.dart';
 import 'package:jambomama_nigeria_admin_portal/modules/authentication/registration/registration_view.dart';
 import 'package:jambomama_nigeria_admin_portal/shared/utils/app_helpers.dart';
 import 'package:material_ui/material_ui.dart';
@@ -14,13 +13,16 @@ import '../../modules/analytics/admin_analytics_page.dart';
 import '../../modules/emergency/emergency_assesment_page.dart';
 import '../../modules/hospitals/add/admin_add_hospital_page.dart';
 import '../../modules/hospitals/hospitals_page.dart';
+import '../../modules/profile/admin_profile_page.dart';
 import '../../modules/users/users_page.dart';
 
 class RouteHelpers {
   static const String adminLogin = "adminLogin";
   static const String adminRegistration = "adminRegistration";
+  static const String adminPendingApproval = "adminPendingApproval";
   static const String adminAnalytics = "adminAnalytics";
   static const String adminUsers = "adminUsers";
+  static const String adminProfile = "adminProfile";
   static const String adminEmergencies = "adminEmergencies";
   static const String adminHospitals = "adminHospitals";
   static const String adminAddHospitals = "adminAddHospitals";
@@ -59,6 +61,11 @@ class RouteHelpers {
         // ],
       ),
       GoRoute(
+        name: adminPendingApproval,
+        path: "/admin/pending-approval",
+        builder: (context, state) => const PendingApprovalPage(),
+      ),
+      GoRoute(
         name: adminAddHospitals,
         path: "/admin/add-hospital",
         builder: (context, state) => AdminAddHospitalPage(),
@@ -71,6 +78,13 @@ class RouteHelpers {
         //     pageBuilder: GoTransitions.fade,
         //   ),
         // ],
+      ),
+
+      GoRoute(
+        name: adminProfile,
+        path: "/admin/profile",
+        builder: (context, state) => AdminProfilePage(),
+        pageBuilder: GoTransitions.openUpwards.call,
       ),
       // GoRoute(
       //   name: merchantCreateCampaignPage,
@@ -114,7 +128,8 @@ class RouteHelpers {
                 },
               ),
             ],
-          ), StatefulShellBranch(
+          ),
+          StatefulShellBranch(
             routes: [
               GoRoute(
                 path: '/admin/users',
@@ -124,7 +139,8 @@ class RouteHelpers {
                 },
               ),
             ],
-          ),StatefulShellBranch(
+          ),
+          StatefulShellBranch(
             routes: [
               GoRoute(
                 path: '/admin/emergencies',
@@ -134,7 +150,8 @@ class RouteHelpers {
                 },
               ),
             ],
-          ), StatefulShellBranch(
+          ),
+          StatefulShellBranch(
             routes: [
               GoRoute(
                 path: '/admin/hospitals',
@@ -187,15 +204,13 @@ class RouteHelpers {
     ],
 
     redirect: (context, state) async {
-      final loggedIn =  await AppHelpers.isLoggedIn;
+      final loggedIn = await AppHelpers.isLoggedIn;
       final location = state.matchedLocation;
 
       const publicRoutes = [
         '/admin/login',
         '/admin/registration',
       ];
-
-      const dashboardRoute = '/admin/analytics';
 
       final isPublicRoute = publicRoutes.contains(location);
 
@@ -204,7 +219,31 @@ class RouteHelpers {
       }
 
       if (loggedIn && isPublicRoute) {
-        return dashboardRoute;
+        final accessController = Get.find<AdminAccessController>();
+        final admin = await accessController.refreshCurrentAdmin();
+        if (admin == null) return '/admin/login';
+        return admin.isApproved
+            ? accessController.firstAccessibleLocation
+            : '/admin/pending-approval';
+      }
+
+      if (loggedIn) {
+        final accessController = Get.find<AdminAccessController>();
+        final admin = await accessController.refreshCurrentAdmin();
+        if (admin == null) return '/admin/login';
+        if (!admin.isApproved) {
+          return location == '/admin/pending-approval'
+              ? null
+              : '/admin/pending-approval';
+        }
+        if (location == '/admin/pending-approval') {
+          return accessController.firstAccessibleLocation;
+        }
+
+        final requiredTab = accessController.tabForLocation(location);
+        if (requiredTab != null && !admin.hasTabAccess(requiredTab)) {
+          return accessController.firstAccessibleLocation;
+        }
       }
 
       return null;

@@ -35,10 +35,46 @@ class HealthProfessionalsModel {
     required this.villageTown,
   });
 
+  HealthProfessionalsModel copyWith({
+    bool? approved,
+    String? cityValue,
+    String? countryValue,
+    DateTime? createdAt,
+    String? email,
+    String? fullName,
+    String? healthFacility,
+    String? midWifeId,
+    String? midWifeImage,
+    String? phoneNumber,
+    String? position,
+    String? professional,
+    String? qualificationNumber,
+    String? stateValue,
+    String? villageTown,
+  }) {
+    return HealthProfessionalsModel(
+      approved: approved ?? this.approved,
+      cityValue: cityValue ?? this.cityValue,
+      countryValue: countryValue ?? this.countryValue,
+      createdAt: createdAt ?? this.createdAt,
+      email: email ?? this.email,
+      fullName: fullName ?? this.fullName,
+      healthFacility: healthFacility ?? this.healthFacility,
+      midWifeId: midWifeId ?? this.midWifeId,
+      midWifeImage: midWifeImage ?? this.midWifeImage,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      position: position ?? this.position,
+      professional: professional ?? this.professional,
+      qualificationNumber: qualificationNumber ?? this.qualificationNumber,
+      stateValue: stateValue ?? this.stateValue,
+      villageTown: villageTown ?? this.villageTown,
+    );
+  }
+
   // Convert Firestore document to Model
   factory HealthProfessionalsModel.fromFirestore(
-      DocumentSnapshot<Map<String, dynamic>> doc,
-      ) {
+    DocumentSnapshot<Map<String, dynamic>> doc,
+  ) {
     final data = doc.data() ?? {};
 
     return HealthProfessionalsModel(
@@ -66,9 +102,7 @@ class HealthProfessionalsModel {
       'approved': approved,
       'cityValue': cityValue,
       'countryValue': countryValue,
-      'createdAt': createdAt != null
-          ? Timestamp.fromDate(createdAt!)
-          : null,
+      'createdAt': createdAt != null ? Timestamp.fromDate(createdAt!) : null,
       'email': email,
       'fullName': fullName,
       'healthFacility': healthFacility,
@@ -85,9 +119,9 @@ class HealthProfessionalsModel {
 
   // Convert JSON to Model
   factory HealthProfessionalsModel.fromJson(
-      Map<String, dynamic> json, {
-        String? id,
-      }) {
+    Map<String, dynamic> json, {
+    String? id,
+  }) {
     return HealthProfessionalsModel(
       approved: json['approved'] ?? false,
       cityValue: json['cityValue'] ?? '',
@@ -95,8 +129,8 @@ class HealthProfessionalsModel {
       createdAt: json['createdAt'] is Timestamp
           ? (json['createdAt'] as Timestamp).toDate()
           : json['createdAt'] is DateTime
-          ? json['createdAt']
-          : null,
+              ? json['createdAt']
+              : null,
       email: json['email'] ?? '',
       fullName: json['fullName'] ?? '',
       healthFacility: json['healthFacility'] ?? '',

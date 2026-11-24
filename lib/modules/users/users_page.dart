@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:jambomama_nigeria_admin_portal/modules/users/tabs/health_professional/health_professional_tab.dart';
 import 'package:jambomama_nigeria_admin_portal/modules/users/tabs/mothers/mothers_tab.dart';
+import 'package:jambomama_nigeria_admin_portal/modules/users/tabs/admins/admins_tab.dart';
 import 'package:jambomama_nigeria_admin_portal/modules/users/users_logic.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -23,38 +24,33 @@ class UsersPage extends GetView<UsersLogic> {
             SizedBox(
               height: 24,
             ),
-            Obx(() {
-              return DashBoardSectionWidget(
-                title: "Users Overview",
-                subtitle: "Overview of users on the platform",
-                icon: FontAwesomeIcons.users,
-
-                child: CustomAppTabBar(
-                  tabs: [
-                    SegmentTab(
-                      label: 'Mothers (${controller.mothersController.filteredMothers.length==0?controller.mothersController.mothers.length: controller.mothersController.filteredMothers.length})',
-                      selectedTextColor: AppColors.surface,
-                    ),
-                    SegmentTab(
-                      label: 'Health Professionals(${controller.healthProfessionalController.filteredHealthProfessionals.length==0?controller.healthProfessionalController.healthProfessionals.length: controller.healthProfessionalController.filteredHealthProfessionals.length})',
-                      selectedTextColor: AppColors.surface,
-                    ),
-                    SegmentTab(
-                      label: 'Admin',
-                      selectedTextColor: AppColors.surface,
-                    ),
-                  ],
-                  tabChildren: [
-                    MothersTab(),
-                    HealthProfessionalTab(),
-                    Container(
-                      color: Colors.blue,
-                    )
-                  ],
-                  controller: controller.tabController,
-                ),
-              );
-            })
+            DashBoardSectionWidget(
+              title: "Users Overview",
+              subtitle: "Overview of users on the platform",
+              icon: FontAwesomeIcons.users,
+              child: CustomAppTabBar(
+                tabs: [
+                  SegmentTab(
+                    label: 'Mothers',
+                    selectedTextColor: AppColors.surface,
+                  ),
+                  SegmentTab(
+                    label: 'Health Professionals',
+                    selectedTextColor: AppColors.surface,
+                  ),
+                  SegmentTab(
+                    label: 'Admin',
+                    selectedTextColor: AppColors.surface,
+                  ),
+                ],
+                tabChildren: [
+                  MothersTab(),
+                  HealthProfessionalTab(),
+                  AdminsTab(),
+                ],
+                controller: controller.tabController,
+              ),
+            ),
           ],
         );
       },

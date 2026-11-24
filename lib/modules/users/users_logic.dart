@@ -5,12 +5,9 @@ import 'package:jambomama_nigeria_admin_portal/modules/users/tabs/mothers/mother
 import 'package:material_ui/material_ui.dart';
 
 class UsersLogic extends GetxController with GetSingleTickerProviderStateMixin {
-  final MothersController mothersController;
-  final HealthProfessionalController healthProfessionalController;
 
   late TabController tabController;
 
-  UsersLogic({required this.mothersController, required this.healthProfessionalController});
 
   @override
   void onInit() {

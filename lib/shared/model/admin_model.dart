@@ -45,9 +45,9 @@ enum AdminTab {
       case AdminTab.users:
         return "Users";
       case AdminTab.hospital:
-        return "Hospital";
+        return "Hospitals";
       case AdminTab.approval:
-        return "Approval";
+        return "Emergencies";
     }
   }
 
@@ -112,10 +112,11 @@ class AdminModel {
   bool get isAdmin => accountType == AccountType.admin;
 
   /// Returns true if the user has permission to access a specific tab.
-  /// Super Admins automatically have full access to all tabs.
+  /// Approved Super Admins automatically have full access to all tabs.
   bool hasTabAccess(AdminTab tab) {
+    if (!isApproved) return false;
     if (isSuperAdmin) return true;
-    return isApproved && accessibleTabs.contains(tab);
+    return accessibleTabs.contains(tab);
   }
 
   AdminModel copyWith({
@@ -164,7 +165,7 @@ class AdminModel {
     String? id,
   }) {
     return AdminModel(
-      id: map['id'] ?? '',
+      id: map['id']?.toString() ?? id ?? '',
       username: map['username'] ?? '',
       email: map['email'] ?? '',
       displayPhoto: map['displayPhoto'],

@@ -1,5 +1,8 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jambomama_nigeria_admin_portal/core/helpers/admin_access_controller.dart';
+import 'package:jambomama_nigeria_admin_portal/shared/model/admin_model.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../core/routes/route_helper.dart';
@@ -45,6 +48,7 @@ class _AppDrawerState extends State<AppDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    final accessController = Get.find<AdminAccessController>();
 
     return Drawer(
 
@@ -172,68 +176,79 @@ class _AppDrawerState extends State<AppDrawer> {
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Column(
+                child: Obx(
+                  () => Column(
                   children: [
-                    CustomListTileWidget(
-                      iconSize: 14,
-                      textSize: 12,
-                      text: "Analytics",
-                      iconData: FontAwesomeIcons.chartPie,
-                      enabled: currentRoute == RouteHelpers.adminAnalytics,
-                      onTap: () {
-                        _updateCurrentRoute(
-                          callback: () {
-                            context.goNamed(RouteHelpers.adminAnalytics);
-                          },
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 6),
-                    CustomListTileWidget(
-                      iconSize: 14,
-                      textSize: 12,
-                      text: "Users",
-                      iconData: FontAwesomeIcons.users,
-                      enabled: currentRoute == RouteHelpers.adminUsers,
-                      onTap: () {
-                        _updateCurrentRoute(
-                          callback: () {
-                            context.goNamed(RouteHelpers.adminUsers);
-                          },
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 6),
-                    CustomListTileWidget(
-                      iconSize: 14,
-                      textSize: 12,
-                      text: "Hospital",
-                      iconData: FontAwesomeIcons.hospital,
-                      enabled: currentRoute == RouteHelpers.adminHospitals,
-                      onTap: () {
-                        _updateCurrentRoute(
-                          callback: () {
-                            context.goNamed(RouteHelpers.adminHospitals);
-                          },
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 6),
-                    CustomListTileWidget(
-                      iconSize: 14,
-                      textSize: 12,
-                      text: "Emergencies",
-                      iconData: FontAwesomeIcons.triangleExclamation,
-                      enabled: currentRoute == RouteHelpers.adminEmergencies,
-                      onTap: () {
-                        _updateCurrentRoute(
-                          callback: () {
-                            context.goNamed(RouteHelpers.adminEmergencies);
-                          },
-                        );
-                      },
-                    ),
+                    if (accessController.hasTabAccess(AdminTab.analytics)) ...[
+                      CustomListTileWidget(
+                        iconSize: 14,
+                        textSize: 12,
+                        text: "Analytics",
+                        iconData: FontAwesomeIcons.chartPie,
+                        enabled: currentRoute == RouteHelpers.adminAnalytics,
+                        onTap: () {
+                          _updateCurrentRoute(
+                            callback: () {
+                              context.goNamed(RouteHelpers.adminAnalytics);
+                            },
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 6),
+                    ],
+                    if (accessController.hasTabAccess(AdminTab.users)) ...[
+                      CustomListTileWidget(
+                        iconSize: 14,
+                        textSize: 12,
+                        text: "Users",
+                        iconData: FontAwesomeIcons.users,
+                        enabled: currentRoute == RouteHelpers.adminUsers,
+                        onTap: () {
+                          _updateCurrentRoute(
+                            callback: () {
+                              context.goNamed(RouteHelpers.adminUsers);
+                            },
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 6),
+                    ],
+                    if (accessController.hasTabAccess(AdminTab.hospital)) ...[
+                      CustomListTileWidget(
+                        iconSize: 14,
+                        textSize: 12,
+                        text: "Hospitals",
+                        iconData: FontAwesomeIcons.hospital,
+                        enabled: currentRoute == RouteHelpers.adminHospitals,
+                        onTap: () {
+                          _updateCurrentRoute(
+                            callback: () {
+                              context.goNamed(RouteHelpers.adminHospitals);
+                            },
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 6),
+                    ],
+                    if (accessController.hasTabAccess(AdminTab.approval)) ...[
+                      CustomListTileWidget(
+                        iconSize: 14,
+                        textSize: 12,
+                        text: "Emergencies",
+                        iconData: FontAwesomeIcons.triangleExclamation,
+                        enabled:
+                            currentRoute == RouteHelpers.adminEmergencies,
+                        onTap: () {
+                          _updateCurrentRoute(
+                            callback: () {
+                              context.goNamed(RouteHelpers.adminEmergencies);
+                            },
+                          );
+                        },
+                      ),
+                    ],
                   ],
+                  ),
                 ),
               ),
             ),

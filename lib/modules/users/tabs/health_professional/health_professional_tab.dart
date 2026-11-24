@@ -1,118 +1,168 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_pagination/firebase_pagination.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:jambomama_nigeria_admin_portal/modules/users/tabs/health_professional/health_professional_controller.dart';
-import 'package:jambomama_nigeria_admin_portal/shared/widgets/custom_loading_animation.dart';
+import 'package:jambomama_nigeria_admin_portal/core/firebase/firebase_reference.dart';
+import 'package:jambomama_nigeria_admin_portal/shared/model/health_professionals.dart';
+import 'package:jambomama_nigeria_admin_portal/shared/widgets/app_text.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../../../core/theme/colors.dart';
+import '../../../../shared/widgets/custom_app_button.dart';
+import '../../../../shared/widgets/custom_circular_progress_indicator.dart';
 import '../../../../shared/widgets/custom_search_text_field.dart';
 import '../../../../shared/widgets/users_expandable_widget.dart';
+import 'health_professional_controller.dart';
 
 class HealthProfessionalTab extends GetView<HealthProfessionalController> {
   const HealthProfessionalTab({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<HealthProfessionalController>(builder: (_) {
-      return controller.isLoading.value? CustomLoadingAnimation():Column(
-        children: [
-          CustomSearchTextField(
-            fieldTitle: "Health Professionals",
-            controller: controller.searchController,
-            onChanged: (value) {
-              controller.searchHealthProfessionals(value);
-            },
-          ),
-          Obx(() => ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: controller.filteredHealthProfessionals.length == 0 ? controller.healthProfessionals.length : controller.filteredHealthProfessionals.length ,
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            itemBuilder: (context, index) {
-              final pro = controller.filteredHealthProfessionals.length == 0? controller.healthProfessionals[index] : controller.filteredHealthProfessionals[index];
-              final bool isApproved = (pro.approved as bool?) ?? false;
-
-              final String villageTown = pro.villageTown;
-              final String cityValue = pro.cityValue;
-              final String stateValue = pro.stateValue;
-              final String countryValue = pro.countryValue;
-
-              final List<String> locationParts = [
-                if (villageTown.isNotEmpty) villageTown,
-                if (cityValue.isNotEmpty) cityValue,
-                if (stateValue.isNotEmpty) stateValue,
-                if (countryValue.isNotEmpty) countryValue,
-              ];
-
-              final Map<String, String> additionalDetails = {};
-              if ((pro.position)
-                  .toString()
-                  .trim()
-                  .isNotEmpty) {
-                additionalDetails["Position"] =
-                    pro.position.trim();
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: CustomSearchTextField(
+                fieldTitle: "Health Professionals",
+                controller: controller.searchController,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Obx(
+              () => CustomAppButton(
+                child: FaIcon(
+                  FontAwesomeIcons.magnifyingGlass,
+                  size: 20,
+                  color: AppColors.surface,
+                ),
+                isLoading: controller.isSearchLoading.value,
+                onTap: controller.searchHealthProfessionals,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.6,
+          child: Obx(() {
+            if (controller.isSearchActive.value) {
+              if (controller.filteredHealthProfessionals.isEmpty) {
+                return const Center(
+                  child: Text("No health professionals found."),
+                );
               }
-              if ((pro.healthFacility)
-                  .toString()
-                  .trim()
-                  .isNotEmpty) {
-                additionalDetails["Health Facility"] =
-                    pro.healthFacility.trim();
-              }
-              if ((pro.professional)
-                  .toString()
-                  .trim()
-                  .isNotEmpty) {
-                additionalDetails["Professional Type"] =
-                    pro.professional.trim();
-              }
-              if ((pro.qualificationNumber)
-                  .toString()
-                  .trim()
-                  .isNotEmpty) {
-                additionalDetails["Qualification Number"] =
-                    pro.qualificationNumber.trim();
-              }
-              if (villageTown.isNotEmpty) {
-                additionalDetails["Village / Town"] = villageTown;
-              }
-              if (cityValue.isNotEmpty) {
-                additionalDetails["City"] = cityValue;
-              }
-              if (stateValue.isNotEmpty) {
-                additionalDetails["State"] = stateValue;
-              }
-              if (countryValue.isNotEmpty) {
-                additionalDetails["Country"] = countryValue;
-              }
-              if ((pro.createdAt ?? "")
-                  .toString()
-                  .isNotEmpty) {
-                additionalDetails["Created At"] = pro.createdAt.toString();
-              }
-
-              return UsersExpandableWidget(
-                userName: pro.fullName,
-                userId: pro.qualificationNumber,
-                userRole: "Health Professional",
-                status: isApproved ? "Approved" : "Pending",
-                email: pro.email,
-                isLoading: controller.isUpdateLoading.value,
-                phoneNumber: pro.phoneNumber,
-                IdName: "Qualification Number:",
-                registrationDate: pro.createdAt?.toString(),
-                location: locationParts.isNotEmpty
-                    ? locationParts.join(", ")
-                    : null,
-                imageUrl: pro.midWifeImage,
-                additionalDetails: additionalDetails,
-                isApproved: isApproved,
-                onApprovalChanged: (value) {
-                  controller.updateApproval(value, pro.midWifeId);
-                },
+              return ListView.builder(
+                itemCount: controller.filteredHealthProfessionals.length,
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                itemBuilder: (context, index) => _buildProfessional(
+                  controller.filteredHealthProfessionals[index],
+                ),
               );
-            },
-          ),),
-        ],
-      );
-    });
+            }
+
+            return FirestorePagination(
+              key: const ValueKey("health-professionals-pagination"),
+              query: FirebaseReference.healthProfessionals
+                  .orderBy(FieldPath.documentId),
+              limit: 20,
+              initialLoader: Column(
+                children: [
+                  SizedBox(
+                    height: 30,
+                  ),
+                  CustomCircularProgressIndicator(
+                    height: 20,
+                    color: AppColors.primary,
+                    width: 20,
+                  ),
+                ],
+              ),
+              onEmpty: Center(
+                child: AppText(
+                  text: "No mothers found.",
+                  size: 26,
+                ),
+              ),
+              itemBuilder: (context, documents, index) {
+                final document = documents[index]
+                    as QueryDocumentSnapshot<Map<String, dynamic>>;
+                return _buildProfessional(
+                  HealthProfessionalsModel.fromFirestore(document),
+                );
+              },
+            );
+          }),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildProfessional(HealthProfessionalsModel professional) {
+    final bool isApproved = professional.approved;
+    final String villageTown = professional.villageTown;
+    final String cityValue = professional.cityValue;
+    final String stateValue = professional.stateValue;
+    final String countryValue = professional.countryValue;
+
+    final List<String> locationParts = [
+      if (villageTown.isNotEmpty) villageTown,
+      if (cityValue.isNotEmpty) cityValue,
+      if (stateValue.isNotEmpty) stateValue,
+      if (countryValue.isNotEmpty) countryValue,
+    ];
+
+    final Map<String, String> additionalDetails = {};
+    if (professional.position.trim().isNotEmpty) {
+      additionalDetails["Position"] = professional.position.trim();
+    }
+    if (professional.healthFacility.trim().isNotEmpty) {
+      additionalDetails["Health Facility"] = professional.healthFacility.trim();
+    }
+    if (professional.professional.trim().isNotEmpty) {
+      additionalDetails["Professional Type"] = professional.professional.trim();
+    }
+    if (professional.qualificationNumber.trim().isNotEmpty) {
+      additionalDetails["Qualification Number"] =
+          professional.qualificationNumber.trim();
+    }
+    if (villageTown.isNotEmpty) {
+      additionalDetails["Village / Town"] = villageTown;
+    }
+    if (cityValue.isNotEmpty) {
+      additionalDetails["City"] = cityValue;
+    }
+    if (stateValue.isNotEmpty) {
+      additionalDetails["State"] = stateValue;
+    }
+    if (countryValue.isNotEmpty) {
+      additionalDetails["Country"] = countryValue;
+    }
+    if (professional.createdAt != null) {
+      additionalDetails["Created At"] = professional.createdAt.toString();
+    }
+
+    return Obx(
+      () => UsersExpandableWidget(
+        userName: professional.fullName,
+        userId: professional.qualificationNumber,
+        userRole: "Health Professional",
+        status: isApproved ? "Approved" : "Pending",
+        email: professional.email,
+        isLoading:
+            controller.updatingProfessionalIds.contains(professional.midWifeId),
+        phoneNumber: professional.phoneNumber,
+        IdName: "Qualification Number:",
+        registrationDate: professional.createdAt?.toString(),
+        location: locationParts.isNotEmpty ? locationParts.join(", ") : null,
+        imageUrl: professional.midWifeImage,
+        additionalDetails: additionalDetails,
+        isApproved: isApproved,
+        onApprovalChanged: (value) {
+          controller.updateApproval(value, professional.midWifeId);
+        },
+      ),
+    );
   }
 }

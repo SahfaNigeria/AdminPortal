@@ -1,54 +1,53 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:get/get.dart';
 import 'package:jambomama_nigeria_admin_portal/core/firebase/firebase_reference.dart';
+import 'package:jambomama_nigeria_admin_portal/shared/utils/firebase_error.dart';
 
 import '../../../../shared/model/mothers_model.dart';
 
 class MothersController extends GetxController {
-  final mothers = <MothersModel>[].obs;
+  final filteredMothers = <MothersModel>[].obs;
+  final isSearchActive = false.obs;
+  final isSearchLoading = false.obs;
 
   late TextEditingController searchController;
-  final isLoading = false.obs;
 
   @override
   void onInit() {
-    fetchMothers();
     searchController = TextEditingController();
     super.onInit();
   }
 
   @override
-  void dispose() {
-    // TODO: implement dispose
+  void onClose() {
     searchController.dispose();
-    super.dispose();
+    super.onClose();
   }
 
-  final filteredMothers = <MothersModel>[].obs;
+  Future<void> searchMothers([String? query]) async {
+    final searchQuery = (query ?? searchController.text).trim().toLowerCase();
+    if (searchQuery.isEmpty) {
+      filteredMothers.clear();
+      isSearchActive.value = false;
+      return;
+    }
 
-  void searchMothers(String query) {
-    final searchQuery = query.trim().toLowerCase();
-
-    filteredMothers.value = mothers.where((mother) {
-      final username = mother.fullName.toLowerCase();
-      final userId = mother.motherId.toLowerCase();
-
-      return username.contains(searchQuery) ||
-          userId.contains(searchQuery);
-    }).toList();
-
-    update();
-  }
-
-  void fetchMothers() async {
     try {
-      isLoading.value = true;
+      isSearchLoading.value = true;
       final data = await FirebaseReference.mothers.get();
-      final mothersF =
-          data.docs.map((doc) => MothersModel.fromFirestore(doc)).toList();
-      mothers.value = mothersF;
+      final results = data.docs
+          .map(MothersModel.fromFirestore)
+          .where((mother) =>
+              mother.fullName.toLowerCase().contains(searchQuery) ||
+              mother.motherId.toLowerCase().contains(searchQuery))
+          .toList();
+
+      filteredMothers.assignAll(results);
+      isSearchActive.value = true;
+    } catch (error) {
+      FirebaseError.handle(error);
     } finally {
-      isLoading.value = false;
+      isSearchLoading.value = false;
     }
   }
 }
