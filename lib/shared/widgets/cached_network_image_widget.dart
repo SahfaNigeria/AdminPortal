@@ -51,7 +51,7 @@ class CachedNetworkImageWidget extends StatelessWidget {
   }
 
   Widget _errorWidget() {
-    return errorWidget ??
+    return  errorWidget ??
         Icon(
           Icons.broken_image_outlined,
           color: AppColors.textSecondary,
