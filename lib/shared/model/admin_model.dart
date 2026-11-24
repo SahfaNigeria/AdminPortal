@@ -36,7 +36,8 @@ enum AdminTab {
   analytics,
   users,
   hospital,
-  approval;
+  approval,
+  contents;
 
   String get displayName {
     switch (this) {
@@ -48,6 +49,8 @@ enum AdminTab {
         return "Hospitals";
       case AdminTab.approval:
         return "Emergencies";
+      case AdminTab.contents:
+        return "Contents";
     }
   }
 
@@ -61,6 +64,8 @@ enum AdminTab {
         return "hospital";
       case AdminTab.approval:
         return "approval";
+      case AdminTab.contents:
+        return "contents";
     }
   }
 
@@ -74,6 +79,8 @@ enum AdminTab {
         return AdminTab.hospital;
       case "approval":
         return AdminTab.approval;
+      case "contents":
+        return AdminTab.contents;
       default:
         return null;
     }

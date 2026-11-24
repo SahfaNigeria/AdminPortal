@@ -29,12 +29,16 @@ class AdminsTab extends GetView<AdminsController> {
             Obx(
               () => CustomAppButton(
                 child: FaIcon(
-                  FontAwesomeIcons.magnifyingGlass,
+                  controller.isSearchActive.value
+                      ? FontAwesomeIcons.xmark
+                      : FontAwesomeIcons.magnifyingGlass,
                   size: 20,
                   color: AppColors.surface,
                 ),
                 isLoading: controller.isLoading.value,
-                onTap: controller.searchAdmins,
+                onTap: controller.isSearchActive.value
+                    ? controller.clearAdminSearch
+                    : controller.searchAdmins,
               ),
             ),
           ],
@@ -85,7 +89,8 @@ class AdminsTab extends GetView<AdminsController> {
             return ListView.builder(
               itemCount: admins.length,
               padding: const EdgeInsets.symmetric(vertical: 8),
-              itemBuilder: (context, index) => _buildAdmin(admins[index]),
+              itemBuilder: (context, index) =>
+                  _buildAdmin(context, admins[index]),
             );
           }),
         ),
@@ -93,7 +98,7 @@ class AdminsTab extends GetView<AdminsController> {
     );
   }
 
-  Widget _buildAdmin(AdminModel admin) {
+  Widget _buildAdmin(BuildContext context, AdminModel admin) {
     final isCurrentAdmin = admin.id == controller.currentAdminId;
     final tabAccess = admin.isSuperAdmin
         ? 'All tabs'
@@ -131,18 +136,19 @@ class AdminsTab extends GetView<AdminsController> {
                   title:
                       admin.isApproved ? 'Manage Access' : 'Review & Approve',
                   isLoading: controller.updatingAdminIds.contains(admin.id),
-                  onTap: () => _openAccessReview(admin),
+                  onTap: () => _openAccessReview(context, admin),
                 ),
               ],
       ),
     );
   }
 
-  void _openAccessReview(AdminModel admin) {
+  void _openAccessReview(BuildContext context, AdminModel admin) {
     controller.prepareAccessReview(admin);
-    Get.dialog<void>(
-      _AdminAccessDialog(controller: controller, admin: admin),
+    showDialog<void>(
+      context: context,
       barrierDismissible: false,
+      builder: (_) => _AdminAccessDialog(controller: controller, admin: admin),
     );
   }
 }
@@ -162,128 +168,535 @@ class _AdminAccessDialog extends StatelessWidget {
       final isSuperAdmin =
           controller.draftAccountType.value == AccountType.superAdmin;
       final isSaving = controller.updatingAdminIds.contains(admin.id);
+      final isApproved = controller.draftIsApproved.value;
+      final title =
+          admin.isApproved ? 'Manage administrator' : 'Review administrator';
+      final saveLabel = isApproved
+          ? admin.isApproved
+              ? 'Save changes'
+              : 'Approve & save'
+          : admin.isApproved
+              ? 'Revoke approval'
+              : 'Select approval to continue';
 
-      return AlertDialog(
-        title: Text(
-          admin.isApproved ? 'Manage administrator access' : 'Review admin',
+      return Dialog(
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        backgroundColor: AppColors.surface,
+        elevation: 18,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
         ),
-        content: SizedBox(
-          width: 440,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(admin.username.isEmpty ? admin.email : admin.username),
-                const SizedBox(height: 16),
-                CheckboxListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: const Text('Approve this administrator'),
-                  value: controller.draftIsApproved.value,
-                  onChanged: isSaving
-                      ? null
-                      : (approved) =>
-                          controller.setDraftApproval(approved ?? false),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: 560,
+            maxHeight: MediaQuery.sizeOf(context).height * 0.88,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 22, 24, 18),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: const Icon(
+                        Icons.admin_panel_settings_outlined,
+                        color: AppColors.primary,
+                        size: 26,
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(fontWeight: FontWeight.w700),
+                          ),
+                          const SizedBox(height: 3),
+                          Text(
+                            'Set role and dashboard permissions',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(color: AppColors.textSecondary),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    _AdminStatusBadge(isApproved: admin.isApproved),
+                  ],
                 ),
-                const Divider(),
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8),
-                  child: Text(
-                    'Account role',
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                ),
-                RadioGroup<AccountType>(
-                  groupValue: controller.draftAccountType.value,
-                  onChanged: (value) {
-                    if (controller.draftIsApproved.value &&
-                        !isSaving &&
-                        value != null) {
-                      controller.setDraftAccountType(value);
-                    }
-                  },
+              ),
+              const Divider(height: 1),
+              Flexible(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      RadioListTile<AccountType>(
-                        contentPadding: EdgeInsets.zero,
-                        title: const Text('Admin'),
-                        value: AccountType.admin,
-                        enabled: controller.draftIsApproved.value && !isSaving,
-                      ),
-                      RadioListTile<AccountType>(
-                        contentPadding: EdgeInsets.zero,
-                        title: const Text('Super Admin'),
-                        subtitle: const Text(
-                          'Automatically has access to every tab.',
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF7F7F8),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: const Color(0xFFE9E9EC)),
                         ),
-                        value: AccountType.superAdmin,
-                        enabled: controller.draftIsApproved.value && !isSaving,
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 21,
+                              backgroundColor:
+                                  AppColors.primary.withValues(alpha: 0.1),
+                              child: Text(
+                                (admin.username.isEmpty
+                                        ? admin.email
+                                        : admin.username)
+                                    .characters
+                                    .first
+                                    .toUpperCase(),
+                                style: const TextStyle(
+                                  color: AppColors.primary,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    admin.username.isEmpty
+                                        ? admin.email
+                                        : admin.username,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  if (admin.username.isNotEmpty) ...[
+                                    const SizedBox(height: 3),
+                                    Text(
+                                      admin.email,
+                                      style: const TextStyle(
+                                        color: AppColors.textSecondary,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
+                      const SizedBox(height: 22),
+                      const _AdminDialogSectionTitle(
+                        title: 'Approval',
+                        subtitle:
+                            'Approval is required before access is granted.',
+                      ),
+                      const SizedBox(height: 10),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: isApproved
+                              ? const Color(0xFFF0F8F1)
+                              : const Color(0xFFF7F7F8),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: isApproved
+                                ? const Color(0xFFD4EAD6)
+                                : const Color(0xFFE9E9EC),
+                          ),
+                        ),
+                        child: SwitchListTile(
+                          value: isApproved,
+                          onChanged:
+                              isSaving ? null : controller.setDraftApproval,
+                          activeThumbColor: AppColors.primary,
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 4,
+                          ),
+                          title: const Text(
+                            'Approve this administrator',
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                          subtitle: Text(
+                            isApproved
+                                ? 'This account is approved.'
+                                : 'This account remains pending.',
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 22),
+                      const _AdminDialogSectionTitle(
+                        title: 'Account role',
+                        subtitle: 'Choose the administrator permission level.',
+                      ),
+                      const SizedBox(height: 10),
+                      Wrap(
+                        spacing: 10,
+                        runSpacing: 10,
+                        children: [
+                          _AdminRoleChoice(
+                            title: 'Admin',
+                            subtitle: 'Choose specific tabs',
+                            icon: Icons.manage_accounts_outlined,
+                            selected: controller.draftAccountType.value ==
+                                AccountType.admin,
+                            onSelected: isSaving
+                                ? null
+                                : () => controller
+                                    .setDraftAccountType(AccountType.admin),
+                          ),
+                          _AdminRoleChoice(
+                            title: 'Super Admin',
+                            subtitle: 'Access to every tab',
+                            icon: Icons.shield_outlined,
+                            selected: isSuperAdmin,
+                            onSelected: isSaving
+                                ? null
+                                : () => controller.setDraftAccountType(
+                                      AccountType.superAdmin,
+                                    ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 22),
+                      _AdminDialogSectionTitle(
+                        title: 'Dashboard access',
+                        subtitle: isSuperAdmin
+                            ? 'Super Admins automatically have all access.'
+                            : '${controller.selectedTabs.length} of '
+                                '${AdminTab.values.length} tabs selected',
+                      ),
+                      const SizedBox(height: 12),
+                      Wrap(
+                        spacing: 10,
+                        runSpacing: 10,
+                        children: AdminTab.values.map((tab) {
+                          final hasAccess = isSuperAdmin ||
+                              controller.selectedTabs.contains(tab);
+                          return FilterChip(
+                            avatar: Icon(
+                              _adminTabIcon(tab),
+                              size: 18,
+                              color: hasAccess
+                                  ? AppColors.primary
+                                  : AppColors.textSecondary,
+                            ),
+                            label: Text(tab.displayName),
+                            selected: hasAccess,
+                            showCheckmark: false,
+                            backgroundColor: const Color(0xFFF7F7F8),
+                            selectedColor:
+                                AppColors.primary.withValues(alpha: 0.1),
+                            side: BorderSide(
+                              color: hasAccess
+                                  ? AppColors.primary.withValues(alpha: 0.35)
+                                  : const Color(0xFFE4E4E7),
+                            ),
+                            labelStyle: TextStyle(
+                              color: hasAccess
+                                  ? AppColors.primary
+                                  : AppColors.textPrimary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            onSelected: isSuperAdmin || isSaving
+                                ? null
+                                : (selected) =>
+                                    controller.setTabAccess(tab, selected),
+                          );
+                        }).toList(),
+                      ),
+                      if (!isSuperAdmin && controller.selectedTabs.isEmpty) ...[
+                        const SizedBox(height: 12),
+                        const _AdminInfoNotice(
+                          message: 'No tabs selected. This Admin will not see '
+                              'dashboard sections until access is assigned.',
+                        ),
+                      ],
                     ],
                   ),
                 ),
-                const Divider(),
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8),
-                  child: Text(
-                    'Dashboard tabs',
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                ),
-                if (isSuperAdmin)
-                  const Padding(
-                    padding: EdgeInsets.only(bottom: 8),
-                    child: Text(
-                      'Super Admins automatically have access to all tabs.',
+              ),
+              const Divider(height: 1),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 14, 24, 18),
+                child: Wrap(
+                  alignment: WrapAlignment.end,
+                  spacing: 10,
+                  runSpacing: 8,
+                  children: [
+                    TextButton(
+                      onPressed:
+                          isSaving ? null : () => Navigator.of(context).pop(),
+                      style: TextButton.styleFrom(
+                        foregroundColor: AppColors.textSecondary,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 18,
+                          vertical: 14,
+                        ),
+                      ),
+                      child: const Text('Cancel'),
                     ),
-                  ),
-                ...AdminTab.values.map(
-                  (tab) => CheckboxListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(tab.displayName),
-                    value:
-                        isSuperAdmin || controller.selectedTabs.contains(tab),
-                    onChanged: isSuperAdmin ||
-                            !controller.draftIsApproved.value ||
-                            isSaving
-                        ? null
-                        : (hasAccess) => controller.setTabAccess(
-                              tab,
-                              hasAccess ?? false,
+                    ElevatedButton(
+                      onPressed: isSaving || (!isApproved && !admin.isApproved)
+                          ? null
+                          : () async {
+                              final saved =
+                                  await controller.saveAdminAccess(admin);
+                              if (saved) Navigator.of(context).pop();
+                            },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: AppColors.surface,
+                        disabledBackgroundColor:
+                            AppColors.primary.withValues(alpha: 0.35),
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 14,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
+                      child: isSaving
+                          ? const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: AppColors.surface,
+                              ),
+                            )
+                          : Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  isApproved
+                                      ? Icons.check_rounded
+                                      : Icons.block_outlined,
+                                  size: 18,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(saveLabel),
+                              ],
                             ),
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-        actions: [
-          TextButton(
-            onPressed: isSaving ? null : () => Get.back<void>(),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: isSaving
-                ? null
-                : () async {
-                    final saved = await controller.saveAdminAccess(admin);
-                    if (saved) Get.back<void>();
-                  },
-            child: isSaving
-                ? const SizedBox(
-                    width: 18,
-                    height: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : Text(
-                    controller.draftIsApproved.value
-                        ? 'Save access'
-                        : 'Revoke approval',
-                  ),
-          ),
-        ],
       );
     });
+  }
+
+  IconData _adminTabIcon(AdminTab tab) {
+    switch (tab) {
+      case AdminTab.analytics:
+        return Icons.insights_outlined;
+      case AdminTab.users:
+        return Icons.people_outline;
+      case AdminTab.hospital:
+        return Icons.local_hospital_outlined;
+      case AdminTab.approval:
+        return Icons.notifications_active_outlined;
+      case AdminTab.contents:
+        return Icons.article_outlined;
+    }
+  }
+}
+
+class _AdminDialogSectionTitle extends StatelessWidget {
+  const _AdminDialogSectionTitle({
+    required this.title,
+    required this.subtitle,
+  });
+
+  final String title;
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: Theme.of(context)
+              .textTheme
+              .titleMedium
+              ?.copyWith(fontWeight: FontWeight.w700),
+        ),
+        const SizedBox(height: 3),
+        Text(
+          subtitle,
+          style: Theme.of(context)
+              .textTheme
+              .bodySmall
+              ?.copyWith(color: AppColors.textSecondary),
+        ),
+      ],
+    );
+  }
+}
+
+class _AdminStatusBadge extends StatelessWidget {
+  const _AdminStatusBadge({required this.isApproved});
+
+  final bool isApproved;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = isApproved ? const Color(0xFF2E7D32) : AppColors.primary;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        isApproved ? 'Approved' : 'Pending',
+        style: TextStyle(
+          color: color,
+          fontSize: 12,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
+  }
+}
+
+class _AdminRoleChoice extends StatelessWidget {
+  const _AdminRoleChoice({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.selected,
+    required this.onSelected,
+  });
+
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final bool selected;
+  final VoidCallback? onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = selected ? AppColors.primary : AppColors.textSecondary;
+
+    return InkWell(
+      onTap: onSelected,
+      borderRadius: BorderRadius.circular(16),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 160),
+        width: 220,
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: selected
+              ? AppColors.primary.withValues(alpha: 0.07)
+              : const Color(0xFFF7F7F8),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: selected
+                ? AppColors.primary.withValues(alpha: 0.5)
+                : const Color(0xFFE4E4E7),
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: color, size: 22),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color:
+                          selected ? AppColors.primary : AppColors.textPrimary,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: const TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 11,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (selected)
+              const Icon(
+                Icons.check_circle_rounded,
+                color: AppColors.primary,
+                size: 18,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AdminInfoNotice extends StatelessWidget {
+  const _AdminInfoNotice({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFF8E8),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFF2E1B8)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(
+            Icons.info_outline,
+            size: 18,
+            color: Color(0xFF986C0B),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              message,
+              style: const TextStyle(
+                color: Color(0xFF725208),
+                fontSize: 12,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

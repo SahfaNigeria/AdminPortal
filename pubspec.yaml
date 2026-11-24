@@ -59,6 +59,7 @@ dependencies:
   easy_animated_indexed_stack: ^0.1.0
   expandable: ^5.0.1
   firebase_pagination: ^4.3.0
+  cached_network_image: ^4.0.7
 
 dev_dependencies:
   flutter_test:

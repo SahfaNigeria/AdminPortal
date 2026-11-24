@@ -23,12 +23,12 @@ class AdminProfilePage extends GetView<AdminProfileController> {
 
   @override
   Widget build(BuildContext context) {
-
     return AppCustomizedBg(
       body: CustomResponsiveBuilder(
         builder: (context, sizingInfo) {
           return Obx(() {
-            if (controller.isLoading.value && controller.adminModel.value == null) {
+            if (controller.isLoading.value &&
+                controller.adminModel.value == null) {
               return const Center(
                 child: CustomCircularProgressIndicator(height: 36, width: 36),
               );
@@ -36,10 +36,10 @@ class AdminProfilePage extends GetView<AdminProfileController> {
 
             final admin = controller.adminModel.value;
             final savedUsername = admin?.username.trim() ?? '';
-            final authName =
-                FirebaseReference.firebaseAuth.currentUser?.displayName
-                        ?.trim() ??
-                    '';
+            final authName = FirebaseReference
+                    .firebaseAuth.currentUser?.displayName
+                    ?.trim() ??
+                '';
             final accountEmail = admin?.email.trim().isNotEmpty == true
                 ? admin!.email.trim()
                 : FirebaseReference.firebaseAuth.currentUser?.email?.trim() ??
@@ -82,7 +82,8 @@ class AdminProfilePage extends GetView<AdminProfileController> {
                                 color: AppColors.surface,
                                 borderRadius: BorderRadius.circular(10),
                                 border: Border.all(
-                                  color: AppColors.border.withValues(alpha: 0.3),
+                                  color:
+                                      AppColors.border.withValues(alpha: 0.3),
                                 ),
                               ),
                               child: const Row(
@@ -126,38 +127,47 @@ class AdminProfilePage extends GetView<AdminProfileController> {
                                       clipBehavior: Clip.none,
                                       children: [
                                         Obx(() {
-                                          if (controller.selectedImageBytes.value != null) {
+                                          if (controller
+                                                  .selectedImageBytes.value !=
+                                              null) {
                                             return CircleAvatar(
                                               radius: 46,
                                               backgroundImage: MemoryImage(
-                                                  controller.selectedImageBytes.value!),
-                                            );
-                                          } else if (admin?.displayPhoto != null &&
-                                              admin!.displayPhoto!.isNotEmpty) {
-                                            return CustomCircleAvatarWidget(
-                                              imageUrl: admin.displayPhoto,
-                                              radius: 46,
-                                            );
-                                          } else {
-                                            return CircleAvatar(
-                                              radius: 46,
-                                              backgroundColor:
-                                              AppColors.primary.withValues(alpha: 0.1),
-                                              child: AppText(
-                                                text: avatarInitial,
-                                                size: 32,
-                                                fontWeight: FontWeight.bold,
-                                                color: AppColors.primary,
-                                              ),
+                                                  controller.selectedImageBytes
+                                                      .value!),
                                             );
                                           }
+
+                                          final displayPhoto = controller
+                                              .adminModel.value?.displayPhoto
+                                              ?.trim();
+                                          if (displayPhoto != null &&
+                                              displayPhoto.isNotEmpty) {
+                                            return CustomCircleAvatarWidget(
+                                              imageUrl: displayPhoto,
+                                              radius: 46,
+                                            );
+                                          }
+
+                                          return CircleAvatar(
+                                            radius: 46,
+                                            backgroundColor: AppColors.primary
+                                                .withValues(alpha: 0.1),
+                                            child: AppText(
+                                              text: avatarInitial,
+                                              size: 32,
+                                              fontWeight: FontWeight.bold,
+                                              color: AppColors.primary,
+                                            ),
+                                          );
                                         }),
                                         Positioned(
                                           bottom: 0,
                                           right: 0,
                                           child: InkWell(
                                             onTap: controller.pickProfileImage,
-                                            borderRadius: BorderRadius.circular(20),
+                                            borderRadius:
+                                                BorderRadius.circular(20),
                                             child: Container(
                                               padding: const EdgeInsets.all(8),
                                               decoration: const BoxDecoration(
@@ -199,18 +209,25 @@ class AdminProfilePage extends GetView<AdminProfileController> {
                                             padding: const EdgeInsets.symmetric(
                                                 horizontal: 10, vertical: 4),
                                             decoration: BoxDecoration(
-                                              color: (admin?.isSuperAdmin ?? false)
-                                                  ? AppColors.primary.withValues(alpha: 0.1)
-                                                  : Colors.blue.withValues(alpha: 0.1),
-                                              borderRadius: BorderRadius.circular(6),
+                                              color: (admin?.isSuperAdmin ??
+                                                      false)
+                                                  ? AppColors.primary
+                                                      .withValues(alpha: 0.1)
+                                                  : Colors.blue
+                                                      .withValues(alpha: 0.1),
+                                              borderRadius:
+                                                  BorderRadius.circular(6),
                                             ),
                                             child: AppText(
-                                              text: admin?.accountType.displayName ?? "Admin",
+                                              text: admin?.accountType
+                                                      .displayName ??
+                                                  "Admin",
                                               size: 11,
                                               fontWeight: FontWeight.bold,
-                                              color: (admin?.isSuperAdmin ?? false)
-                                                  ? AppColors.primary
-                                                  : Colors.blue,
+                                              color:
+                                                  (admin?.isSuperAdmin ?? false)
+                                                      ? AppColors.primary
+                                                      : Colors.blue,
                                             ),
                                           ),
                                         ],
@@ -220,14 +237,17 @@ class AdminProfilePage extends GetView<AdminProfileController> {
                                         text: accountEmail,
                                         size: 13,
                                         color: AppColors.textSecondary,
-                                        textAlign: isWide ? TextAlign.left : TextAlign.center,
+                                        textAlign: isWide
+                                            ? TextAlign.left
+                                            : TextAlign.center,
                                       ),
                                     ],
                                   );
 
                                   if (isWide) {
                                     return Row(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
                                         avatarWidget,
                                         const SizedBox(width: 20),
@@ -236,8 +256,10 @@ class AdminProfilePage extends GetView<AdminProfileController> {
                                     );
                                   } else {
                                     return Column(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         avatarWidget,
                                         const SizedBox(height: 14),
@@ -258,7 +280,8 @@ class AdminProfilePage extends GetView<AdminProfileController> {
                                   Container(
                                     padding: const EdgeInsets.all(8),
                                     decoration: BoxDecoration(
-                                      color: AppColors.primary.withValues(alpha: 0.1),
+                                      color: AppColors.primary
+                                          .withValues(alpha: 0.1),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: const FaIcon(
@@ -295,8 +318,8 @@ class AdminProfilePage extends GetView<AdminProfileController> {
                                   size: 16,
                                   color: AppColors.textSecondary,
                                 ),
-                                validator: (val) =>
-                                    ValidationUtil.validateName(val ?? '', "Username"),
+                                validator: (val) => ValidationUtil.validateName(
+                                    val ?? '', "Username"),
                               ),
 
                               const SizedBox(height: 16),
@@ -318,7 +341,8 @@ class AdminProfilePage extends GetView<AdminProfileController> {
                                   size: 16,
                                   color: AppColors.textSecondary,
                                 ),
-                                validator: (val) => ValidationUtil.validateEmail(val ?? ''),
+                                validator: (val) =>
+                                    ValidationUtil.validateEmail(val ?? ''),
                               ),
 
                               const SizedBox(height: 28),
@@ -331,7 +355,8 @@ class AdminProfilePage extends GetView<AdminProfileController> {
                                   Container(
                                     padding: const EdgeInsets.all(8),
                                     decoration: BoxDecoration(
-                                      color: AppColors.primary.withValues(alpha: 0.1),
+                                      color: AppColors.primary
+                                          .withValues(alpha: 0.1),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: const FaIcon(
@@ -357,7 +382,8 @@ class AdminProfilePage extends GetView<AdminProfileController> {
 
                                   Widget col1 = _buildMetaTile(
                                     label: "ACCOUNT TYPE",
-                                    value: admin?.accountType.displayName ?? "Admin",
+                                    value: admin?.accountType.displayName ??
+                                        "Admin",
                                     icon: FontAwesomeIcons.userGear,
                                   );
 
@@ -410,10 +436,12 @@ class AdminProfilePage extends GetView<AdminProfileController> {
                                   width: double.infinity,
                                   padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
-                                    color: AppColors.primary.withValues(alpha: 0.06),
+                                    color: AppColors.primary
+                                        .withValues(alpha: 0.06),
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(
-                                      color: AppColors.primary.withValues(alpha: 0.2),
+                                      color: AppColors.primary
+                                          .withValues(alpha: 0.2),
                                     ),
                                   ),
                                   child: const Row(
@@ -424,16 +452,20 @@ class AdminProfilePage extends GetView<AdminProfileController> {
                                         color: AppColors.primary,
                                       ),
                                       SizedBox(width: 8),
-                                      AppText(
-                                        text: "Super Admin — Full access to all modules",
-                                        size: 12,
-                                        fontWeight: FontWeight.w600,
-                                        color: AppColors.primary,
+                                      Expanded(
+                                        child: AppText(
+                                          text:
+                                              "Super Admin — Full access to all modules",
+                                          size: 12,
+                                          fontWeight: FontWeight.w600,
+                                          color: AppColors.primary,
+                                        ),
                                       ),
                                     ],
                                   ),
                                 )
-                              else if (admin?.accessibleTabs.isNotEmpty ?? false)
+                              else if (admin?.accessibleTabs.isNotEmpty ??
+                                  false)
                                 Wrap(
                                   spacing: 8,
                                   runSpacing: 8,
@@ -444,7 +476,8 @@ class AdminProfilePage extends GetView<AdminProfileController> {
                                       decoration: BoxDecoration(
                                         color: AppColors.surface,
                                         borderRadius: BorderRadius.circular(8),
-                                        border: Border.all(color: AppColors.border),
+                                        border:
+                                            Border.all(color: AppColors.border),
                                       ),
                                       child: AppText(
                                         text: tab.displayName,
@@ -468,44 +501,49 @@ class AdminProfilePage extends GetView<AdminProfileController> {
 
                               // Action Buttons
                               Obx(() => Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  OutlinedButton(
-                                    onPressed: () {
-                                      if (context.canPop()) {
-                                        context.pop();
-                                      } else {
-                                        context.goNamed(RouteHelpers.adminAnalytics);
-                                      }
-                                    },
-                                    style: OutlinedButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 24,
-                                        vertical: 16,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Flexible(
+                                        child: OutlinedButton(
+                                          onPressed: () {
+                                            if (context.canPop()) {
+                                              context.pop();
+                                            } else {
+                                              context.goNamed(
+                                                  RouteHelpers.adminAnalytics);
+                                            }
+                                          },
+                                          style: OutlinedButton.styleFrom(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 24,
+                                              vertical: 16,
+                                            ),
+                                            side: const BorderSide(
+                                              color: AppColors.border,
+                                            ),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                          child: const AppText(
+                                            text: "Cancel",
+                                            size: 14,
+                                            fontWeight: FontWeight.w600,
+                                            color: AppColors.textPrimary,
+                                          ),
+                                        ),
                                       ),
-                                      side: const BorderSide(
-                                        color: AppColors.border,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                    ),
-                                    child: const AppText(
-                                      text: "Cancel",
-                                      size: 14,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.textPrimary,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 14),
-                                  CustomAppButton(
-                                    onTap: controller.updateProfile,
-                                    isLoading: controller.isSaving.value ||
-                                        controller.isUploadingImage.value,
-                                    title: "Save Profile",
-                                  ),
-                                ],
-                              )),
+                                      const SizedBox(width: 14),
+                                      Flexible(
+                                          child: CustomAppButton(
+                                        onTap: controller.updateProfile,
+                                        isLoading: controller.isSaving.value ||
+                                            controller.isUploadingImage.value,
+                                        title: "Save Profile",
+                                      )),
+                                    ],
+                                  )),
                             ],
                           ),
                         ),

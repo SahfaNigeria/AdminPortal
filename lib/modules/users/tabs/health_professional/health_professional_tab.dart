@@ -33,12 +33,19 @@ class HealthProfessionalTab extends GetView<HealthProfessionalController> {
             Obx(
               () => CustomAppButton(
                 child: FaIcon(
-                  FontAwesomeIcons.magnifyingGlass,
+                  controller.isSearchActive.value
+                      ? FontAwesomeIcons.xmark
+                      : FontAwesomeIcons.magnifyingGlass,
                   size: 20,
                   color: AppColors.surface,
                 ),
                 isLoading: controller.isSearchLoading.value,
-                onTap: controller.searchHealthProfessionals,
+                onTap: controller.isSearchActive.value
+                    ? () {
+                        controller.searchController.clear();
+                        controller.isSearchActive.value = false;
+                      }
+                    : controller.searchHealthProfessionals,
               ),
             ),
           ],
@@ -64,6 +71,11 @@ class HealthProfessionalTab extends GetView<HealthProfessionalController> {
 
             return FirestorePagination(
               key: const ValueKey("health-professionals-pagination"),
+              bottomLoader: CustomCircularProgressIndicator(
+                height: 20,
+                color: AppColors.primary,
+                width: 20,
+              ),
               query: FirebaseReference.healthProfessionals
                   .orderBy(FieldPath.documentId),
               limit: 20,
@@ -146,14 +158,13 @@ class HealthProfessionalTab extends GetView<HealthProfessionalController> {
     return Obx(
       () => UsersExpandableWidget(
         userName: professional.fullName,
-        userId: professional.qualificationNumber,
+        userId: professional.midWifeId,
         userRole: "Health Professional",
         status: isApproved ? "Approved" : "Pending",
         email: professional.email,
         isLoading:
             controller.updatingProfessionalIds.contains(professional.midWifeId),
         phoneNumber: professional.phoneNumber,
-        IdName: "Qualification Number:",
         registrationDate: professional.createdAt?.toString(),
         location: locationParts.isNotEmpty ? locationParts.join(", ") : null,
         imageUrl: professional.midWifeImage,

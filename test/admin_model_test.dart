@@ -40,6 +40,20 @@ void main() {
         expect(admin.hasTabAccess(tab), isTrue);
       }
     });
+
+    test('contents tab can be assigned and restored from its stored value', () {
+      const admin = AdminModel(
+        id: 'admin-id',
+        username: 'Admin',
+        email: 'admin@example.com',
+        accessibleTabs: [AdminTab.contents],
+        isApproved: true,
+      );
+
+      expect(admin.hasTabAccess(AdminTab.contents), isTrue);
+      expect(AdminTab.fromValue('contents'), AdminTab.contents);
+      expect(AdminTab.contents.toValue(), 'contents');
+    });
   });
 
   test('fromMap uses Firestore document ID when map ID is absent', () {
