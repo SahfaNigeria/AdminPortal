@@ -34,12 +34,15 @@ class MothersTab extends GetView<MothersController> {
             Obx(
               () => CustomAppButton(
                 child: FaIcon(
-                  FontAwesomeIcons.search,
+                  controller.isSearchActive.value?  FontAwesomeIcons.xmark:FontAwesomeIcons.magnifyingGlass,
                   size: 20,
                   color: AppColors.surface,
                 ),
                 isLoading: controller.isSearchLoading.value,
-                onTap: controller.searchMothers,
+                onTap: controller.isSearchActive.value? () {
+                  controller.searchController.clear();
+                  controller.isSearchActive.value = false;
+                }:controller.searchMothers,
               ),
             ),
           ],
@@ -50,7 +53,7 @@ class MothersTab extends GetView<MothersController> {
           child: Obx(() {
             if (controller.isSearchActive.value) {
               if (controller.filteredMothers.isEmpty) {
-                return const Center(child: Text("No mothers found."));
+                return const Center(child: AppText(text: "No mothers found."));
               }
               return ListView.builder(
                 itemCount: controller.filteredMothers.length,
@@ -62,6 +65,11 @@ class MothersTab extends GetView<MothersController> {
 
             return FirestorePagination(
               key: const ValueKey("mothers-pagination"),
+              bottomLoader:  CustomCircularProgressIndicator(
+                height: 20,
+                color: AppColors.primary,
+                width: 20,
+              ),
               query: FirebaseReference.mothers.orderBy(FieldPath.documentId),
               limit: 20,
               initialLoader: Column(

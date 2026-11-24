@@ -14,6 +14,7 @@ class AdminsController extends GetxController {
   final canManageAdmins = false.obs;
   final loadError = RxnString();
   final searchQuery = ''.obs;
+  final isSearchActive = false.obs;
   final updatingAdminIds = <String>{}.obs;
 
   final draftAccountType = AccountType.admin.obs;
@@ -113,13 +114,21 @@ class AdminsController extends GetxController {
     }
   }
 
-  void searchAdmins() {
-    searchQuery.value = searchController.text.trim().toLowerCase();
+  void searchAdmins([String? value]) {
+    final query = (value ?? searchController.text).trim().toLowerCase();
+    searchQuery.value = query;
+    isSearchActive.value = query.isNotEmpty;
+  }
+
+  void clearAdminSearch() {
+    searchController.clear();
+    searchQuery.value = '';
+    isSearchActive.value = false;
   }
 
   void prepareAccessReview(AdminModel admin) {
     draftAccountType.value = admin.accountType;
-    draftIsApproved.value = true;
+    draftIsApproved.value = admin.isApproved;
     selectedTabs.assignAll(admin.accessibleTabs);
   }
 

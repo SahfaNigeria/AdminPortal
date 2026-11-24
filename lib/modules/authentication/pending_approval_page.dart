@@ -1,9 +1,9 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:jambomama_nigeria_admin_portal/core/helpers/admin_access_controller.dart';
 import 'package:jambomama_nigeria_admin_portal/core/routes/route_helper.dart';
 import 'package:jambomama_nigeria_admin_portal/core/theme/colors.dart';
+import 'package:jambomama_nigeria_admin_portal/modules/profile/access/admin_access_controller.dart';
 import 'package:jambomama_nigeria_admin_portal/shared/constants/app_constants.dart';
 import 'package:jambomama_nigeria_admin_portal/shared/utils/firebase_error.dart';
 import 'package:jambomama_nigeria_admin_portal/shared/widgets/app_text.dart';

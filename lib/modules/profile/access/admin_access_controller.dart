@@ -66,6 +66,7 @@ class AdminAccessController extends GetxController {
       return AdminTab.hospital;
     }
     if (location == '/admin/emergencies') return AdminTab.approval;
+    if (location == '/admin/contents') return AdminTab.contents;
     return null;
   }
 
@@ -78,15 +79,19 @@ class AdminAccessController extends GetxController {
       AdminTab.users: '/admin/users',
       AdminTab.hospital: '/admin/hospitals',
       AdminTab.approval: '/admin/emergencies',
+      AdminTab.contents: '/admin/contents',
     };
 
     for (final entry in destinations.entries) {
       if (currentAdmin.hasTabAccess(entry.key)) return entry.value;
     }
-    return '/admin/profile';
+    return '/admin/no-tabs-assigned';
   }
 
   bool hasTabAccess(AdminTab tab) => admin.value?.hasTabAccess(tab) ?? false;
+
+  bool get hasAnyTabAccess =>
+      AdminTab.values.any((tab) => hasTabAccess(tab));
 
   Future<void> clearCurrentAdmin() async {
     await _adminSubscription?.cancel();

@@ -2,14 +2,16 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_transitions/go_transitions.dart';
 import 'package:jambomama_nigeria_admin_portal/core/component/admin/admin_shell.dart';
-import 'package:jambomama_nigeria_admin_portal/core/helpers/admin_access_controller.dart';
 import 'package:jambomama_nigeria_admin_portal/modules/authentication/login/login_view.dart';
 import 'package:jambomama_nigeria_admin_portal/modules/authentication/pending_approval_page.dart';
 import 'package:jambomama_nigeria_admin_portal/modules/authentication/registration/registration_view.dart';
+import 'package:jambomama_nigeria_admin_portal/modules/profile/access/admin_access_controller.dart';
+import 'package:jambomama_nigeria_admin_portal/modules/profile/access/no_tabs_assigned_page.dart';
 import 'package:jambomama_nigeria_admin_portal/shared/utils/app_helpers.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../modules/analytics/admin_analytics_page.dart';
+import '../../modules/contents/contents_page.dart';
 import '../../modules/emergency/emergency_assesment_page.dart';
 import '../../modules/hospitals/add/admin_add_hospital_page.dart';
 import '../../modules/hospitals/hospitals_page.dart';
@@ -23,9 +25,11 @@ class RouteHelpers {
   static const String adminAnalytics = "adminAnalytics";
   static const String adminUsers = "adminUsers";
   static const String adminProfile = "adminProfile";
+  static const String adminContents = "adminContents";
   static const String adminEmergencies = "adminEmergencies";
   static const String adminHospitals = "adminHospitals";
   static const String adminAddHospitals = "adminAddHospitals";
+  static const String adminNoTabsAssigned = "adminNoTabsAssigned";
 
   static final GoRouter goRouter = GoRouter(
     navigatorKey: Get.key,
@@ -64,6 +68,11 @@ class RouteHelpers {
         name: adminPendingApproval,
         path: "/admin/pending-approval",
         builder: (context, state) => const PendingApprovalPage(),
+      ),
+      GoRoute(
+        name: adminNoTabsAssigned,
+        path: "/admin/no-tabs-assigned",
+        builder: (context, state) => const NoTabsAssignedPage(),
       ),
       GoRoute(
         name: adminAddHospitals,
@@ -162,6 +171,15 @@ class RouteHelpers {
               ),
             ],
           ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/admin/contents',
+                name: adminContents,
+                builder: (context, state) => const ContentsPage(),
+              ),
+            ],
+          ),
           // StatefulShellBranch(
           //   routes: [
           //     GoRoute(
@@ -237,6 +255,10 @@ class RouteHelpers {
               : '/admin/pending-approval';
         }
         if (location == '/admin/pending-approval') {
+          return accessController.firstAccessibleLocation;
+        }
+        if (location == '/admin/no-tabs-assigned' &&
+            accessController.hasAnyTabAccess) {
           return accessController.firstAccessibleLocation;
         }
 

@@ -4,7 +4,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../../shared/constants/app_constants.dart';
 import '../../../shared/widgets/app_text.dart';
-import '../../../shared/widgets/custom_circle_avatar_widget.dart';
+import '../../../shared/widgets/admin_identity_widget.dart';
 import '../../../shared/widgets/logo_widget.dart';
 import '../../routes/route_helper.dart';
 import '../../theme/colors.dart';
@@ -122,35 +122,22 @@ class HeaderContentDesktop extends StatelessWidget {
                   width: 1,
                 ),
               ),
-              child: const Row(
+              child: Row(
                 children: [
-                  CustomCircleAvatarWidget(radius: 16),
-                  SizedBox(width: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      AppText(
-                        text: "Admin User",
-                        size: 13,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
-                      ),
-                      AppText(
-                        text: "Super Admin",
-                        size: 11,
-                        fontWeight: FontWeight.w400,
-                        color: AppColors.textSecondary,
-                      ),
-                    ],
+                  const SizedBox(
+                    width: 190,
+                    child: AdminIdentityWidget(
+                      radius: 16,
+                      showRole: true,
+                    ),
                   ),
-                  SizedBox(width: 8),
-                  FaIcon(
+                  const SizedBox(width: 8),
+                  const FaIcon(
                     FontAwesomeIcons.chevronDown,
                     size: 11,
                     color: AppColors.textSecondary,
                   ),
-                  SizedBox(width: 4),
+                  const SizedBox(width: 4),
                 ],
               ),
             ),

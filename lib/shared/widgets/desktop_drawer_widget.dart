@@ -1,13 +1,14 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:jambomama_nigeria_admin_portal/core/helpers/admin_access_controller.dart';
+import 'package:jambomama_nigeria_admin_portal/modules/profile/access/admin_access_controller.dart';
 import 'package:jambomama_nigeria_admin_portal/shared/model/admin_model.dart';
 import 'package:jambomama_nigeria_admin_portal/shared/utils/app_helpers.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../core/routes/route_helper.dart';
 import '../../core/theme/colors.dart';
+import 'admin_identity_widget.dart';
 import 'app_text.dart';
 import 'custom_list_tile.dart';
 
@@ -30,6 +31,28 @@ class DesktopDraweWidget extends StatelessWidget {
             () => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AppColors.background,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: AppColors.border.withValues(alpha: 0.2),
+                      ),
+                    ),
+                    child: const AdminIdentityWidget(
+                      radius: 18,
+                      showRole: true,
+                      showEmail: true,
+                    ),
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
@@ -87,15 +110,17 @@ class DesktopDraweWidget extends StatelessWidget {
                   ),
                   const SizedBox(height: 6),
                 ],
-                const SizedBox(height: 6),
-                CustomListTileWidget(
-                  iconSize: 15,
-                  textSize: 14,
-                  text: "Content",
-                  iconData: FontAwesomeIcons.pen,
-                  enabled: false,
-                  onTap: () {},
-                ),
+                if (accessController.hasTabAccess(AdminTab.contents)) ...[
+                  CustomListTileWidget(
+                    iconSize: 15,
+                    textSize: 14,
+                    text: "Contents",
+                    iconData: FontAwesomeIcons.pen,
+                    enabled: currentRoute == RouteHelpers.adminContents,
+                    onTap: () => context.goNamed(RouteHelpers.adminContents),
+                  ),
+                  const SizedBox(height: 6),
+                ],
                 const Spacer(),
                 const Divider(height: 1, color: Colors.black12),
                 const SizedBox(height: 12),
