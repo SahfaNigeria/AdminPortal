@@ -80,6 +80,7 @@ class HealthProfessionalTab extends GetView<HealthProfessionalController> {
                   .orderBy(FieldPath.documentId),
               limit: 20,
               initialLoader: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
                     height: 30,

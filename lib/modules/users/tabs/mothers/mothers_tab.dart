@@ -73,6 +73,7 @@ class MothersTab extends GetView<MothersController> {
               query: FirebaseReference.mothers.orderBy(FieldPath.documentId),
               limit: 20,
               initialLoader: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
                     height: 30,
