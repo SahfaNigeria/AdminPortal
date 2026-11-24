@@ -20,41 +20,43 @@ class UsersPage extends GetView<UsersLogic> {
       builder: (p0, p1) {
         return Column(
           children: [
+            const SizedBox(height: 24),
             SizedBox(
-              height: 24,
+              height: MediaQuery.sizeOf(context).height ,
+              child: Obx(() {
+                return DashBoardSectionWidget(
+                  title: "Users Overview",
+                  subtitle: "Overview of users on the platform",
+                  icon: FontAwesomeIcons.users,
+                  child: Expanded(
+                    child: CustomAppTabBar(
+                      tabs: [
+                        SegmentTab(
+                          label:
+                              'Mothers (${controller.mothersController.visibleMothers.length})',
+                          selectedTextColor: AppColors.surface,
+                        ),
+                        SegmentTab(
+                          label:
+                              'Health Professionals (${controller.healthProfessionalController.visibleHealthProfessionals.length})',
+                          selectedTextColor: AppColors.surface,
+                        ),
+                        SegmentTab(
+                          label: 'Admin',
+                          selectedTextColor: AppColors.surface,
+                        ),
+                      ],
+                      tabChildren: const [
+                        MothersTab(),
+                        HealthProfessionalTab(),
+                        SizedBox.shrink(),
+                      ],
+                      controller: controller.tabController,
+                    ),
+                  ),
+                );
+              }),
             ),
-            Obx(() {
-              return DashBoardSectionWidget(
-                title: "Users Overview",
-                subtitle: "Overview of users on the platform",
-                icon: FontAwesomeIcons.users,
-
-                child: CustomAppTabBar(
-                  tabs: [
-                    SegmentTab(
-                      label: 'Mothers (${controller.mothersController.filteredMothers.length==0?controller.mothersController.mothers.length: controller.mothersController.filteredMothers.length})',
-                      selectedTextColor: AppColors.surface,
-                    ),
-                    SegmentTab(
-                      label: 'Health Professionals(${controller.healthProfessionalController.filteredHealthProfessionals.length==0?controller.healthProfessionalController.healthProfessionals.length: controller.healthProfessionalController.filteredHealthProfessionals.length})',
-                      selectedTextColor: AppColors.surface,
-                    ),
-                    SegmentTab(
-                      label: 'Admin',
-                      selectedTextColor: AppColors.surface,
-                    ),
-                  ],
-                  tabChildren: [
-                    MothersTab(),
-                    HealthProfessionalTab(),
-                    Container(
-                      color: Colors.blue,
-                    )
-                  ],
-                  controller: controller.tabController,
-                ),
-              );
-            })
           ],
         );
       },

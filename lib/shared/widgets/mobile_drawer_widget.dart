@@ -111,43 +111,53 @@ class _AppDrawerState extends State<AppDrawer> {
             ),
 
             // User Profile Info Card
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppColors.background,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: Colors.grey.withValues(alpha: 0.15),
-                  width: 1,
-                ),
-              ),
-              child: const Row(
-                children: [
-                  CustomCircleAvatarWidget(radius: 20),
-                  SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        AppText(
-                          text: "Admin User",
-                          size: 14,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
-                        ),
-                        SizedBox(height: 1),
-                        AppText(
-                          text: "admin@jambomama.com",
-                          size: 11,
-                          fontWeight: FontWeight.w400,
-                          color: AppColors.textSecondary,
-                        ),
-                      ],
-                    ),
+            InkWell(
+              onTap: () {
+                _updateCurrentRoute(
+                  callback: () {
+                    context.goNamed(RouteHelpers.adminProfile);
+                  },
+                );
+              },
+              borderRadius: BorderRadius.circular(16),
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppColors.background,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: Colors.grey.withValues(alpha: 0.15),
+                    width: 1,
                   ),
-                ],
+                ),
+                child: const Row(
+                  children: [
+                    CustomCircleAvatarWidget(radius: 20),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          AppText(
+                            text: "Admin Profile",
+                            size: 14,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.textPrimary,
+                          ),
+                          SizedBox(height: 1),
+                          AppText(
+                            text: "View & Edit Settings",
+                            size: 11,
+                            fontWeight: FontWeight.w400,
+                            color: AppColors.textSecondary,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
 

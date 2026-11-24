@@ -6,7 +6,7 @@ class CustomIndexedStack extends StatelessWidget {
   final int? index;
   final Curve? curve;
   final Widget Function(BuildContext, Animation<double>, Widget?)?
-  animationBuilder;
+      animationBuilder;
   const CustomIndexedStack(
       {Key? key, this.children, this.index, this.curve, this.animationBuilder})
       : super(key: key);
@@ -15,13 +15,13 @@ class CustomIndexedStack extends StatelessWidget {
   Widget build(BuildContext context) {
     return EasyAnimatedIndexedStack(
       index: index,
-      clipBehavior: Clip.antiAliasWithSaveLayer,
+      clipBehavior: Clip.hardEdge,
       duration: Duration(
         milliseconds: 300,
       ),
       curve: curve ?? Curves.easeInOut,
       animationBuilder: animationBuilder ??
-              (context, animation, child) {
+          (context, animation, child) {
             // final curved = CurvedAnimation(
             //   parent: animation,
             //   curve: Curves.easeInOut,
@@ -105,4 +105,3 @@ class CustomIndexedStack extends StatelessWidget {
     );
   }
 }
-

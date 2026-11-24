@@ -111,7 +111,7 @@ class AdminAddHospitalLogic extends GetxController {
         "verifiedAt": isApproved ? FieldValue.serverTimestamp() : null,
       };
 
-      await FirebaseReference.firestore.collection('hospitals').add(hospitalData);
+      await FirebaseReference.hospitals.add(hospitalData);
 
       if (context.mounted) {
         AppToast.success(

@@ -7,6 +7,8 @@ import 'package:jambomama_nigeria_admin_portal/modules/users/tabs/mothers/mother
 import '../../modules/analytics/admin_analytics_controller.dart';
 import '../../modules/authentication/login/login_logic.dart';
 import '../../modules/hospitals/add/admin_add_hospital_logic.dart';
+import '../../modules/hospitals/hospitals_controller.dart';
+import '../../modules/profile/admin_profile_controller.dart';
 import '../../modules/users/users_logic.dart';
 
 Future<void> init() async {
@@ -27,5 +29,7 @@ Future<void> init() async {
   Get.lazyPut(() => AdminAnalyticsController(), fenix: true);
   Get.lazyPut(() => RegistrationLogic(flutterSecureStorage: _storage), fenix: true);
   Get.lazyPut(() => AdminAddHospitalLogic(), fenix: true);
+  Get.lazyPut(() => HospitalsController(), fenix: true);
   Get.lazyPut(() => MothersController(), fenix: true);
+  Get.lazyPut(() => AdminProfileController(), fenix: true);
 }

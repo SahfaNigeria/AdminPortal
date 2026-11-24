@@ -1,9 +1,11 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../../shared/widgets/app_text.dart';
 import '../../../shared/widgets/custom_circle_avatar_widget.dart';
 import '../../../shared/widgets/logo_widget.dart';
+import '../../routes/route_helper.dart';
 import '../../theme/colors.dart';
 
 class HeaderContentMobile extends StatelessWidget {
@@ -114,7 +116,9 @@ class HeaderContentMobile extends StatelessWidget {
 
           // User Profile Avatar
           InkWell(
-            onTap: () {},
+            onTap: () {
+              context.goNamed(RouteHelpers.adminProfile);
+            },
             borderRadius: BorderRadius.circular(20),
             child: const CustomCircleAvatarWidget(radius: 16),
           ),

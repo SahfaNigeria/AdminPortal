@@ -68,8 +68,7 @@ class CustomAppTabBar extends StatelessWidget {
           horizontal: 4,
         );
 
-    final Color defaultTabTextColor =
-        tabTextColor ?? AppColors.textSecondary;
+    final Color defaultTabTextColor = tabTextColor ?? AppColors.textSecondary;
     final Color defaultSelectedTabTextColor =
         selectedTabTextColor ?? Colors.white;
 
@@ -124,7 +123,7 @@ class CustomAppTabBar extends StatelessWidget {
           ],
         );
 
-    return  Column(
+    return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -141,19 +140,19 @@ class CustomAppTabBar extends StatelessWidget {
           indicatorDecoration: defaultIndicatorDecoration,
           tabs: tabs,
         ),
-
         SizedBox(height: spacingBelow ?? 20.0),
-
-        AnimatedBuilder(
-          animation: controller!,
-          builder: (context, child) {
-            return CustomIndexedStack(
-              index: controller!.index,
-              children: tabChildren,
-            );
-          },
+        Expanded(
+          child: AnimatedBuilder(
+            animation: controller!,
+            builder: (context, child) {
+              return CustomIndexedStack(
+                index: controller!.index,
+                children: tabChildren,
+              );
+            },
+          ),
         ),
       ],
-    );;
+    );
   }
 }

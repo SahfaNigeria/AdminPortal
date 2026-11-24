@@ -1,6 +1,4 @@
 
-import 'dart:developer';
-
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_transitions/go_transitions.dart';
@@ -14,6 +12,7 @@ import '../../modules/analytics/admin_analytics_page.dart';
 import '../../modules/emergency/emergency_assesment_page.dart';
 import '../../modules/hospitals/add/admin_add_hospital_page.dart';
 import '../../modules/hospitals/hospitals_page.dart';
+import '../../modules/profile/admin_profile_page.dart';
 import '../../modules/users/users_page.dart';
 
 class RouteHelpers {
@@ -24,6 +23,7 @@ class RouteHelpers {
   static const String adminEmergencies = "adminEmergencies";
   static const String adminHospitals = "adminHospitals";
   static const String adminAddHospitals = "adminAddHospitals";
+  static const String adminProfile = "adminProfile";
 
   static final GoRouter goRouter = GoRouter(
     navigatorKey: Get.key,
@@ -63,14 +63,12 @@ class RouteHelpers {
         path: "/admin/add-hospital",
         builder: (context, state) => AdminAddHospitalPage(),
         pageBuilder: GoTransitions.openUpwards.call,
-        // routes: [
-        //   GoRoute(
-        //     name: signUpEmail,
-        //     path: "email",
-        //     builder: (context, state) => SignUpEmail(),
-        //     pageBuilder: GoTransitions.fade,
-        //   ),
-        // ],
+      ),
+      GoRoute(
+        name: adminProfile,
+        path: "/admin/profile",
+        builder: (context, state) => const AdminProfilePage(),
+        pageBuilder: GoTransitions.openUpwards.call,
       ),
       // GoRoute(
       //   name: merchantCreateCampaignPage,

@@ -97,12 +97,19 @@ class AdminAnalyticsController extends GetxController {
       _hospitalsSubscription;
 
   @override
-  void onInit() {
-    super.onInit();
+  void onReady() {
+    // TODO: implement onReady
+    super.onReady();
+
     listenToMothers();
     listenToAdmins();
     listenToHealthProfessionals();
     listenToHospitals();
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
   }
 
   void listenToMothers() {
@@ -222,11 +229,13 @@ class AdminAnalyticsController extends GetxController {
   }
 
   @override
-  void onClose() {
+  void dispose() {
     _mothersSubscription?.cancel();
     _adminsSubscription?.cancel();
     _healthProfessionalsSubscription?.cancel();
     _hospitalsSubscription?.cancel();
-    super.onClose();
+    super.dispose();
   }
+
+
 }
