@@ -10,13 +10,14 @@ import 'package:jambomama_nigeria_admin_portal/shared/widgets/app_text.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../core/firebase/firebase_reference.dart';
+import '../../shared/widgets/custom_scaffold.dart';
 
 class PendingApprovalPage extends GetView<AdminAccessController> {
   const PendingApprovalPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CustomScaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: Center(
