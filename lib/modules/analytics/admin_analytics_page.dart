@@ -99,6 +99,7 @@ class AdminAnalyticsPage extends GetView<AdminAnalyticsController> {
             mothersCount: controller.mothers.length.toDouble(),
             healthcareCount: controller.healthProfessionals.length.toDouble(),
             adminCount: controller.admins.length.toDouble(),
+            hospitalsColor: AppColors.primary,
             hospitalsCount: controller.hospitals.length.toDouble(),
             title: "User Role Distribution",
             subtitle: "Percentage of mothers, healthcare professionals, and admins on the platform",
