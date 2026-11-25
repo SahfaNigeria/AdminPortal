@@ -80,13 +80,13 @@ class RegistrationLogic extends GetxController {
           adminModel.toMap()
         ).then((value)async{
            isSubmitting.value = false;
-           userNameController.clear();
-           emailController.clear();
-           passwordController.clear();
            await flutterSecureStorage.write( key: AppConstants.adminIdKey,  value: adminModel.id);
            Get.focusScope?.unfocus();
            context.goNamed(RouteHelpers.adminAnalytics);
            AppToast.success("Admin registered successfully");
+           userNameController.clear();
+           emailController.clear();
+           passwordController.clear();
          });
 
       }else{

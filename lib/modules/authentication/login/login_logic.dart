@@ -61,11 +61,11 @@ class LoginLogic extends GetxController {
       );
       if(userCredential.user?.uid != null){
         isSubmitting.value = false;
-        emailController.clear();
-        passwordController.clear();
         await flutterSecureStorage.write( key: AppConstants.adminIdKey,  value: userCredential.user?.uid);
         Get.focusScope?.unfocus();
         context.goNamed(RouteHelpers.adminAnalytics);
+        emailController.clear();
+        passwordController.clear();
       }else{
         isSubmitting.value = false;
         AppToast.error("Something went wrong");
