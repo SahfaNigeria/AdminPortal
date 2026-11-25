@@ -67,11 +67,7 @@ class AdminProfilePage extends GetView<AdminProfileController> {
                         children: [
                           ScaleButton(
                             onTap: () {
-                              if (context.canPop()) {
-                                context.pop();
-                              } else {
-                                context.goNamed(RouteHelpers.adminAnalytics);
-                              }
+                              context.pop();
                             },
                             child: Container(
                               padding: const EdgeInsets.symmetric(
@@ -506,12 +502,7 @@ class AdminProfilePage extends GetView<AdminProfileController> {
                                       Flexible(
                                         child: OutlinedButton(
                                           onPressed: () {
-                                            if (context.canPop()) {
-                                              context.pop();
-                                            } else {
-                                              context.goNamed(
-                                                  RouteHelpers.adminAnalytics);
-                                            }
+                                            context.pop();
                                           },
                                           style: OutlinedButton.styleFrom(
                                             padding: const EdgeInsets.symmetric(
