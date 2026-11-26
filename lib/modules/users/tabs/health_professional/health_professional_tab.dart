@@ -10,7 +10,9 @@ import 'package:material_ui/material_ui.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../shared/widgets/custom_app_button.dart';
 import '../../../../shared/widgets/custom_circular_progress_indicator.dart';
+import '../../../../shared/widgets/custom_initial_loader_widget.dart';
 import '../../../../shared/widgets/custom_search_text_field.dart';
+import '../../../../shared/widgets/country_filter_button.dart';
 import '../../../../shared/widgets/users_expandable_widget.dart';
 import 'health_professional_controller.dart';
 
@@ -31,20 +33,29 @@ class HealthProfessionalTab extends GetView<HealthProfessionalController> {
             ),
             const SizedBox(width: 10),
             Obx(
+              () {
+                final selectedCountry = controller.selectedCountry.value;
+                return CountryFilterButton(
+                  selectedCountry: selectedCountry,
+                  onChanged: controller.setSelectedCountry,
+                );
+              },
+            ),
+            const SizedBox(width: 10),
+            Obx(
               () => CustomAppButton(
                 child: FaIcon(
-                  controller.isSearchActive.value
+                  controller.isSearchActive.value &&
+                          controller.selectedCountry.value == null
                       ? FontAwesomeIcons.xmark
                       : FontAwesomeIcons.magnifyingGlass,
                   size: 20,
                   color: AppColors.surface,
                 ),
                 isLoading: controller.isSearchLoading.value,
-                onTap: controller.isSearchActive.value
-                    ? () {
-                        controller.searchController.clear();
-                        controller.isSearchActive.value = false;
-                      }
+                onTap: controller.isSearchActive.value &&
+                        controller.selectedCountry.value == null
+                    ? controller.clearFilter
                     : controller.searchHealthProfessionals,
               ),
             ),
@@ -57,7 +68,8 @@ class HealthProfessionalTab extends GetView<HealthProfessionalController> {
             if (controller.isSearchActive.value) {
               if (controller.filteredHealthProfessionals.isEmpty) {
                 return const Center(
-                  child: Text("No health professionals found."),
+                  child:
+                      AppText(text: "No health professionals found.", size: 18),
                 );
               }
               return ListView.builder(
@@ -79,22 +91,10 @@ class HealthProfessionalTab extends GetView<HealthProfessionalController> {
               query: FirebaseReference.healthProfessionals
                   .orderBy(FieldPath.documentId),
               limit: 20,
-              initialLoader: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: 30,
-                  ),
-                  CustomCircularProgressIndicator(
-                    height: 20,
-                    color: AppColors.primary,
-                    width: 20,
-                  ),
-                ],
-              ),
+              initialLoader: CustomInitialLoaderWidget(),
               onEmpty: Center(
                 child: AppText(
-                  text: "No mothers found.",
+                  text: "No health professionals found.",
                   size: 26,
                 ),
               ),
@@ -171,6 +171,19 @@ class HealthProfessionalTab extends GetView<HealthProfessionalController> {
         imageUrl: professional.midWifeImage,
         additionalDetails: additionalDetails,
         isApproved: isApproved,
+        additionalActions: professional.email.trim().isEmpty
+            ? null
+            : [
+                CustomAppButton(
+                  title: "Send reset link",
+                  isLoading: controller.sendingPasswordResetIds
+                      .contains(professional.midWifeId),
+                  onTap: () => controller.sendPasswordResetLink(
+                    professional.midWifeId,
+                    professional.email,
+                  ),
+                ),
+              ],
         onApprovalChanged: (value) {
           controller.updateApproval(value, professional.midWifeId);
         },

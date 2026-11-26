@@ -10,8 +10,8 @@ import 'package:material_ui/material_ui.dart';
 import '../../../../shared/model/mothers_model.dart';
 import '../../../../shared/widgets/custom_app_button.dart';
 import '../../../../shared/widgets/custom_circular_progress_indicator.dart';
-import '../../../../shared/widgets/custom_loading_animation.dart';
 import '../../../../shared/widgets/custom_search_text_field.dart';
+import '../../../../shared/widgets/country_filter_button.dart';
 import '../../../../shared/widgets/users_expandable_widget.dart';
 import 'mothers_controller.dart';
 
@@ -32,17 +32,30 @@ class MothersTab extends GetView<MothersController> {
             ),
             const SizedBox(width: 10),
             Obx(
+              () {
+                final selectedCountry = controller.selectedCountry.value;
+                return CountryFilterButton(
+                  selectedCountry: selectedCountry,
+                  onChanged: controller.setSelectedCountry,
+                );
+              },
+            ),
+            const SizedBox(width: 10),
+            Obx(
               () => CustomAppButton(
                 child: FaIcon(
-                  controller.isSearchActive.value?  FontAwesomeIcons.xmark:FontAwesomeIcons.magnifyingGlass,
+                  controller.isSearchActive.value &&
+                          controller.selectedCountry.value == null
+                      ? FontAwesomeIcons.xmark
+                      : FontAwesomeIcons.magnifyingGlass,
                   size: 20,
                   color: AppColors.surface,
                 ),
                 isLoading: controller.isSearchLoading.value,
-                onTap: controller.isSearchActive.value? () {
-                  controller.searchController.clear();
-                  controller.isSearchActive.value = false;
-                }:controller.searchMothers,
+                onTap: controller.isSearchActive.value &&
+                        controller.selectedCountry.value == null
+                    ? controller.clearFilter
+                    : controller.searchMothers,
               ),
             ),
           ],
@@ -53,7 +66,9 @@ class MothersTab extends GetView<MothersController> {
           child: Obx(() {
             if (controller.isSearchActive.value) {
               if (controller.filteredMothers.isEmpty) {
-                return const Center(child: AppText(text: "No mothers found."));
+                return const Center(
+                  child: AppText(text: "No mothers found.", size: 18),
+                );
               }
               return ListView.builder(
                 itemCount: controller.filteredMothers.length,
@@ -65,7 +80,7 @@ class MothersTab extends GetView<MothersController> {
 
             return FirestorePagination(
               key: const ValueKey("mothers-pagination"),
-              bottomLoader:  CustomCircularProgressIndicator(
+              bottomLoader: CustomCircularProgressIndicator(
                 height: 20,
                 color: AppColors.primary,
                 width: 20,
@@ -85,7 +100,9 @@ class MothersTab extends GetView<MothersController> {
                   ),
                 ],
               ),
-              onEmpty: const Center(child: AppText(text: "No mothers found.", size: 26,),),
+              onEmpty: const Center(
+                child: AppText(text: "No mothers found.", size: 26),
+              ),
               itemBuilder: (context, documents, index) {
                 final document = documents[index]
                     as QueryDocumentSnapshot<Map<String, dynamic>>;
@@ -103,7 +120,7 @@ class MothersTab extends GetView<MothersController> {
     final String villageTown = mother.villageTown;
     final String cityValue = mother.cityValue;
     final String stateValue = mother.stateValue;
-    final String countryValue = mother.cityValue;
+    final String countryValue = mother.countryValue;
 
     final List<String> locationParts = [
       if (address.isNotEmpty) address,
@@ -139,17 +156,32 @@ class MothersTab extends GetView<MothersController> {
       additionalDetails["Profile Image Type"] = mother.profileImageType;
     }
 
-    return UsersExpandableWidget(
-      userName: mother.fullName,
-      userId: mother.motherId,
-      userRole: "Mother",
-      status: "Active",
-      email: mother.email,
-      phoneNumber: mother.phoneNumber,
-      location: locationParts.isNotEmpty ? locationParts.join(", ") : null,
-      imageUrl: mother.profileImage,
-      additionalDetails: additionalDetails,
-      isApproved: true,
+    return Obx(
+      () => UsersExpandableWidget(
+        userName: mother.fullName,
+        userId: mother.motherId,
+        userRole: "Mother",
+        status: "Active",
+        email: mother.email,
+        phoneNumber: mother.phoneNumber,
+        location: locationParts.isNotEmpty ? locationParts.join(", ") : null,
+        imageUrl: mother.profileImage,
+        additionalDetails: additionalDetails,
+        isApproved: true,
+        additionalActions: mother.email.trim().isEmpty
+            ? null
+            : [
+                CustomAppButton(
+                  title: "Send reset link",
+                  isLoading: controller.sendingPasswordResetIds
+                      .contains(mother.motherId),
+                  onTap: () => controller.sendPasswordResetLink(
+                    mother.motherId,
+                    mother.email,
+                  ),
+                ),
+              ],
+      ),
     );
   }
 }

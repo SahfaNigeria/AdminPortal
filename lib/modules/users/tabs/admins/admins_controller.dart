@@ -16,6 +16,7 @@ class AdminsController extends GetxController {
   final searchQuery = ''.obs;
   final isSearchActive = false.obs;
   final updatingAdminIds = <String>{}.obs;
+  final sendingPasswordResetIds = <String>{}.obs;
 
   final draftAccountType = AccountType.admin.obs;
   final draftIsApproved = false.obs;
@@ -126,6 +127,28 @@ class AdminsController extends GetxController {
     isSearchActive.value = false;
   }
 
+  Future<void> sendPasswordResetLink(String adminId, String email) async {
+    final resetEmail = email.trim();
+    if (resetEmail.isEmpty) {
+      AppToast.error('This user does not have an email address.');
+      return;
+    }
+    if (sendingPasswordResetIds.contains(adminId)) {
+      return;
+    }
+
+    sendingPasswordResetIds.add(adminId);
+    try {
+      await FirebaseReference.firebaseAuth
+          .sendPasswordResetEmail(email: resetEmail);
+      AppToast.success('Password reset link sent to $resetEmail.');
+    } catch (error) {
+      FirebaseError.handle(error);
+    } finally {
+      sendingPasswordResetIds.remove(adminId);
+    }
+  }
+
   void prepareAccessReview(AdminModel admin) {
     draftAccountType.value = admin.accountType;
     draftIsApproved.value = admin.isApproved;
@@ -169,24 +192,22 @@ class AdminsController extends GetxController {
           : AdminModel.fromMap(actorData, id: actorSnapshot.id);
       if (actor == null || !actor.isSuperAdmin || !actor.isApproved) {
         canManageAdmins.value = false;
-        AppToast.error('Only an approved Super Admin can manage administrators.');
+        AppToast.error(
+            'Only an approved Super Admin can manage administrators.');
         return false;
       }
 
-      final accountType = draftIsApproved.value
-          ? draftAccountType.value
-          : AccountType.admin;
+      final accountType =
+          draftIsApproved.value ? draftAccountType.value : AccountType.admin;
       final accessibleTabs = accountType == AccountType.superAdmin
           ? <AdminTab>[]
           : selectedTabs.toSet().toList();
 
       await FirebaseReference.admins.doc(admin.id).update({
         'accountType': accountType.toValue(),
-        'accessibleTabs':
-            accessibleTabs.map((tab) => tab.toValue()).toList(),
+        'accessibleTabs': accessibleTabs.map((tab) => tab.toValue()).toList(),
         'isApproved': draftIsApproved.value,
-        'approvedBySuperAdminId':
-            draftIsApproved.value ? currentAdminId : '',
+        'approvedBySuperAdminId': draftIsApproved.value ? currentAdminId : '',
         'updatedAt': DateTime.now().toIso8601String(),
       });
 

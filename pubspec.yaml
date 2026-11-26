@@ -60,6 +60,10 @@ dependencies:
   expandable: ^5.0.1
   firebase_pagination: ^4.3.0
   cached_network_image: ^4.0.7
+  country_picker: ^2.0.26
+  js_notifications: ^1.0.0
+  badges: ^4.0.1
+  tooltip_card: ^2.9.0
 
 dev_dependencies:
   flutter_test:

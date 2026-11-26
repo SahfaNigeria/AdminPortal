@@ -65,6 +65,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
+  badges:
+    dependency: "direct main"
+    description:
+      name: badges
+      sha256: "4d53519c5883c74974b8efd2ea3cef85bab17b79406b83b91a022285c46e5560"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.1"
   boolean_selector:
     dependency: transitive
     description:
@@ -145,6 +153,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.19.1"
+  country_picker:
+    dependency: "direct main"
+    description:
+      name: country_picker
+      sha256: "8ef721183bd7e0a6017c413693cdc68051daceef5790f5420c3b4378b5c69115"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.28"
   cross_file:
     dependency: transitive
     description:
@@ -669,6 +685,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.20.3"
+  js_notifications:
+    dependency: "direct main"
+    description:
+      name: js_notifications
+      sha256: e1d5a1eb420f54e5908f1028b253d0b6604a13350f1180d46e13d4ab781362c1
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   leak_tracker:
     dependency: transitive
     description:
@@ -885,6 +909,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
+  simple_print:
+    dependency: transitive
+    description:
+      name: simple_print
+      sha256: "49b6796fb93b557bbba4eca687b8521d3d20ffee47d74d8a0857f6ee0727042b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1+2"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -986,6 +1018,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.14"
+  tooltip_card:
+    dependency: "direct main"
+    description:
+      name: tooltip_card
+      sha256: "5aab52e2004b1569aac58615c46c7bf67e4914e212e2bcd04f84e20be1ab487b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.9.0"
   typed_data:
     dependency: transitive
     description:
@@ -994,6 +1034,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.2"
+  universal_io:
+    dependency: transitive
+    description:
+      name: universal_io
+      sha256: f63cbc48103236abf48e345e07a03ce5757ea86285ed313a6a032596ed9301e2
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.1"
   url_launcher:
     dependency: transitive
     description:

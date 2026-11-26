@@ -72,6 +72,9 @@ class UsersExpandableWidget extends StatelessWidget {
   /// Custom action widgets.
   final List<Widget>? customActions;
 
+  /// Actions to display alongside the approval button or custom actions.
+  final List<Widget>? additionalActions;
+
   /// Whether to display the action buttons section.
   final bool? showActionButtons;
 
@@ -106,17 +109,21 @@ class UsersExpandableWidget extends StatelessWidget {
     this.isLoading = false,
     this.onApprovalChanged,
     this.customActions,
+    this.additionalActions,
     this.showActionButtons,
     this.initiallyExpanded = false,
     this.onExpansionChanged,
     this.backgroundColor,
-    this.margin, this.leading, this.IdName = "ID:",
+    this.margin,
+    this.leading,
+    this.IdName = "ID:",
   }) : super(key: key);
 
   bool get _hasActions =>
       showActionButtons ??
-          (onApprovalChanged != null ||
-              (customActions != null && customActions!.isNotEmpty));
+      (onApprovalChanged != null ||
+          (customActions != null && customActions!.isNotEmpty) ||
+          (additionalActions != null && additionalActions!.isNotEmpty));
 
   Color _getStatusColor(String statusText) {
     switch (statusText.trim().toLowerCase()) {
@@ -142,8 +149,7 @@ class UsersExpandableWidget extends StatelessWidget {
   }
 
   Widget _buildStatusChip(String statusText) {
-    final Color effectiveColor =
-        statusColor ?? _getStatusColor(statusText);
+    final Color effectiveColor = statusColor ?? _getStatusColor(statusText);
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -259,8 +265,7 @@ class UsersExpandableWidget extends StatelessWidget {
       );
     }
 
-    if (registrationDate != null &&
-        registrationDate!.isNotEmpty) {
+    if (registrationDate != null && registrationDate!.isNotEmpty) {
       tiles.add(
         _buildDetailTile(
           icon: Icons.calendar_today_outlined,
@@ -303,12 +308,8 @@ class UsersExpandableWidget extends StatelessWidget {
         onApprovalChanged?.call(!isApproved);
       },
       title: isApproved ? "Disapprove" : "Approve",
-      color: isApproved
-          ? const Color(0xFFFDE8E8)
-          : const Color(0xFF2E7D32),
-      textColor: isApproved
-          ? const Color(0xFFD32F2F)
-          : Colors.white,
+      color: isApproved ? const Color(0xFFFDE8E8) : const Color(0xFF2E7D32),
+      textColor: isApproved ? const Color(0xFFD32F2F) : Colors.white,
       isLoading: isLoading,
     );
   }
@@ -323,12 +324,11 @@ class UsersExpandableWidget extends StatelessWidget {
       backgroundColor: backgroundColor,
       margin: margin ?? const EdgeInsets.symmetric(vertical: 6),
       showDivider: true,
-
-      leading: leading??CustomCircleAvatarWidget(
-        imageUrl: imageUrl,
-        radius: avatarRadius,
-      ),
-
+      leading: leading ??
+          CustomCircleAvatarWidget(
+            imageUrl: imageUrl,
+            radius: avatarRadius,
+          ),
       titleWidget: Row(
         children: [
           Expanded(
@@ -339,14 +339,12 @@ class UsersExpandableWidget extends StatelessWidget {
               color: AppColors.textPrimary,
             ),
           ),
-
           if (status != null && status!.isNotEmpty) ...[
             const SizedBox(width: 8),
             _buildStatusChip(status!),
           ],
         ],
       ),
-
       subtitleWidget: Row(
         children: [
           Flexible(
@@ -357,14 +355,12 @@ class UsersExpandableWidget extends StatelessWidget {
               color: AppColors.textSecondary,
             ),
           ),
-
           if (userRole != null && userRole!.isNotEmpty) ...[
             AppText(
               text: " • ",
               size: 12,
               color: AppColors.textSecondary,
             ),
-
             Container(
               padding: const EdgeInsets.symmetric(
                 horizontal: 6,
@@ -384,22 +380,17 @@ class UsersExpandableWidget extends StatelessWidget {
           ],
         ],
       ),
-
       expandedChild: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (customExpandedContent != null) ...[
             customExpandedContent!,
-
-            if (detailTiles.isNotEmpty)
-              const SizedBox(height: 12),
+            if (detailTiles.isNotEmpty) const SizedBox(height: 12),
           ],
-
           if (detailTiles.isNotEmpty)
             LayoutBuilder(
               builder: (context, constraints) {
-                final bool isDesktop =
-                    constraints.maxWidth > 550;
+                final bool isDesktop = constraints.maxWidth > 550;
 
                 if (isDesktop) {
                   return Wrap(
@@ -408,11 +399,10 @@ class UsersExpandableWidget extends StatelessWidget {
                     children: detailTiles
                         .map(
                           (tile) => SizedBox(
-                        width:
-                        (constraints.maxWidth - 12) / 2,
-                        child: tile,
-                      ),
-                    )
+                            width: (constraints.maxWidth - 12) / 2,
+                            child: tile,
+                          ),
+                        )
                         .toList(),
                   );
                 } else {
@@ -420,32 +410,34 @@ class UsersExpandableWidget extends StatelessWidget {
                     children: detailTiles
                         .map(
                           (tile) => Padding(
-                        padding: const EdgeInsets.only(
-                          bottom: 10,
-                        ),
-                        child: tile,
-                      ),
-                    )
+                            padding: const EdgeInsets.only(
+                              bottom: 10,
+                            ),
+                            child: tile,
+                          ),
+                        )
                         .toList(),
                   );
                 }
               },
             ),
-
           if (_hasActions) ...[
             const SizedBox(height: 14),
             const Divider(height: 1, thickness: 1),
             const SizedBox(height: 14),
-
-            if (customActions != null &&
-                customActions!.isNotEmpty)
-              Wrap(
-                spacing: 12,
-                runSpacing: 8,
-                children: customActions!,
-              )
-            else
-              _buildApprovalButton(),
+            Wrap(
+              spacing: 12,
+              runSpacing: 8,
+              children: [
+                if (customActions != null && customActions!.isNotEmpty)
+                  ...customActions!
+                else if (onApprovalChanged != null ||
+                    additionalActions == null ||
+                    additionalActions!.isEmpty)
+                  _buildApprovalButton(),
+                if (additionalActions != null) ...additionalActions!,
+              ],
+            ),
           ],
         ],
       ),

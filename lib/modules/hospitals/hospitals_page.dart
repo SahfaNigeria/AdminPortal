@@ -71,7 +71,8 @@ class HospitalsPage extends GetView<HospitalPageController> {
                         width: double.infinity,
                         child: CustomAppButton(
                           color: AppColors.primary,
-                          onTap: () => context.goNamed(RouteHelpers.adminAddHospitals),
+                          onTap: () =>
+                              context.goNamed(RouteHelpers.adminAddHospitals),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: const [
@@ -121,7 +122,8 @@ class HospitalsPage extends GetView<HospitalPageController> {
                           const SizedBox(width: 10),
                           CustomAppButton(
                             color: AppColors.primary,
-                            onTap: () => context.goNamed(RouteHelpers.adminAddHospitals),
+                            onTap: () =>
+                                context.goNamed(RouteHelpers.adminAddHospitals),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: const [
@@ -134,6 +136,7 @@ class HospitalsPage extends GetView<HospitalPageController> {
                                 AppText(
                                   text: "Add Hospital",
                                   color: AppColors.surface,
+                                  size: 14.5,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ],
@@ -249,7 +252,8 @@ class HospitalsPage extends GetView<HospitalPageController> {
         IdName: "ID:",
         userRole: "Hospital",
         status: isVerified ? "Approved" : "Pending",
-        phoneNumber: hospital.phoneNumber.isNotEmpty ? hospital.phoneNumber : null,
+        phoneNumber:
+            hospital.phoneNumber.isNotEmpty ? hospital.phoneNumber : null,
         registrationDate: hospital.createdAt?.toString(),
         location: locationParts.isNotEmpty ? locationParts.join(", ") : null,
         leading: Container(

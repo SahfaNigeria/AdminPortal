@@ -62,7 +62,12 @@ class AdminsTab extends GetView<AdminsController> {
                 message: controller.loadError.value!,
                 action: TextButton(
                   onPressed: controller.loadAdmins,
-                  child: const Text('Retry'),
+                  child: const AppText(
+                    text: 'Retry',
+                    size: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.primary,
+                  ),
                 ),
               );
             }
@@ -128,17 +133,24 @@ class AdminsTab extends GetView<AdminsController> {
         additionalDetails: details,
         isApproved: admin.isApproved,
         isLoading: controller.updatingAdminIds.contains(admin.id),
-        showActionButtons: !isCurrentAdmin,
-        customActions: isCurrentAdmin
-            ? null
-            : [
-                CustomAppButton(
-                  title:
-                      admin.isApproved ? 'Manage Access' : 'Review & Approve',
-                  isLoading: controller.updatingAdminIds.contains(admin.id),
-                  onTap: () => _openAccessReview(context, admin),
-                ),
-              ],
+        showActionButtons: admin.email.trim().isNotEmpty || !isCurrentAdmin,
+        customActions: [
+          if (admin.email.trim().isNotEmpty)
+            CustomAppButton(
+              title: 'Send reset link',
+              isLoading: controller.sendingPasswordResetIds.contains(admin.id),
+              onTap: () => controller.sendPasswordResetLink(
+                admin.id,
+                admin.email,
+              ),
+            ),
+          if (!isCurrentAdmin)
+            CustomAppButton(
+              title: admin.isApproved ? 'Manage Access' : 'Review & Approve',
+              isLoading: controller.updatingAdminIds.contains(admin.id),
+              onTap: () => _openAccessReview(context, admin),
+            ),
+        ],
       ),
     );
   }
@@ -205,10 +217,12 @@ class _AdminAccessDialog extends StatelessWidget {
                         color: AppColors.primary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      child: const Icon(
-                        Icons.admin_panel_settings_outlined,
-                        color: AppColors.primary,
-                        size: 26,
+                      child: const Center(
+                        child: FaIcon(
+                          FontAwesomeIcons.userShield,
+                          color: AppColors.primary,
+                          size: 22,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 14),
@@ -216,20 +230,16 @@ class _AdminAccessDialog extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            title,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge
-                                ?.copyWith(fontWeight: FontWeight.w700),
+                          AppText(
+                            text: title,
+                            size: 18,
+                            fontWeight: FontWeight.w700,
                           ),
                           const SizedBox(height: 3),
-                          Text(
-                            'Set role and dashboard permissions',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(color: AppColors.textSecondary),
+                          const AppText(
+                            text: 'Set role and dashboard permissions',
+                            size: 12,
+                            color: AppColors.textSecondary,
                           ),
                         ],
                       ),
@@ -260,17 +270,16 @@ class _AdminAccessDialog extends StatelessWidget {
                               radius: 21,
                               backgroundColor:
                                   AppColors.primary.withValues(alpha: 0.1),
-                              child: Text(
-                                (admin.username.isEmpty
+                              child: AppText(
+                                text: (admin.username.isEmpty
                                         ? admin.email
                                         : admin.username)
                                     .characters
                                     .first
                                     .toUpperCase(),
-                                style: const TextStyle(
-                                  color: AppColors.primary,
-                                  fontWeight: FontWeight.w700,
-                                ),
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.w700,
+                                size: 14,
                               ),
                             ),
                             const SizedBox(width: 12),
@@ -278,22 +287,19 @@ class _AdminAccessDialog extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    admin.username.isEmpty
+                                  AppText(
+                                    text: admin.username.isEmpty
                                         ? admin.email
                                         : admin.username,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                    ),
+                                    fontWeight: FontWeight.w700,
+                                    size: 14,
                                   ),
                                   if (admin.username.isNotEmpty) ...[
                                     const SizedBox(height: 3),
-                                    Text(
-                                      admin.email,
-                                      style: const TextStyle(
-                                        color: AppColors.textSecondary,
-                                        fontSize: 12,
-                                      ),
+                                    AppText(
+                                      text: admin.email,
+                                      color: AppColors.textSecondary,
+                                      size: 12,
                                     ),
                                   ],
                                 ],
@@ -330,14 +336,17 @@ class _AdminAccessDialog extends StatelessWidget {
                             horizontal: 16,
                             vertical: 4,
                           ),
-                          title: const Text(
-                            'Approve this administrator',
-                            style: TextStyle(fontWeight: FontWeight.w600),
+                          title: const AppText(
+                            text: 'Approve this administrator',
+                            fontWeight: FontWeight.w600,
+                            size: 14,
                           ),
-                          subtitle: Text(
-                            isApproved
+                          subtitle: AppText(
+                            text: isApproved
                                 ? 'This account is approved.'
                                 : 'This account remains pending.',
+                            color: AppColors.textSecondary,
+                            size: 12,
                           ),
                         ),
                       ),
@@ -354,7 +363,7 @@ class _AdminAccessDialog extends StatelessWidget {
                           _AdminRoleChoice(
                             title: 'Admin',
                             subtitle: 'Choose specific tabs',
-                            icon: Icons.manage_accounts_outlined,
+                            icon: FontAwesomeIcons.userGear,
                             selected: controller.draftAccountType.value ==
                                 AccountType.admin,
                             onSelected: isSaving
@@ -365,7 +374,7 @@ class _AdminAccessDialog extends StatelessWidget {
                           _AdminRoleChoice(
                             title: 'Super Admin',
                             subtitle: 'Access to every tab',
-                            icon: Icons.shield_outlined,
+                            icon: FontAwesomeIcons.shieldHalved,
                             selected: isSuperAdmin,
                             onSelected: isSaving
                                 ? null
@@ -391,14 +400,21 @@ class _AdminAccessDialog extends StatelessWidget {
                           final hasAccess = isSuperAdmin ||
                               controller.selectedTabs.contains(tab);
                           return FilterChip(
-                            avatar: Icon(
+                            avatar: FaIcon(
                               _adminTabIcon(tab),
-                              size: 18,
+                              size: 14,
                               color: hasAccess
                                   ? AppColors.primary
                                   : AppColors.textSecondary,
                             ),
-                            label: Text(tab.displayName),
+                            label: AppText(
+                              text: tab.displayName,
+                              color: hasAccess
+                                  ? AppColors.primary
+                                  : AppColors.textPrimary,
+                              fontWeight: FontWeight.w600,
+                              size: 13,
+                            ),
                             selected: hasAccess,
                             showCheckmark: false,
                             backgroundColor: const Color(0xFFF7F7F8),
@@ -408,12 +424,6 @@ class _AdminAccessDialog extends StatelessWidget {
                               color: hasAccess
                                   ? AppColors.primary.withValues(alpha: 0.35)
                                   : const Color(0xFFE4E4E7),
-                            ),
-                            labelStyle: TextStyle(
-                              color: hasAccess
-                                  ? AppColors.primary
-                                  : AppColors.textPrimary,
-                              fontWeight: FontWeight.w600,
                             ),
                             onSelected: isSuperAdmin || isSaving
                                 ? null
@@ -451,7 +461,11 @@ class _AdminAccessDialog extends StatelessWidget {
                           vertical: 14,
                         ),
                       ),
-                      child: const Text('Cancel'),
+                      child: const AppText(
+                        text: 'Cancel',
+                        color: AppColors.textSecondary,
+                        size: 14,
+                      ),
                     ),
                     ElevatedButton(
                       onPressed: isSaving || (!isApproved && !admin.isApproved)
@@ -487,14 +501,20 @@ class _AdminAccessDialog extends StatelessWidget {
                           : Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(
+                                FaIcon(
                                   isApproved
-                                      ? Icons.check_rounded
-                                      : Icons.block_outlined,
-                                  size: 18,
+                                      ? FontAwesomeIcons.check
+                                      : FontAwesomeIcons.ban,
+                                  size: 14,
+                                  color: AppColors.surface,
                                 ),
                                 const SizedBox(width: 8),
-                                Text(saveLabel),
+                                AppText(
+                                  text: saveLabel,
+                                  color: AppColors.surface,
+                                  fontWeight: FontWeight.w600,
+                                  size: 14,
+                                ),
                               ],
                             ),
                     ),
@@ -508,18 +528,18 @@ class _AdminAccessDialog extends StatelessWidget {
     });
   }
 
-  IconData _adminTabIcon(AdminTab tab) {
+  FaIconData _adminTabIcon(AdminTab tab) {
     switch (tab) {
       case AdminTab.analytics:
-        return Icons.insights_outlined;
+        return FontAwesomeIcons.chartLine;
       case AdminTab.users:
-        return Icons.people_outline;
+        return FontAwesomeIcons.users;
       case AdminTab.hospital:
-        return Icons.local_hospital_outlined;
+        return FontAwesomeIcons.hospital;
       case AdminTab.approval:
-        return Icons.notifications_active_outlined;
+        return FontAwesomeIcons.bell;
       case AdminTab.contents:
-        return Icons.article_outlined;
+        return FontAwesomeIcons.fileLines;
     }
   }
 }
@@ -538,20 +558,16 @@ class _AdminDialogSectionTitle extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: Theme.of(context)
-              .textTheme
-              .titleMedium
-              ?.copyWith(fontWeight: FontWeight.w700),
+        AppText(
+          text: title,
+          size: 16,
+          fontWeight: FontWeight.w700,
         ),
         const SizedBox(height: 3),
-        Text(
-          subtitle,
-          style: Theme.of(context)
-              .textTheme
-              .bodySmall
-              ?.copyWith(color: AppColors.textSecondary),
+        AppText(
+          text: subtitle,
+          size: 12,
+          color: AppColors.textSecondary,
         ),
       ],
     );
@@ -573,13 +589,11 @@ class _AdminStatusBadge extends StatelessWidget {
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Text(
-        isApproved ? 'Approved' : 'Pending',
-        style: TextStyle(
-          color: color,
-          fontSize: 12,
-          fontWeight: FontWeight.w700,
-        ),
+      child: AppText(
+        text: isApproved ? 'Approved' : 'Pending',
+        color: color,
+        size: 12,
+        fontWeight: FontWeight.w700,
       ),
     );
   }
@@ -596,7 +610,7 @@ class _AdminRoleChoice extends StatelessWidget {
 
   final String title;
   final String subtitle;
-  final IconData icon;
+  final FaIconData icon;
   final bool selected;
   final VoidCallback? onSelected;
 
@@ -624,34 +638,30 @@ class _AdminRoleChoice extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(icon, color: color, size: 22),
+            FaIcon(icon, color: color, size: 18),
             const SizedBox(width: 10),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      color:
-                          selected ? AppColors.primary : AppColors.textPrimary,
-                      fontWeight: FontWeight.w700,
-                    ),
+                  AppText(
+                    text: title,
+                    color: selected ? AppColors.primary : AppColors.textPrimary,
+                    fontWeight: FontWeight.w700,
+                    size: 14,
                   ),
                   const SizedBox(height: 2),
-                  Text(
-                    subtitle,
-                    style: const TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 11,
-                    ),
+                  AppText(
+                    text: subtitle,
+                    color: AppColors.textSecondary,
+                    size: 11,
                   ),
                 ],
               ),
             ),
             if (selected)
-              const Icon(
-                Icons.check_circle_rounded,
+              const FaIcon(
+                FontAwesomeIcons.circleCheck,
                 color: AppColors.primary,
                 size: 18,
               ),
@@ -679,19 +689,17 @@ class _AdminInfoNotice extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(
-            Icons.info_outline,
+          const FaIcon(
+            FontAwesomeIcons.circleInfo,
             size: 18,
             color: Color(0xFF986C0B),
           ),
           const SizedBox(width: 8),
           Expanded(
-            child: Text(
-              message,
-              style: const TextStyle(
-                color: Color(0xFF725208),
-                fontSize: 12,
-              ),
+            child: AppText(
+              text: message,
+              color: const Color(0xFF725208),
+              size: 12,
             ),
           ),
         ],
