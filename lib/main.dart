@@ -24,7 +24,7 @@ void main() async {
               projectId: 'jambo-mama-nigeria',
               storageBucket: 'jambo-mama-nigeria.appspot.com')
           : null);
-  runApp(const  MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
