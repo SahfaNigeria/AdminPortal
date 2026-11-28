@@ -181,10 +181,10 @@ packages:
     dependency: "direct main"
     description:
       name: cupertino_icons
-      sha256: ba631d1c7f7bef6b729a622b7b752645a2d076dba9976925b8f25725a30e1ee6
+      sha256: b7cc2390aac296c083bea762859413eb1cf5b630c70e0c7e4d831018f762a8b2
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.8"
+    version: "2.0.0"
   cupertino_ui:
     dependency: transitive
     description:
@@ -709,14 +709,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.20.3"
-  js_notifications:
-    dependency: "direct main"
-    description:
-      name: js_notifications
-      sha256: e1d5a1eb420f54e5908f1028b253d0b6604a13350f1180d46e13d4ab781362c1
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0"
   leak_tracker:
     dependency: transitive
     description:
@@ -981,14 +973,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
-  simple_print:
-    dependency: transitive
-    description:
-      name: simple_print
-      sha256: "49b6796fb93b557bbba4eca687b8521d3d20ffee47d74d8a0857f6ee0727042b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.1+2"
   sky_engine:
     dependency: transitive
     description: flutter

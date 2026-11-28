@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:jambomama_nigeria_admin_portal/core/helpers/dependencies.dart'
     as dep;
 import 'package:jambomama_nigeria_admin_portal/core/services/notification/firebase_notification_service.dart';
+import 'package:jambomama_nigeria_admin_portal/firebase_options.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart' as wp;
 import 'package:google_fonts/google_fonts.dart';
@@ -16,15 +17,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   wp.setUrlStrategy(wp.PathUrlStrategy());
   await dep.init();
+
   await Firebase.initializeApp(
-      options: kIsWeb || Platform.isAndroid
-          ? FirebaseOptions(
-              apiKey: 'AIzaSyCuDuhEt1hGwmKF6z8f4To8Xi4mC9guTqE',
-              appId: '1:501778526252:web:26735b3c7b9f244c4ea189',
-              messagingSenderId: '501778526252',
-              projectId: 'jambo-mama-nigeria',
-              storageBucket: 'jambo-mama-nigeria.appspot.com')
-          : null);
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await FirebaseNotificationService.initialize();
   runApp(const MyApp());
 }

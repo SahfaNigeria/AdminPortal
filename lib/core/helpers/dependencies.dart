@@ -24,7 +24,7 @@ Future<void> init() async {
   /// api client
 
   /// controllers
-  Get.lazyPut(() => LocalNotificationService(), fenix: true);
+  // Get.lazyPut(() => LocalNotificationService(), fenix: true);
   Get.lazyPut(() => LoginLogic(flutterSecureStorage: _storage), fenix: true);
   Get.lazyPut(() => HealthProfessionalController(), fenix: true);
   Get.lazyPut(() => HospitalPageController(), fenix: true);

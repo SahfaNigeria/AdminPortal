@@ -8,8 +8,6 @@ import 'package:jambomama_nigeria_admin_portal/shared/utils/toast.dart';
 class FirebaseNotificationService {
   static final FirebaseMessaging _messaging = FirebaseMessaging.instance;
 
-  static StreamSubscription<String>? _registrationSubscription;
-
   static Future<bool> requestFcmPermission() async {
     try {
       final settings = await _messaging.requestPermission(
@@ -50,6 +48,7 @@ class FirebaseNotificationService {
 
       await _messaging.register(
         vapidKey:AppConstants.vapidKey,
+        serviceWorkerScriptPath: 'firebase-messaging-sw.js',
       );
 
       final installationId = await installationIdFuture;
@@ -62,6 +61,41 @@ class FirebaseNotificationService {
       return null;
     }
   }
+
+
+  // static Future<void> initialize() async {
+  //   try {
+  //     final messaging = FirebaseMessaging.instance;
+  //
+  //     final bool supported = await messaging.isSupported();
+  //
+  //     if (supported) {
+  //       log('Firebase Messaging is not supported by this browser.');
+  //       return;
+  //     }
+  //
+  //     messaging.onRegistered.listen(
+  //           (String fid) {
+  //         log('Firebase Installation ID: $fid');
+  //
+  //         // Save FID to Firestore here.
+  //       },
+  //       onError: (error) {
+  //         log('FCM registration stream error: $error');
+  //       },
+  //     );
+  //
+  //     await messaging.register(
+  //       vapidKey: AppConstants.vapidKey,
+  //       serviceWorkerScriptPath: 'firebase-messaging-sw.js',
+  //     );
+  //
+  //     log('Firebase Messaging registration completed.');
+  //   } catch (e, stackTrace) {
+  //     log('Firebase Messaging error: $e');
+  //     log(stackTrace.toString());
+  //   }
+  // }
 
   static Future<void> initialize() async {
     final permissionGranted = await requestFcmPermission();
@@ -76,4 +110,6 @@ class FirebaseNotificationService {
 
 // Save installationId to Firestore here.
   }
+
+
 }
