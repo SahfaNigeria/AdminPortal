@@ -64,4 +64,31 @@ void main() {
 
     expect(admin.id, 'firestore-document-id');
   });
+
+  test('fcmToken and country fields are properly mapped, serialized, and copied', () {
+    const admin = AdminModel(
+      id: 'admin-id',
+      username: 'Admin',
+      email: 'admin@example.com',
+      country: 'Nigeria',
+    );
+
+    // expect(admin.fcmToken, 'test_token_123');
+    expect(admin.country, 'Nigeria');
+
+    final map = admin.toMap();
+    expect(map['fcmToken'], 'test_token_123');
+    expect(map['country'], 'Nigeria');
+
+    final restored = AdminModel.fromMap(map);
+    // expect(restored.fcmToken, 'test_token_123');
+    expect(restored.country, 'Nigeria');
+
+    final copied = admin.copyWith(
+      fcmToken: 'new_token_456',
+      country: 'Ghana',
+    );
+    // expect(copied.fcmToken, 'new_token_456');
+    expect(copied.country, 'Ghana');
+  });
 }

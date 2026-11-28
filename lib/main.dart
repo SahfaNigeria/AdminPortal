@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:jambomama_nigeria_admin_portal/core/helpers/dependencies.dart'
     as dep;
+import 'package:jambomama_nigeria_admin_portal/core/services/notification/firebase_notification_service.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart' as wp;
 import 'package:google_fonts/google_fonts.dart';
@@ -24,6 +25,7 @@ void main() async {
               projectId: 'jambo-mama-nigeria',
               storageBucket: 'jambo-mama-nigeria.appspot.com')
           : null);
+  await FirebaseNotificationService.initialize();
   runApp(const MyApp());
 }
 

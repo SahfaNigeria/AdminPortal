@@ -96,6 +96,7 @@ class AdminModel {
   final List<AdminTab> accessibleTabs;
   final String? approvedBySuperAdminId;
   final bool isApproved;
+  final String? country;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -108,6 +109,7 @@ class AdminModel {
     this.accessibleTabs = const [],
     this.approvedBySuperAdminId = "",
     this.isApproved = false,
+    this.country,
     this.createdAt,
     this.updatedAt,
   });
@@ -135,6 +137,8 @@ class AdminModel {
     List<AdminTab>? accessibleTabs,
     String? approvedBySuperAdminId,
     bool? isApproved,
+    String? fcmToken,
+    String? country,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -148,6 +152,7 @@ class AdminModel {
       approvedBySuperAdminId:
           approvedBySuperAdminId ?? this.approvedBySuperAdminId,
       isApproved: isApproved ?? this.isApproved,
+      country: country ?? this.country,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -163,6 +168,7 @@ class AdminModel {
       'accessibleTabs': accessibleTabs.map((tab) => tab.toValue()).toList(),
       'approvedBySuperAdminId': approvedBySuperAdminId,
       'isApproved': isApproved,
+      'country': country,
       'createdAt': createdAt?.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
     };
@@ -184,6 +190,7 @@ class AdminModel {
           [],
       approvedBySuperAdminId: map['approvedBySuperAdminId']??"",
       isApproved: map['isApproved'] ?? false,
+      country: map['country'] ?? map['countryValue'],
       createdAt: map['createdAt'] != null
           ? DateTime.tryParse(map['createdAt'].toString())
           : null,

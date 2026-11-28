@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:jambomama_nigeria_admin_portal/modules/analytics/admin_analytics_controller.dart';
 import 'package:material_ui/material_ui.dart';
 import '../../core/theme/colors.dart';
+import '../../shared/widgets/country_distribution_chart.dart';
 import '../../shared/widgets/custom_pie_chart_widget.dart';
 import '../../shared/widgets/dashboard_container_widget.dart';
 import '../../shared/widgets/new_users_chart.dart';
@@ -91,6 +92,14 @@ class AdminAnalyticsPage extends GetView<AdminAnalyticsController> {
             yearlyData: controller.yearlyChartData,
 
             subtitle: "Monthly & yearly tracking of new users reached",
+          );
+        }),
+        const SizedBox(height: 24),
+        Obx(() {
+          return CountryDistributionChart(
+            mothersData: controller.mothersCountryData,
+            healthProfessionalsData: controller.healthProfessionalsCountryData,
+            adminsData: controller.adminsCountryData,
           );
         }),
         const SizedBox(height: 24),

@@ -1,10 +1,10 @@
 import 'dart:developer';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-
+import 'package:jambomama_nigeria_admin_portal/core/services/notification/firebase_notification_service.dart';
 import '../../../core/firebase/firebase_reference.dart';
 import '../../../core/routes/route_helper.dart';
 import '../../../shared/constants/app_constants.dart';
@@ -60,12 +60,21 @@ class LoginLogic extends GetxController {
 
       );
       if(userCredential.user?.uid != null){
-        isSubmitting.value = false;
-        await flutterSecureStorage.write( key: AppConstants.adminIdKey,  value: userCredential.user?.uid);
-        Get.focusScope?.unfocus();
-        context.goNamed(RouteHelpers.adminAnalytics);
-        emailController.clear();
-        passwordController.clear();
+        final fid = await FirebaseNotificationService.getInstallationId();
+          await FirebaseReference.admins
+        .doc(userCredential.user?.uid ?? "")
+        .collection(FirebaseReference.notificationIdSubCollection).doc(userCredential.user?.uid ?? "").update({
+            'fid': fid,
+            'platform': 'web',
+            "lastUpdated": Timestamp.fromDate(DateTime.now()),
+          }).then((value) async{
+            isSubmitting.value = false;
+            await flutterSecureStorage.write( key: AppConstants.adminIdKey,  value: userCredential.user?.uid);
+            Get.focusScope?.unfocus();
+            context.goNamed(RouteHelpers.adminAnalytics);
+            emailController.clear();
+            passwordController.clear();
+          });
       }else{
         isSubmitting.value = false;
         AppToast.error("Something went wrong");

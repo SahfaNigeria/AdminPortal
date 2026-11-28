@@ -7,6 +7,7 @@ import 'package:jambomama_nigeria_admin_portal/shared/model/mothers_model.dart';
 import 'package:jambomama_nigeria_admin_portal/shared/utils/firebase_error.dart';
 
 import '../../shared/model/health_professionals.dart';
+import '../../shared/widgets/country_distribution_chart.dart';
 import '../../shared/widgets/new_users_chart.dart';
 
 class AdminAnalyticsController extends GetxController {
@@ -208,6 +209,109 @@ class AdminAnalyticsController extends GetxController {
         year: year,
       );
     });
+  }
+
+  // COUNTRY DISTRIBUTION DATA
+  List<CountryDataPoint> get mothersCountryData =>
+      calculateCountryDistribution(mothers.map((m) => m.countryValue).toList());
+
+  List<CountryDataPoint> get healthProfessionalsCountryData =>
+      calculateCountryDistribution(
+          healthProfessionals.map((hp) => hp.countryValue).toList());
+
+  List<CountryDataPoint> get adminsCountryData =>
+      calculateCountryDistribution(
+          admins.map((a) => a.country ?? '').toList());
+
+  List<CountryDataPoint> calculateCountryDistribution(List<String> rawCountries) {
+    if (rawCountries.isEmpty) return [];
+
+    final Map<String, int> countMap = {};
+    final Map<String, String> flagMap = {};
+    final Map<String, String> displayNameMap = {};
+
+    final RegExp flagRegExp = RegExp(r'(\uD83C[\uDDE6-\uDDFF]{2})');
+
+    for (final raw in rawCountries) {
+      String trimmed = raw.trim();
+      if (trimmed.isEmpty) {
+        trimmed = "Unspecified";
+      }
+
+      String flag = "";
+      String name = trimmed;
+
+      final match = flagRegExp.firstMatch(trimmed);
+      if (match != null) {
+        flag = match.group(0)!;
+        name = trimmed.replaceAll(flagRegExp, '').trim();
+        if (name.isEmpty) name = trimmed;
+      }
+
+      if (name.isEmpty) {
+        name = "Unspecified";
+      }
+
+      final normalizedKey = name.toLowerCase();
+
+      if (!flagMap.containsKey(normalizedKey)) {
+        if (flag.isNotEmpty) {
+          flagMap[normalizedKey] = flag;
+        } else {
+          flagMap[normalizedKey] = _resolveFlagForCountry(name);
+        }
+        displayNameMap[normalizedKey] = _formatCountryName(name);
+      }
+
+      countMap[normalizedKey] = (countMap[normalizedKey] ?? 0) + 1;
+    }
+
+    final total = rawCountries.length.toDouble();
+    final sortedEntries = countMap.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+
+    return sortedEntries.map((entry) {
+      final key = entry.key;
+      final count = entry.value;
+      final pct = total > 0 ? (count / total) * 100 : 0.0;
+      return CountryDataPoint(
+        rawCountry: key,
+        countryName: displayNameMap[key] ?? key,
+        flagEmoji: flagMap[key] ?? "🌐",
+        count: count,
+        percentage: pct,
+      );
+    }).toList();
+  }
+
+  String _formatCountryName(String name) {
+    if (name.toLowerCase() == "unspecified") return "Unspecified";
+    return name.split(' ').map((word) {
+      if (word.isEmpty) return '';
+      return word[0].toUpperCase() + word.substring(1).toLowerCase();
+    }).join(' ');
+  }
+
+  String _resolveFlagForCountry(String name) {
+    final lower = name.toLowerCase().trim();
+    if (lower.contains("nigeria")) return "🇳🇬";
+    if (lower.contains("ghana")) return "🇬🇭";
+    if (lower.contains("kenya")) return "🇰🇪";
+    if (lower.contains("uganda")) return "🇺🇬";
+    if (lower.contains("south africa")) return "🇿🇦";
+    if (lower.contains("united states") || lower == "usa" || lower == "us") return "🇺🇸";
+    if (lower.contains("united kingdom") || lower == "uk") return "🇬🇧";
+    if (lower.contains("canada")) return "🇨🇦";
+    if (lower.contains("cameroon")) return "🇨🇲";
+    if (lower.contains("niger")) return "🇳🇪";
+    if (lower.contains("benin")) return "🇧🇯";
+    if (lower.contains("togo")) return "🇹🇬";
+    if (lower.contains("senegal")) return "🇸🇳";
+    if (lower.contains("rwanda")) return "🇷🇼";
+    if (lower.contains("tanzania")) return "🇹🇿";
+    if (lower.contains("ethiopia")) return "🇪🇹";
+    if (lower == "unspecified") return "🌐";
+    return "🌐";
   }
 
   void listenToHospitals() {

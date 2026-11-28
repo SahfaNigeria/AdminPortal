@@ -1,6 +1,8 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
+import 'package:jambomama_nigeria_admin_portal/core/services/notification/local_notification_service.dart';
 import 'package:jambomama_nigeria_admin_portal/modules/authentication/registration/registration_logic.dart';
+import 'package:jambomama_nigeria_admin_portal/modules/emergency/emergency_assessments_controller.dart';
 import 'package:jambomama_nigeria_admin_portal/modules/hospitals/hospital_page_controller.dart';
 import 'package:jambomama_nigeria_admin_portal/modules/profile/access/admin_access_controller.dart';
 import 'package:jambomama_nigeria_admin_portal/modules/profile/admin_profile_controller.dart';
@@ -22,6 +24,7 @@ Future<void> init() async {
   /// api client
 
   /// controllers
+  Get.lazyPut(() => LocalNotificationService(), fenix: true);
   Get.lazyPut(() => LoginLogic(flutterSecureStorage: _storage), fenix: true);
   Get.lazyPut(() => HealthProfessionalController(), fenix: true);
   Get.lazyPut(() => HospitalPageController(), fenix: true);
@@ -31,6 +34,7 @@ Future<void> init() async {
   Get.lazyPut(() => RegistrationLogic(flutterSecureStorage: _storage),
       fenix: true);
   Get.lazyPut(() => AdminAddHospitalLogic(), fenix: true);
+  Get.lazyPut(() => EmergencyAssessmentsController(), fenix: true);
   Get.lazyPut(() => MothersController(), fenix: true);
   Get.lazyPut(() => AdminsController(), fenix: true);
   Get.lazyPut(() => AdminAccessController(), fenix: true);

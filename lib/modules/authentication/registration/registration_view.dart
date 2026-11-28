@@ -1,7 +1,7 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:get/get.dart';
 
 import '../../../core/routes/route_helper.dart';
 import '../../../core/theme/colors.dart';
@@ -10,6 +10,7 @@ import '../../../shared/widgets/app_customized_bg.dart';
 import '../../../shared/widgets/app_text.dart';
 import '../../../shared/widgets/auth_background_widget.dart';
 import '../../../shared/widgets/auth_text_field.dart';
+import '../../../shared/widgets/country_selection_widget.dart';
 import '../../../shared/widgets/custom_app_button.dart';
 import '../../../shared/widgets/custom_single_child_scroll_view.dart';
 import 'registration_logic.dart';
@@ -24,35 +25,33 @@ class RegistrationPage extends GetView<RegistrationLogic> {
         child: Column(
           children: [
             SizedBox(
-              height: MediaQuery
-                  .sizeOf(context)
-                  .height / 8.5,
+              height: MediaQuery.sizeOf(context).height / 8.5,
             ),
-            if (context.canPop()) Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 18,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      IconButton(
-                        onPressed: () => context.pop(),
-                        icon: const FaIcon(
-                          FontAwesomeIcons.xmark,
-                          size: 24,
+            if (context.canPop())
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        IconButton(
+                          onPressed: () => context.pop(),
+                          icon: const FaIcon(
+                            FontAwesomeIcons.xmark,
+                            size: 24,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-              ],
-            ),
-
+                  const SizedBox(
+                    height: 20,
+                  ),
+                ],
+              ),
             AuthBackgroundWidget(
               isScrollable: false,
               onChanged: controller.onValidationChanged,
@@ -70,7 +69,6 @@ class RegistrationPage extends GetView<RegistrationLogic> {
                     child: FaIcon(FontAwesomeIcons.user, size: 20),
                   ),
                 ),
-
                 const SizedBox(height: 20),
                 AuthTextField(
                   fieldTitle: "Email",
@@ -81,9 +79,14 @@ class RegistrationPage extends GetView<RegistrationLogic> {
                     child: FaIcon(FontAwesomeIcons.envelope, size: 20),
                   ),
                 ),
-
                 const SizedBox(height: 20),
-
+                CountrySelectionWidget(
+                  controller: controller.countryController,
+                  onChanged: (_) => controller.onValidationChanged(),
+                  validator: (p0) =>
+                      ValidationUtil.validateName(p0 ?? "", "Country"),
+                ),
+                const SizedBox(height: 20),
                 Obx(() {
                   return AuthTextField(
                     fieldTitle: "Password",
@@ -93,7 +96,7 @@ class RegistrationPage extends GetView<RegistrationLogic> {
                     suffix: IconButton(
                       onPressed: () {
                         controller.isPasswordVisible.value =
-                        !controller.isPasswordVisible.value;
+                            !controller.isPasswordVisible.value;
                       },
                       icon: FaIcon(
                         !controller.isPasswordVisible.value
@@ -104,7 +107,6 @@ class RegistrationPage extends GetView<RegistrationLogic> {
                     ),
                   );
                 }),
-
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -124,9 +126,7 @@ class RegistrationPage extends GetView<RegistrationLogic> {
                     )
                   ],
                 ),
-
                 const SizedBox(height: 20),
-
                 Obx(() {
                   return CustomAppButton(
                     title: "Register",
