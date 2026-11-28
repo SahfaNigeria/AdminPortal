@@ -77,6 +77,16 @@ class AdminAnalyticsPage extends GetView<AdminAnalyticsController> {
                       isTrendPositive: controller.currentHospitals >=
                           controller.previousHealthProfessionals,
                     ),
+                    StatisticsCardWidget(
+                      title: "Total Emergencies",
+                      subtitle: "Emergency Assessments",
+                      icon: FontAwesomeIcons.triangleExclamation,
+                      accentColor: Colors.red,
+                      value: controller.emergencyAssessments.length,
+                      trendPercentage: controller.emergenciesTrend,
+                      isTrendPositive: controller.currentEmergencies >=
+                          controller.previousEmergencies,
+                    ),
                   ],
                 )
               ],
@@ -97,6 +107,7 @@ class AdminAnalyticsPage extends GetView<AdminAnalyticsController> {
         const SizedBox(height: 24),
         Obx(() {
           return CountryDistributionChart(
+            allData: controller.allUsersCountryData,
             mothersData: controller.mothersCountryData,
             healthProfessionalsData: controller.healthProfessionalsCountryData,
             adminsData: controller.adminsCountryData,

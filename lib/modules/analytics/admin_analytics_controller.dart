@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:get/get.dart';
 import 'package:jambomama_nigeria_admin_portal/core/firebase/firebase_reference.dart';
 import 'package:jambomama_nigeria_admin_portal/shared/model/admin_model.dart';
+import 'package:jambomama_nigeria_admin_portal/shared/model/emergency_assessment_model.dart';
 import 'package:jambomama_nigeria_admin_portal/shared/model/hospital_model.dart';
 import 'package:jambomama_nigeria_admin_portal/shared/model/mothers_model.dart';
 import 'package:jambomama_nigeria_admin_portal/shared/utils/firebase_error.dart';
@@ -19,6 +20,12 @@ class AdminAnalyticsController extends GetxController {
 
   final hospitals = <HospitalModel>[].obs;
 
+  final emergencyAssessments = <EmergencyAssessmentModel>[].obs;
+
+  // EMERGENCY ASSESSMENTS
+  int get currentEmergencies => getCurrentMonthCount(emergencyAssessments);
+
+  int get previousEmergencies => getPreviousMonthCount(emergencyAssessments);
 
   // HOSPITALS
   int get currentHospitals => getCurrentMonthCount(hospitals);
@@ -82,6 +89,11 @@ class AdminAnalyticsController extends GetxController {
     previous: previousHospitals,
   );
 
+  String get emergenciesTrend => calculateTrend(
+    current: currentEmergencies,
+    previous: previousEmergencies,
+  );
+
   String get adminsTrend => calculateTrend(
     current: currentAdmins,
     previous: previousAdmins,
@@ -95,7 +107,8 @@ class AdminAnalyticsController extends GetxController {
   late StreamSubscription? _mothersSubscription,
       _adminsSubscription,
       _healthProfessionalsSubscription,
-      _hospitalsSubscription;
+      _hospitalsSubscription,
+      _emergencyAssessmentsSubscription;
 
   @override
   void onInit() {
@@ -104,6 +117,7 @@ class AdminAnalyticsController extends GetxController {
     listenToAdmins();
     listenToHealthProfessionals();
     listenToHospitals();
+    listenToEmergencyAssessments();
   }
 
   void listenToMothers() {
@@ -212,6 +226,14 @@ class AdminAnalyticsController extends GetxController {
   }
 
   // COUNTRY DISTRIBUTION DATA
+  List<CountryDataPoint> get allUsersCountryData {
+    final allCountries = <String>[];
+    allCountries.addAll(mothers.map((m) => m.countryValue));
+    allCountries.addAll(healthProfessionals.map((hp) => hp.countryValue));
+    allCountries.addAll(admins.map((a) => a.country ?? ''));
+    return calculateCountryDistribution(allCountries);
+  }
+
   List<CountryDataPoint> get mothersCountryData =>
       calculateCountryDistribution(mothers.map((m) => m.countryValue).toList());
 
@@ -285,8 +307,10 @@ class AdminAnalyticsController extends GetxController {
   }
 
   String _formatCountryName(String name) {
-    if (name.toLowerCase() == "unspecified") return "Unspecified";
-    return name.split(' ').map((word) {
+    final RegExp flagRegExp = RegExp(r'(\uD83C[\uDDE6-\uDDFF]{2})');
+    final cleaned = name.replaceAll(flagRegExp, '').trim();
+    if (cleaned.isEmpty || cleaned.toLowerCase() == "unspecified") return "Unspecified";
+    return cleaned.split(' ').map((word) {
       if (word.isEmpty) return '';
       return word[0].toUpperCase() + word.substring(1).toLowerCase();
     }).join(' ');
@@ -325,12 +349,24 @@ class AdminAnalyticsController extends GetxController {
     });
   }
 
+  void listenToEmergencyAssessments() {
+    _emergencyAssessmentsSubscription =
+        FirebaseReference.emergencyAssessments.snapshots().listen((snapshot) {
+      emergencyAssessments.value = snapshot.docs.map((doc) {
+        return EmergencyAssessmentModel.fromJson(doc.data(), doc.id);
+      }).toList();
+    }, onError: (error) {
+      FirebaseError.handle(error);
+    });
+  }
+
   @override
   void onClose() {
     _mothersSubscription?.cancel();
     _adminsSubscription?.cancel();
     _healthProfessionalsSubscription?.cancel();
     _hospitalsSubscription?.cancel();
+    _emergencyAssessmentsSubscription?.cancel();
     super.onClose();
   }
 }

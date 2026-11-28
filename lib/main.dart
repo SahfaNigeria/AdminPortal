@@ -21,7 +21,9 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await FirebaseNotificationService.initialize();
+  if (kReleaseMode) {
+    await FirebaseNotificationService.initialize();
+  }
   runApp(const MyApp());
 }
 

@@ -20,6 +20,7 @@ class AdminProfileController extends GetxController {
 
   late TextEditingController usernameController;
   late TextEditingController emailController;
+  late TextEditingController countryController;
 
   final GlobalKey<FormState> profileFormStateKey = GlobalKey<FormState>();
 
@@ -44,6 +45,7 @@ class AdminProfileController extends GetxController {
 
     usernameController = TextEditingController();
     emailController = TextEditingController();
+    countryController = TextEditingController();
     super.onInit();
     listenToAdminProfile();
   }
@@ -73,6 +75,7 @@ class AdminProfileController extends GetxController {
             if (!isSaving.value) {
               usernameController.text = model.username;
               emailController.text = model.email;
+              countryController.text = model.country ?? '';
             }
           }
         },
@@ -155,10 +158,12 @@ class AdminProfileController extends GetxController {
 
       final updatedUsername = usernameController.text.trim();
       final updatedEmail = emailController.text.trim();
+      final updatedCountry = countryController.text.trim();
 
       final Map<String, dynamic> updateData = {
         'username': updatedUsername,
         'email': updatedEmail,
+        'country': updatedCountry.isNotEmpty ? updatedCountry : null,
         if (photoUrl != null) 'displayPhoto': photoUrl,
         'updatedAt': DateTime.now().toIso8601String(),
       };
@@ -234,6 +239,7 @@ class AdminProfileController extends GetxController {
     _adminSubscription?.cancel();
     usernameController.dispose();
     emailController.dispose();
+    countryController.dispose();
     super.onClose();
   }
 }

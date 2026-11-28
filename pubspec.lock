@@ -498,10 +498,10 @@ packages:
     dependency: "direct dev"
     description:
       name: flutter_lints
-      sha256: a25a15ebbdfc33ab1cd26c63a6ee519df92338a9c10f122adda92938253bef04
+      sha256: "3105dc8492f6183fb076ccf1f351ac3d60564bff92e20bfc4af9cc1651f4e7e1"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.3"
+    version: "6.0.0"
   flutter_localizations:
     dependency: transitive
     description: flutter
@@ -709,6 +709,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.20.3"
+  l10n_countries:
+    dependency: transitive
+    description:
+      name: l10n_countries
+      sha256: e015d4164005ef329ed5ed7589e4ec5977171168c02a41c93ac6a127d9d93ebd
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.0"
+  l10n_currencies:
+    dependency: transitive
+    description:
+      name: l10n_currencies
+      sha256: "7fa097b03f9d1f89f4d0e1f69fcf4bd50cf9fd38b5e6ae34db26a3a960c2091f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.0"
+  l10n_languages:
+    dependency: transitive
+    description:
+      name: l10n_languages
+      sha256: "2b73c99b7ebf3225e855eb04fbefc2295c686ad00942d8355978c66fbf4d276e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.0"
   leak_tracker:
     dependency: transitive
     description:
@@ -737,10 +761,10 @@ packages:
     dependency: transitive
     description:
       name: lints
-      sha256: "0a217c6c989d21039f1498c3ed9f3ed71b354e69873f13a8dfc3c9fe76f1b452"
+      sha256: "12f842a479589fea194fe5c5a3095abc7be0c1f2ddfa9a0e76aed1dbd26a87df"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.1"
+    version: "6.1.0"
   listen:
     dependency: transitive
     description:
@@ -973,6 +997,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
+  sealed_countries:
+    dependency: transitive
+    description:
+      name: sealed_countries
+      sha256: "51a9bd8bbff2c4c538672a851b1ff51c7a9c99f55980edcac1f749fed9fb121a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.5.0"
+  sealed_currencies:
+    dependency: transitive
+    description:
+      name: sealed_currencies
+      sha256: "554b7b27fbd1091ec4d4a45747340cfe5a9f531d58a61c7bf29e449905448026"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.5.0"
+  sealed_languages:
+    dependency: transitive
+    description:
+      name: sealed_languages
+      sha256: "1b5fddde8b47080e5c038996dcaf211b31587c408583a121f73649b691b0971c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.4.2"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -1210,6 +1258,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.2"
+  world_flags:
+    dependency: "direct main"
+    description:
+      name: world_flags
+      sha256: b8acc80333d9016cfb17773cca5814324320495e7c23be293b64d631a0d26a4e
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.7.0"
   xdg_directories:
     dependency: transitive
     description:
@@ -1235,5 +1291,5 @@ packages:
     source: hosted
     version: "3.1.4"
 sdks:
-  dart: ">=3.13.0 <4.0.0"
+  dart: ">=3.14.0 <4.0.0"
   flutter: ">=3.47.0"

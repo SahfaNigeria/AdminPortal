@@ -11,6 +11,7 @@ import '../../shared/utils/validator.dart';
 import '../../shared/widgets/app_customized_bg.dart';
 import '../../shared/widgets/app_text.dart';
 import '../../shared/widgets/app_text_field.dart';
+import '../../shared/widgets/country_selection_widget.dart';
 import '../../shared/widgets/custom_app_button.dart';
 import '../../shared/widgets/custom_circle_avatar_widget.dart';
 import '../../shared/widgets/custom_circular_progress_indicator.dart';
@@ -241,6 +242,30 @@ class AdminProfilePage extends GetView<AdminProfileController> {
                                             ? TextAlign.left
                                             : TextAlign.center,
                                       ),
+                                      if (admin?.country != null &&
+                                          admin!.country!.trim().isNotEmpty) ...[
+                                        const SizedBox(height: 6),
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment: isWide
+                                              ? MainAxisAlignment.start
+                                              : MainAxisAlignment.center,
+                                          children: [
+                                            const FaIcon(
+                                              FontAwesomeIcons.earthAfrica,
+                                              size: 12,
+                                              color: AppColors.primary,
+                                            ),
+                                            const SizedBox(width: 6),
+                                            AppText(
+                                              text: admin.country!.trim(),
+                                              size: 12,
+                                              fontWeight: FontWeight.w600,
+                                              color: AppColors.textSecondary,
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                     ],
                                   );
 
@@ -345,6 +370,16 @@ class AdminProfilePage extends GetView<AdminProfileController> {
                                     ValidationUtil.validateEmail(val ?? ''),
                               ),
 
+                              const SizedBox(height: 16),
+
+                              // Country Input
+                              CountrySelectionWidget(
+                                controller: controller.countryController,
+                                fieldTitle: "Country / Nationality",
+                                validator: (val) => ValidationUtil.validateName(
+                                    val ?? '', "Country"),
+                              ),
+
                               const SizedBox(height: 28),
                               const Divider(height: 1),
                               const SizedBox(height: 24),
@@ -400,12 +435,27 @@ class AdminProfilePage extends GetView<AdminProfileController> {
                                         : Colors.orange,
                                   );
 
+                                  Widget col3 = _buildMetaTile(
+                                    label: "COUNTRY / NATIONALITY",
+                                    value: (admin?.country != null &&
+                                            admin!.country!.trim().isNotEmpty)
+                                        ? admin.country!.trim()
+                                        : "Not Specified",
+                                    icon: FontAwesomeIcons.globe,
+                                    valueColor: (admin?.country != null &&
+                                            admin!.country!.trim().isNotEmpty)
+                                        ? AppColors.textPrimary
+                                        : AppColors.textSecondary,
+                                  );
+
                                   if (isGrid) {
                                     return Row(
                                       children: [
                                         Expanded(child: col1),
                                         const SizedBox(width: 16),
                                         Expanded(child: col2),
+                                        const SizedBox(width: 16),
+                                        Expanded(child: col3),
                                       ],
                                     );
                                   } else {
@@ -414,6 +464,8 @@ class AdminProfilePage extends GetView<AdminProfileController> {
                                         col1,
                                         const SizedBox(height: 12),
                                         col2,
+                                        const SizedBox(height: 12),
+                                        col3,
                                       ],
                                     );
                                   }

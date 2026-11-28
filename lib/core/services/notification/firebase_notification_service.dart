@@ -2,11 +2,14 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:jambomama_nigeria_admin_portal/shared/constants/app_constants.dart';
 import 'package:jambomama_nigeria_admin_portal/shared/utils/toast.dart';
 
 class FirebaseNotificationService {
   static final FirebaseMessaging _messaging = FirebaseMessaging.instance;
+  static String? fid;
+  static String? get fidValue =>  fid;
 
   static Future<bool> requestFcmPermission() async {
     try {
@@ -44,20 +47,30 @@ class FirebaseNotificationService {
 
   static Future<String?> getInstallationId() async {
     try {
-      final installationIdFuture = _messaging.onRegistered.first;
+      if (kReleaseMode) {
+        final messaging = FirebaseMessaging.instance;
 
-      await _messaging.register(
-        vapidKey:AppConstants.vapidKey,
-        serviceWorkerScriptPath: 'firebase-messaging-sw.js',
-      );
+        // Listen before registering because FID arrives asynchronously.
+        final fidFuture = messaging.onRegistered.first;
 
-      final installationId = await installationIdFuture;
+        await messaging.register(
+          vapidKey: AppConstants.vapidKey,
+          serviceWorkerScriptPath: 'firebase-messaging-sw.js',
+        );
 
-      log("Firebase Installation ID: $installationId");
+        final fid = await fidFuture.timeout(
+          const Duration(seconds: 30),
+        );
 
-      return installationId;
-    } catch (e) {
-      log("Notification registration error: $e");
+        log('Retrieved FID: $fid');
+
+        return fid;
+      }else{
+        return await Future.value("Debug");
+      }
+    } catch (e, stackTrace) {
+      log('Failed to retrieve FID: $e');
+      log(stackTrace.toString());
       return null;
     }
   }
@@ -104,7 +117,13 @@ class FirebaseNotificationService {
 
     final installationId = await getInstallationId();
 
-    if (installationId == null) return;
+
+    if (installationId != null) {
+
+      fid = installationId;
+    } else {
+      log("No Device FID");
+    };
 
     log("Device registered successfully");
 
